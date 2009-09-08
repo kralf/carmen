@@ -1,5 +1,5 @@
 #include <string.h>
-#include <carmen/carmen.h>
+#include "global.h"
 #include "carmen_laser_device.h"
 #include <stdio.h>
 

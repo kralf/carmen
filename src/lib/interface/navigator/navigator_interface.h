@@ -40,7 +40,7 @@
 #ifndef NAVIGATOR_INTERFACE_H
 #define NAVIGATOR_INTERFACE_H
 
-#include <carmen/navigator_messages.h>
+#include "navigator_messages.h"
 
 #ifdef __cplusplus
 extern "C" {

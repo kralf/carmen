@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <signal.h>
-#include <carmen/carmenserial.h>
+#include "carmenserial.h"
 
 #define INI                              -1
 #define TIO                              0

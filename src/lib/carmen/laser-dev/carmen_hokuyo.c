@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <carmen/carmen.h>
+#include "global.h"
 #include "carmen_hokuyo.h"
 #include "hokuyourg.h"
 

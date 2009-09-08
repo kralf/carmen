@@ -41,7 +41,7 @@
 #ifndef CARMEN_BASE_INTERFACE_H
 #define CARMEN_BASE_INTERFACE_H
 
-#include <carmen/base_messages.h>
+#include "base_messages.h"
 
 #ifdef __cplusplus
 extern "C" {

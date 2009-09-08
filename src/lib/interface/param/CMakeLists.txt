@@ -1,4 +1,3 @@
-remake_include(../global)
 remake_add_library(
   param_interface
   LINK global)

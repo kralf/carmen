@@ -38,8 +38,8 @@
 #ifndef CARMEN_MAP_INTERFACE_H
 #define CARMEN_MAP_INTERFACE_H
 
-#include <carmen/map.h>
-#include <carmen/map_messages.h>
+#include "map.h"
+#include "map_messages.h"
 
 #ifdef __cplusplus
 extern "C" {

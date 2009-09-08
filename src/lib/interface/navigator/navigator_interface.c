@@ -26,10 +26,11 @@
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
 #ifndef NO_ZLIB
 #include <zlib.h>
 #endif
+
+#include "global.h"
 
 void
 carmen_navigator_subscribe_status_message(carmen_navigator_status_message 

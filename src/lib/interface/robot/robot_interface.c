@@ -26,7 +26,7 @@
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
+#include "global.h"
 
 #ifndef COMPILE_WITHOUT_LASER_SUPPORT
 void 

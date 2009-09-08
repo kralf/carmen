@@ -26,14 +26,16 @@
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
+#include "global.h"
+#include "param_interface.h"
 #ifndef COMPILE_WITHOUT_MAP_SUPPORT
-#include <carmen/map_io.h>
+#include "map_io.h"
 #endif
 
 #include <ctype.h>
 #include <getopt.h>
 #include <sys/stat.h>
+#include <signal.h>
 
 #define MAX_VARIABLE_LENGTH 2048
 #define MAX_NUM_MODULES 128

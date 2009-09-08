@@ -1,5 +1,5 @@
-#include <carmen/carmen.h>
-#include <carmen/logger_messages.h>
+#include "global.h"
+#include "logger_messages.h"
 
 void
 carmen_logger_comment(char *text)

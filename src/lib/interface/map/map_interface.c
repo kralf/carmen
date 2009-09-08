@@ -29,10 +29,13 @@
 /**********************************************
  * library of function for mapserver clients  *
  **********************************************/
-#include <carmen/carmen.h>
+
 #ifndef NO_ZLIB
 #include <zlib.h>
 #endif
+
+#include "global.h"
+#include "map_interface.h"
 
 carmen_map_t **map_update;
 carmen_handler_t *map_update_handler_external;

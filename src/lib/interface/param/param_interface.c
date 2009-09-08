@@ -26,10 +26,12 @@
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include "global.h"
+#include "param_interface.h"
 
 #define FREE_RESPONSE_STRING(msg) \
   free(msg->module_name); \

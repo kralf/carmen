@@ -39,7 +39,7 @@
 #ifndef CARMEN_PARAMETER_INTERFACE_H
 #define CARMEN_PARAMETER_INTERFACE_H
 
-#include <carmen/param_messages.h>
+#include "param_messages.h"
 
 
 #ifdef __cplusplus

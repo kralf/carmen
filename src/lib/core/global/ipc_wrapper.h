@@ -46,6 +46,16 @@
 extern "C" {
 #endif
 
+typedef struct {
+  char *module_name;
+  int pid;
+  double timestamp;
+  char *hostname;
+} carmen_heartbeat_message;
+  
+#define CARMEN_HEARTBEAT_NAME "carmen_heartbeat"
+#define CARMEN_HEARTBEAT_FMT "{string, int, double, string}"
+
 typedef enum {CARMEN_UNSUBSCRIBE, 
 	      CARMEN_SUBSCRIBE_LATEST, 
 	      CARMEN_SUBSCRIBE_ALL} carmen_subscribe_t;

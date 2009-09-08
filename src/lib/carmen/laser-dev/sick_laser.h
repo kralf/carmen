@@ -3,7 +3,7 @@
 #include <sys/select.h>
 
 /* needed for new carmen_inline def for gcc >= 4.3 */
-#include <carmen/carmen.h>
+#include "global.h"
 
 typedef struct sick_laser_t{
   unsigned char password[8];

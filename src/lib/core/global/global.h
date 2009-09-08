@@ -68,7 +68,10 @@ extern "C" {
 #include <time.h>
 #include <math.h>
 #include <ctype.h>
-#include <carmen/ipc.h>
+
+#include <ipc.h>
+
+#include "ipc_wrapper.h"
 
 #define CARMEN_MAJOR_VERSION 0
 #define CARMEN_MINOR_VERSION 7
@@ -152,16 +155,6 @@ typedef struct {
 } carmen_default_message;
 
 #define CARMEN_DEFAULT_MESSAGE_FMT "{double,string}"
-
-typedef struct {
-  char *module_name;
-  int pid;
-  double timestamp;
-  char *hostname;
-} carmen_heartbeat_message;
-  
-#define CARMEN_HEARTBEAT_NAME "carmen_heartbeat"
-#define CARMEN_HEARTBEAT_FMT "{string, int, double, string}"
 
 #define carmen_red_code "[31;1m"
 #define carmen_blue_code "[34;1m"

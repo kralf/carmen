@@ -1,3 +1,2 @@
-remake_include(../global)
 remake_add_library(simulator_interface)
 remake_add_headers()

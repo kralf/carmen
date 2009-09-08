@@ -26,7 +26,8 @@
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
+#include "global.h"
+#include "map_io.h"
 
 /* An implementation of bicubic image interpolation, shamelessly borrowed
    from an implementation by Blake Carlson (blake-carlson@uiowa.edu). 

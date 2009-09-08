@@ -26,8 +26,8 @@
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
-#include <carmen/localize_messages.h>
+#include "global.h"
+#include "localize_messages.h"
 
 void
 carmen_localize_subscribe_globalpos_message(carmen_localize_globalpos_message 

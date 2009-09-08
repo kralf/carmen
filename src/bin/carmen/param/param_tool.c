@@ -26,7 +26,9 @@
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
+#include "global.h"
+#include "param_interface.h"
+#include "writelog.h"
 #include <getopt.h>
 
 static void main_usage(char *prog_name)

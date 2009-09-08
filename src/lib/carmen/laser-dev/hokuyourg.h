@@ -2,7 +2,7 @@
 #define URG_H
 
 /* needed for new carmen_inline def for gcc >= 4.3 */
-#include <carmen/carmen.h>
+#include "global.h"
 
 
 //#define HOKUYO_ALWAYS_IN_SCIP20

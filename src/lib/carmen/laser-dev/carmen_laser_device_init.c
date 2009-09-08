@@ -1,4 +1,4 @@
-#include <carmen/carmen.h>
+#include "global.h"
 #include <string.h>
 #include "carmen_laser_device.h"
 #include "carmen_hokuyo.h"

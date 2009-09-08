@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <math.h>
-#include <carmen/carmen.h>
+#include "global.h"
 #include "carmen_laser_device.h"
 #include "sick_laser.h"
 #include <sys/time.h>

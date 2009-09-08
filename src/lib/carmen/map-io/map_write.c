@@ -26,7 +26,7 @@
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
+#include "global.h"
 #include "map_io.h"
 
 void write_fixed_string(carmen_FILE *fp, char *str, int n)

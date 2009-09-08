@@ -43,7 +43,7 @@
 extern "C" {
 #endif
 
-#include <carmen/simulator_messages.h>
+#include "simulator_messages.h"
 
 int 
 carmen_simulator_set_truepose(carmen_point_t *point);

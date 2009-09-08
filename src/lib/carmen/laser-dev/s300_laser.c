@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <signal.h>
-#include <carmen/carmenserial.h>
+#include "carmenserial.h"
 
 #define	MAX_MEAS_DIST_MASK 0x1FFF;
 #define	IS_REFLECT_MASK  0x2000;

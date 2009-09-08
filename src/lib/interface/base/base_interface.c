@@ -26,9 +26,9 @@
  *
  ********************************************************/
 
-#include <carmen/global.h>
-#include <carmen/ipc_wrapper.h>
-#include <carmen/base_messages.h>
+#include "global.h"
+#include "ipc_wrapper.h"
+#include "base_messages.h"
 
 void 
 carmen_base_subscribe_velocity_message(carmen_base_velocity_message *velocity,

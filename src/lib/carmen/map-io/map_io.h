@@ -29,8 +29,9 @@
 #ifndef CARMEN_MAP_IO_H
 #define CARMEN_MAP_IO_H
 
-#include <carmen/carmen_stdio.h>
-#include <carmen/map.h>
+#include "carmen_stdio.h"
+#include "map.h"
+#include "map_interface.h"
 
 #ifdef __cplusplus
 extern "C" {

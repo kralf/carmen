@@ -26,7 +26,7 @@
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
+#include "global.h"
 #include "map_io.h"
 #ifndef NO_ZLIB
 #include <zlib.h>

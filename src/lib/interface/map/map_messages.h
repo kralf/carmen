@@ -41,7 +41,7 @@
 #ifndef CARMEN_MAP_MESSAGES_H
 #define CARMEN_MAP_MESSAGES_H
 
-#include <carmen/map.h>
+#include "map.h"
 
 
 #ifdef __cplusplus

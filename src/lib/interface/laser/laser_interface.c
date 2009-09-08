@@ -1,6 +1,8 @@
-#include "laser_messages.h"
-#include <carmen/carmen.h>
 #include <assert.h>
+
+#include "global.h"
+#include "laser_messages.h"
+#include "param_interface.h"
 
 static char* msgnames[10]={NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
 
