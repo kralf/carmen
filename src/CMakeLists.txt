@@ -1,3 +1,5 @@
+remake_project_option(WITH_GUI "graphical user interface (GUI)" ON)
+
 remake_find_library(
   ipc-server ipc.h
   PACKAGE ipc

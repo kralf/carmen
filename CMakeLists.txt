@@ -16,7 +16,9 @@ remake_project(
 
 remake_add_directories(data)
 
+remake_pack_deb(COMPONENT core)
+remake_pack_deb(COMPONENT interface)
 remake_pack_deb()
 remake_pack_deb(COMPONENT dev)
-remake_pack_deb(COMPONENT doc)
 remake_pack_deb(COMPONENT data)
+remake_pack_deb(COMPONENT doc)
