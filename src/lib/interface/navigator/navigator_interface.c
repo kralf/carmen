@@ -31,6 +31,7 @@
 #endif
 
 #include "global.h"
+#include "navigator_interface.h"
 
 void
 carmen_navigator_subscribe_status_message(carmen_navigator_status_message 

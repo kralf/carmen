@@ -40,6 +40,8 @@
 #ifndef CARMEN_ROBOT_MESSAGES_H
 #define CARMEN_ROBOT_MESSAGES_H
 
+#include "laser_messages.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

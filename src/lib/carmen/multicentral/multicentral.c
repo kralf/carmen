@@ -29,7 +29,7 @@
 #include "global.h"
 #include <pthread.h>
 #include "ipc_wrapper.h"
-#include <carmen/param_interface.h>
+#include "param_interface.h"
 #include "multicentral.h"
 
 void x_ipcRegisterExitProc(void (*proc)(void));

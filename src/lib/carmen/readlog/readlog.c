@@ -26,9 +26,8 @@
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
-#include <carmen/carmen_stdio.h>
-#include <carmen/readlog.h>
+#include "global.h"
+#include "readlog.h"
 
 off_t carmen_logfile_uncompressed_length(carmen_FILE *infile)
 {

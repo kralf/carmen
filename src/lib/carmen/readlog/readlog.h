@@ -44,6 +44,23 @@
 #ifndef CARMEN_READLOG_H
 #define CARMEN_READLOG_H
 
+#include "carmen_stdio.h"
+
+#include "arm_messages.h"
+#include "base_messages.h"
+#include "camera_messages.h"
+#include "gps_nmea_messages.h"
+#include "imu_messages.h"
+#include "laser_messages.h"
+#include "localize_messages.h"
+#include "logger_messages.h"
+#include "map_messages.h"
+#include "navigator_messages.h"
+#include "pantilt_messages.h"
+#include "param_messages.h"
+#include "robot_messages.h"
+#include "simulator_messages.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

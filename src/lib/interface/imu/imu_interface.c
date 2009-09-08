@@ -1,5 +1,5 @@
 #include "global.h"
-
+#include "imu_interface.h"
 
 void
 carmen_imu_subscribe_imu_message(carmen_imu_message* msg,

@@ -27,7 +27,7 @@
  ********************************************************/
 
 #include "global.h"
-#include "localize_messages.h"
+#include "localize_interface.h"
 
 void
 carmen_localize_subscribe_globalpos_message(carmen_localize_globalpos_message 
@@ -333,7 +333,7 @@ int carmen_localize_get_map(int global, carmen_map_t *map)
       carmen_test_alloc(uncompressed_data);
       uncompress_size_result = uncompress_size*sizeof(float);
       uncompress_return = uncompress((void *)uncompressed_data,   
-				     (uLong *)&uncompress_size_result,
+				     (unsigned long *)&uncompress_size_result,
 				     (void *)response->data, 
 				     response->size);
       response->data = uncompressed_data;

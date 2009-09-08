@@ -40,8 +40,8 @@
 #ifndef CARMEN_NAVIGATOR_MESSAGES_H
 #define CARMEN_NAVIGATOR_MESSAGES_H
 
-#include <carmen/global.h>
-#include <carmen/map.h>
+#include "global.h"
+#include "map.h"
 
 #ifdef __cplusplus
 extern "C" {

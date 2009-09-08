@@ -27,6 +27,7 @@
  ********************************************************/
 
 #include "global.h"
+#include "writelog.h"
 
 void carmen_logwrite_write_robot_name(char *robot_name, carmen_FILE *outfile)
 {

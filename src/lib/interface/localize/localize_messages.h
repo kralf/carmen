@@ -40,6 +40,9 @@
 #ifndef CARMEN_LOCALIZE_MESSAGES_H
 #define CARMEN_LOCALIZE_MESSAGES_H
 
+#include "map.h"
+#include "laser_messages.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

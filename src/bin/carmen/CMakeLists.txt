@@ -1,6 +1,6 @@
 remake_include(
   ../../lib/core/*
-  ../../interface/*
-  ../../carmen/*
+  ../../lib/interface/*
+  ../../lib/carmen/*
 )
 remake_add_directories()

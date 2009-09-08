@@ -42,6 +42,8 @@
 #define CARMEN_LOCALIZE_INTERFACE_H
 
 #include "localize_messages.h"
+#include "base_messages.h"
+#include "robot_messages.h"
 
 #ifdef __cplusplus
 extern "C" {

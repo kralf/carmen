@@ -26,14 +26,15 @@
  *
  ********************************************************/
 
-#include "carmen.h"
+#include "global.h"
 
 #ifndef COMPILE_WITHOUT_MAP_SUPPORT
-#include <carmen/map.h>
+#include "map.h"
 #endif
 
 #include "geometry.h"
 #include <assert.h>
+#include <float.h>
 
 #ifndef COMPILE_WITHOUT_MAP_SUPPORT
 
@@ -647,7 +648,7 @@ carmen_geometry_compute_expected_distance(carmen_traj_point_p traj_point,
   carmen_map_config_t map_defn;
   int index;
 
-  double min_distance = MAXDOUBLE;
+  double min_distance = DBL_MAX;
   int best = -1;
   carmen_point_t ray3, ray4;
   carmen_point_t edge1, edge2;
@@ -656,7 +657,7 @@ carmen_geometry_compute_expected_distance(carmen_traj_point_p traj_point,
   int x_offset[8] = {1, 1, -1, 1, -1, -1, -1, 1};
   int y_offset[8] = {-1, 1, 1, 1, -1, 1, -1, -1};
 
-  double distance_to_obstacle, min_distance_to_obstacle = MAXDOUBLE;
+  double distance_to_obstacle, min_distance_to_obstacle = DBL_MAX;
   int best_obstacle;
   carmen_point_t best_intersect_obstacle_pt = {0.0, 0.0, 0.0};
 
@@ -720,7 +721,7 @@ carmen_geometry_compute_expected_distance(carmen_traj_point_p traj_point,
     }
   }
 
-  if (min_distance > MAXDOUBLE/2) 
+  if (min_distance > DBL_MAX/2) 
     min_distance = hypot(best_intersect_obstacle_pt.x-traj_point->x,
 			 best_intersect_obstacle_pt.y-traj_point->y);
 

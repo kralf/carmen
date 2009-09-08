@@ -40,6 +40,8 @@
 #ifndef GPS_NMEA_INTERFACE_H
 #define GPS_NMEA_INTERFACE_H
 
+#include "gps_nmea_messages.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -27,6 +27,7 @@
  ********************************************************/
 
 #include "global.h"
+#include "simulator_interface.h"
 
 void
 carmen_simulator_subscribe_truepos_message(carmen_simulator_truepos_message 

@@ -40,6 +40,7 @@
 #define CARMEN_ROBOT_INTERFACE_H
 
 #include "robot_messages.h"
+#include "base_messages.h"
 
 #ifdef __cplusplus
 extern "C" {
