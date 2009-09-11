@@ -1,0 +1,1 @@
+remake_add_executables(LINK simulator_core robot_dev)
