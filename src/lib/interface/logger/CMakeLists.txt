@@ -1,2 +1,5 @@
-remake_add_library(logger_interface)
+remake_add_library(
+  logger_interface
+  LINK global
+)
 remake_add_headers()

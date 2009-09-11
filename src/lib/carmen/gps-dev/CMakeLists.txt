@@ -1,5 +1,5 @@
 remake_add_library(
-  arm_interface
-  LINK global
+  gps_dev
+  LINK gps_nmea_interface
 )
 remake_add_headers()

@@ -1,3 +1,4 @@
+remake_project_option(WITH_TESTING "testing binaries" ON)
 remake_project_option(WITH_GUI "graphical user interface (GUI)" ON)
 
 remake_find_library(
