@@ -1,0 +1,1 @@
+remake_add_executables(LINK param_interface robot_interface keyctrl joyctrl)
