@@ -6,6 +6,12 @@ remake_find_library(
   PACKAGE libipc
 )
 
+if(WITH_GUI)
+  remake_find_package(GTK+2 CONFIG gtk+-2.0)
+  remake_find_package(libart2 CONFIG libart-2.0)
+  remake_find_package(JPEG)
+endif(WITH_GUI)
+
 remake_define(REDHAT_52 ON)
 remake_define(REDHAT_6 ON)
 remake_define(REDHAT_71 ON)
