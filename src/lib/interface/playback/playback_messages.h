@@ -26,37 +26,46 @@
  *
  ********************************************************/
 
-#include "global.h"
+/** @addtogroup logger  **/
+// @{
 
-#include "robot_main.h"
+/** \file playback_messages.h
+ * \brief Definition of the messages for  playback.
+ *
+ * This file specifies the messages for this modules used to transmit
+ * data via ipc to other modules.
+ **/
 
-void 
-shutdown_robot(int signo) 
-{
-  carmen_robot_shutdown(signo);
-  carmen_ipc_disconnect();
-  exit(-1);
+#ifndef    CARMEN_PLAYBACK_MESSAGES_H
+#define    CARMEN_PLAYBACK_MESSAGES_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define    CARMEN_PLAYBACK_COMMAND_PLAY         0
+#define    CARMEN_PLAYBACK_COMMAND_STOP         1
+#define    CARMEN_PLAYBACK_COMMAND_RESET        2
+#define    CARMEN_PLAYBACK_COMMAND_FORWARD      3
+#define    CARMEN_PLAYBACK_COMMAND_REWIND       4
+#define    CARMEN_PLAYBACK_COMMAND_FWD_SINGLE   5
+#define    CARMEN_PLAYBACK_COMMAND_RWD_SINGLE   6
+#define    CARMEN_PLAYBACK_COMMAND_SET_SPEED    7
+
+typedef struct {
+  int cmd, arg;
+  float speed;
+} carmen_playback_command_message;
+
+#define CARMEN_PLAYBACK_COMMAND_NAME     "carmen_playback_command"
+#define CARMEN_PLAYBACK_COMMAND_FMT      "{int,int,float}"
+
+
+#ifdef __cplusplus
 }
+#endif
 
+#endif
 
-int 
-main(int argc, char **argv)
-{
-  carmen_ipc_initialize(argc, argv);
-  carmen_param_check_version(argv[0]);
-
-  carmen_robot_start(argc, argv);
-
-  signal(SIGINT, shutdown_robot);
-
-  while(1) {
-    carmen_ipc_sleep(0.1);
-
-    carmen_robot_run();
-
-  }
-
-  return 0;
-}
-
+// @}
 

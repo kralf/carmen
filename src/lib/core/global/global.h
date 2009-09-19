@@ -68,6 +68,7 @@ extern "C" {
 #include <time.h>
 #include <math.h>
 #include <ctype.h>
+#include <signal.h>
 
 #include <ipc.h>
 
@@ -75,7 +76,7 @@ extern "C" {
 
 #define CARMEN_MAJOR_VERSION 0
 #define CARMEN_MINOR_VERSION 7
-#define CARMEN_REVISION 0
+#define CARMEN_REVISION 4
 
 #ifndef TRUE
 #define TRUE 1

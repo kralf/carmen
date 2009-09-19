@@ -2,9 +2,6 @@
 #define __SICK_LASER_H__
 #include <sys/select.h>
 
-/* needed for new carmen_inline def for gcc >= 4.3 */
-#include "global.h"
-
 typedef struct sick_laser_t{
   unsigned char password[8];
   char filename[1024];

@@ -26,8 +26,6 @@
  *
  ********************************************************/
 
-#include <signal.h>
-
 #include "global.h"
 #include "robot_interface.h"
 

@@ -26,6 +26,8 @@
  *
  ********************************************************/
 
+#include <sys/ioctl.h>
+
 #include "global.h"
 
 #include "pantilt.h"

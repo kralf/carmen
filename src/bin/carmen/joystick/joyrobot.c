@@ -26,7 +26,6 @@
  *
  ********************************************************/
 
-#include <signal.h>
 #include "global.h"
 
 #include "joyctrl.h"

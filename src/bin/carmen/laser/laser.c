@@ -1,14 +1,9 @@
 #include "global.h"
+
 #include "param_interface.h"
 #include "carmen_laser_device.h"
 #include "carmen_laser_message_queue.h"
 #include "laser_messages.h"
-#include <signal.h>
-#include <stdio.h>
-#include <pthread.h>
-#include <math.h>
-#include <errno.h>
-
 
 //#define MAX_REQUESTED_LASER_IDS 100
 

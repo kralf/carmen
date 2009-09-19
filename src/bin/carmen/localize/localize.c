@@ -26,7 +26,6 @@
  *
  ********************************************************/
 
-#include <signal.h>
 #ifndef NO_ZLIB
 #include <zlib.h>
 #endif

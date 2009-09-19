@@ -26,7 +26,6 @@
  *
  ********************************************************/
 
-#include <signal.h>
 #include <sys/ioctl.h>
 #ifdef __APPLE__
 #include <sys/termios.h>

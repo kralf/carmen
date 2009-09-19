@@ -26,20 +26,8 @@
  *
  ********************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <signal.h>
-#include <math.h>
-#include <unistd.h>
-#include <termios.h>
-#include <fcntl.h>
-#include <sys/signal.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/ioctl.h>
-
 #include "global.h"
+
 #include "gps_nmea_interface.h"
 #include "param_interface.h"
 

@@ -1,7 +1,6 @@
+#include "global.h"
+
 #include "s300_laser.h"
-#include <unistd.h>
-#include <signal.h>
-#include <stdio.h>
 
 int has_to_stop;
 

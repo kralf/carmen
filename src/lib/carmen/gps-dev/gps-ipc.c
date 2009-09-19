@@ -26,21 +26,9 @@
  *
  ********************************************************/
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <signal.h>
-#include <math.h>
-#include <stdarg.h>
-#include <sys/time.h>
-
 #include "global.h"
+
 #include "gps_nmea_interface.h"
-
-
 #include "gps.h"
 
 carmen_gps_gpgga_message       * carmen_extern_gpgga_ptr =  NULL;

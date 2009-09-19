@@ -27,59 +27,29 @@
  ********************************************************/
 
 #include "global.h"
-#include "simulator.h"
 
-carmen_laser_laser_message frontLaserMessage, rearLaserMessage;
-carmen_base_sonar_message sonarMessage;
+#include "playback_interface.h"
 
-void frontLaserHandler(void)
+void carmen_playback_command(int command, int argument, float speed)
 {
-  carmen_warn("F");
-}
+  IPC_RETURN_TYPE err;
+  carmen_playback_command_message playback_msg;
 
-void rearLaserHandler(void)
-{
-  carmen_warn("R");
-}
+  static int initialized = 0;
 
-void sonarHandler(void)
-{
-  carmen_warn("S");
-}
-
-void shutdown_module(int x)
-{
-  if (x == SIGINT)
+  if (!initialized) 
     {
-      carmen_warn("\n");
-      carmen_ipc_disconnect();
-      printf("shut down\n");
-      exit(0);
+      err = IPC_defineMsg(CARMEN_PLAYBACK_COMMAND_NAME, 
+			  IPC_VARIABLE_LENGTH, 
+			  CARMEN_PLAYBACK_COMMAND_FMT);
+      carmen_test_ipc_exit(err, "Could not define message", 
+			   CARMEN_PLAYBACK_COMMAND_NAME);
     }
-}
 
-int main(int argc, char **argv)
-{
-  carmen_ipc_initialize(argc, argv);
-  carmen_param_check_version(argv[0]);
+  playback_msg.cmd = command;
+  playback_msg.arg = argument;
+  playback_msg.speed = speed;
 
-  signal(SIGINT, shutdown_module);
- 
-  carmen_laser_subscribe_frontlaser_message(&frontLaserMessage,
-					    (carmen_handler_t)
-					    frontLaserHandler,
-					    CARMEN_SUBSCRIBE_LATEST);
-  carmen_laser_subscribe_rearlaser_message(&rearLaserMessage,
-					   (carmen_handler_t)
-					   rearLaserHandler,
-					   CARMEN_SUBSCRIBE_LATEST);
-  carmen_base_subscribe_sonar_message(&sonarMessage,
-				      (carmen_handler_t)sonarHandler,
-				      CARMEN_SUBSCRIBE_LATEST);
-
-  while(1) {
-    carmen_ipc_sleep(0.1);
-    fprintf(stderr, ".");
-  }
-  return 0;
+  err = IPC_publishData(CARMEN_PLAYBACK_COMMAND_NAME, &playback_msg);
+  carmen_test_ipc(err, "Could not publish", CARMEN_PLAYBACK_COMMAND_NAME);
 }

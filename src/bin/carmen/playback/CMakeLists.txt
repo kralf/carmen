@@ -1,0 +1,1 @@
+remake_add_executables(LINK playback_interface readlog)

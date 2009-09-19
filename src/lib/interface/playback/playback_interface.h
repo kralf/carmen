@@ -26,37 +26,32 @@
  *
  ********************************************************/
 
-#include "global.h"
+/** @addtogroup logger libplayback_interface  **/
+// @{
 
-#include "robot_main.h"
+/** \file playback_interface.h
+ * \brief Definition of the interface for playback.
+ *
+ * This file specifies the intreface for this modules used to transmit
+ * data via ipc to other modules.
+ **/
 
-void 
-shutdown_robot(int signo) 
-{
-  carmen_robot_shutdown(signo);
-  carmen_ipc_disconnect();
-  exit(-1);
+#ifndef CARMEN_PLAYBACK_INTERFACE_H
+#define CARMEN_PLAYBACK_INTERFACE_H
+
+#include "playback_messages.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**  Playback a command with playback **/
+void carmen_playback_command(int pCommand, int pArgument, float speed);
+
+#ifdef __cplusplus
 }
+#endif
 
+#endif
 
-int 
-main(int argc, char **argv)
-{
-  carmen_ipc_initialize(argc, argv);
-  carmen_param_check_version(argv[0]);
-
-  carmen_robot_start(argc, argv);
-
-  signal(SIGINT, shutdown_robot);
-
-  while(1) {
-    carmen_ipc_sleep(0.1);
-
-    carmen_robot_run();
-
-  }
-
-  return 0;
-}
-
-
+// @}

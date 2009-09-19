@@ -1,0 +1,1 @@
+remake_add_executables(LINK param_interface playback_interface global_graphics)

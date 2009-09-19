@@ -28,6 +28,8 @@
 
 #include "global_graphics.h"
 
+#include "param_interface.h"
+
 #define MAX_VARIABLE_LENGTH 2048
 
 typedef struct {

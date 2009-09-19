@@ -1,11 +1,8 @@
-#include "sick_laser.h"
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdio.h>
 #include <assert.h>
-#include <signal.h>
+
+#include "global.h"
+
+#include "sick_laser.h"
 #include "carmenserial.h"
 
 #define INI                              -1
