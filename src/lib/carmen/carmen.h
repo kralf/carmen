@@ -71,11 +71,7 @@ extern "C" {
 #define MAXFLOAT FLT_MAX
 #endif
 
-#ifdef EXTERNAL_IPC
-#include <ipc.h>
-#else
-#include <carmen/ipc.h>
-#endif
+#include <libipc/ipc.h>
 
 #include <carmen/global.h>
 #include <carmen/ipc_wrapper.h>
@@ -123,7 +119,7 @@ extern "C" {
 #include <carmen/movement.h>
 
 #ifndef COMPILE_WITHOUT_MAP_SUPPORT
-#include <carmen/localizecore.h>
+#include <carmen/localize_core.h>
 #include <carmen/localize_messages.h>
 #include <carmen/localize_interface.h>
 
@@ -140,7 +136,6 @@ extern "C" {
 #include <carmen/imu_interface.h>
 
 #include <carmen/logger_messages.h>
-#include <carmen/logger.h>
 #include <carmen/logger_interface.h>
 #include <carmen/writelog.h>
 #include <carmen/readlog.h>

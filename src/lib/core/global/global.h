@@ -70,7 +70,7 @@ extern "C" {
 #include <ctype.h>
 #include <signal.h>
 
-#include <ipc.h>
+#include <libipc/ipc.h>
 
 #include "ipc_wrapper.h"
 
