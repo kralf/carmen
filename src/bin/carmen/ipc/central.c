@@ -315,7 +315,8 @@
  *
  *****************************************************************************/
 
-#include <libipc/globalS.h>
+#include "globalS.h"
+
 
 /*****************************************************************************
  *
@@ -574,8 +575,7 @@ int main(int argc, char **argv)
       printPrompt();
 #endif
 
-    if (GET_S_GLOBAL(terminalLog).quiet)
-      fprintf(stderr, "central running...\n");
+    fprintf(stderr, "central running...\n");
 
     listenLoop();
   }

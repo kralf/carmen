@@ -6,6 +6,6 @@ remake_find_package(ZLIB)
 
 remake_add_library(
   global
-  LINK ${M_LIBRARY} ${ZLIB_LIBRARIES} ${IPC_SERVER_LIBRARY}
+  LINK ipc ${M_LIBRARY} ${ZLIB_LIBRARIES}
 )
 remake_add_headers()
