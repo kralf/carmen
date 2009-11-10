@@ -71,7 +71,7 @@ extern "C" {
 #define MAXFLOAT FLT_MAX
 #endif
 
-#include <libipc/ipc.h>
+#include <carmen/ipc.h>
 
 #include <carmen/global.h>
 #include <carmen/ipc_wrapper.h>
