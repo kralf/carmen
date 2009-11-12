@@ -70,7 +70,7 @@ extern "C" {
 #include <ctype.h>
 #include <signal.h>
 
-#include <carmen/ipc.h>
+#include "ipc.h"
 
 #include "ipc_wrapper.h"
 
@@ -88,8 +88,6 @@ extern "C" {
 #ifndef M_PI
 #define M_PI 3.14159265358979323846  /* pi */
 #endif
-
-
 
 /* Useful macros */
 
