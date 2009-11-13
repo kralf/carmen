@@ -7,36 +7,36 @@
  * Roy, Sebastian Thrun, Dirk Haehnel, Cyrill Stachniss,
  * and Jared Glover
  *
- * CARMEN is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public 
- * License as published by the Free Software Foundation; 
+ * CARMEN is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
  * either version 2 of the License, or (at your option)
  * any later version.
  *
  * CARMEN is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied 
+ * but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more 
+ * PURPOSE.  See the GNU General Public License for more
  * details.
  *
- * You should have received a copy of the GNU General 
+ * You should have received a copy of the GNU General
  * Public License along with CARMEN; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, 
+ * Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA  02111-1307 USA
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
+#include "global.h"
 
 #include "egrid.h"
 
 #define LASER_RANGE_LIMIT 50.0
 
-int carmen_mapper_initialize_evidence_grid(evidence_grid *grid, 
-					 int size_x, int size_y, 
+int carmen_mapper_initialize_evidence_grid(evidence_grid *grid,
+					 int size_x, int size_y,
 					 double resolution, double theta_offset,
 					 double prior_occ, double occ_evidence,
-					 double emp_evidence, double max_prob, 
+					 double emp_evidence, double max_prob,
 					 double max_sure_range, double max_range,
 					 double wall_thickness)
 {
@@ -100,7 +100,7 @@ int carmen_mapper_initialize_evidence_grid(evidence_grid *grid,
 void carmen_mapper_free_evidence_grid(evidence_grid *grid)
 {
   int x;
-  
+
   for(x = 0; x < grid->distance_table_size; x++)
     free(grid->distance_table[x]);
   free(grid->distance_table);
@@ -109,7 +109,7 @@ void carmen_mapper_free_evidence_grid(evidence_grid *grid)
   free(grid->prob);
 }
 
-void carmen_mapper_update_evidence_grid(evidence_grid *grid, 
+void carmen_mapper_update_evidence_grid(evidence_grid *grid,
 					double laser_x, double laser_y,
 					double laser_theta, int num_readings,
 					float *laser_range,
@@ -122,7 +122,7 @@ void carmen_mapper_update_evidence_grid(evidence_grid *grid,
   carmen_bresenham_param_t b_params;
   double new_prob;
   double correction_angle = 0;
-  
+
   if(grid->first) {
     grid->start_x = laser_x / grid->resolution;
     grid->start_y = laser_y / grid->resolution;
@@ -138,9 +138,9 @@ void carmen_mapper_update_evidence_grid(evidence_grid *grid,
   temp_laser_y = laser_x * sin(correction_angle) +
     laser_y * cos(correction_angle);
 
-  laser_x = grid->size_x / 2.0 + (temp_laser_x / grid->resolution - 
+  laser_x = grid->size_x / 2.0 + (temp_laser_x / grid->resolution -
 				  grid->start_x);
-  laser_y = grid->size_y / 2.0 + (temp_laser_y / grid->resolution - 
+  laser_y = grid->size_y / 2.0 + (temp_laser_y / grid->resolution -
 				  grid->start_y);
 
   x1int = (int)floor(laser_x);
@@ -151,9 +151,9 @@ void carmen_mapper_update_evidence_grid(evidence_grid *grid,
 
   for(i = 0; i < num_readings; i++) {
     if(laser_range[i] < LASER_RANGE_LIMIT) {
-      x2int = (int)(laser_x + (laser_range[i] + grid->wall_thickness) * 
+      x2int = (int)(laser_x + (laser_range[i] + grid->wall_thickness) *
 		    cos(theta) / grid->resolution);
-      y2int = (int)(laser_y + (laser_range[i] + grid->wall_thickness) * 
+      y2int = (int)(laser_y + (laser_range[i] + grid->wall_thickness) *
 		    sin(theta) / grid->resolution);
       carmen_get_bresenham_parameters(x1int, y1int, x2int, y2int, &b_params);
       do {
@@ -163,18 +163,18 @@ void carmen_mapper_update_evidence_grid(evidence_grid *grid,
 	  /* Calculate distance from laser */
 	  x_diff = abs(current_x - x1int);
 	  y_diff = abs(current_y - y1int);
-	  if(x_diff >= grid->distance_table_size || 
+	  if(x_diff >= grid->distance_table_size ||
 	     y_diff >= grid->distance_table_size)
 	    d = 1e6;
 	  else
 	    d = grid->distance_table[x_diff][y_diff];
-	  
+
 	  if(d < laser_range[i]) {       /* Free observation */
 	    if(d < grid->max_sure_range)
 	      p_filled = grid->emp_evidence;
 	    else if(d < grid->max_range)
 	      p_filled = grid->emp_evidence +
-		(d - grid->max_sure_range) / grid->max_range * 
+		(d - grid->max_sure_range) / grid->max_range *
 		(grid->prior_occ - grid->emp_evidence);
 	    else
 	      break;
@@ -183,20 +183,20 @@ void carmen_mapper_update_evidence_grid(evidence_grid *grid,
 	    if(d < grid->max_sure_range)
 	      p_filled = grid->occ_evidence;
 	    else if(d < grid->max_range)
-	      p_filled = grid->occ_evidence + 
-		(d - grid->max_sure_range) / grid->max_range * 
+	      p_filled = grid->occ_evidence +
+		(d - grid->max_sure_range) / grid->max_range *
 		(grid->prior_occ - grid->occ_evidence);
 	    else
 	      break;
 	  }
-	  
+
 	  if(grid->prob[current_x][current_y] == -1)
 	    grid->prob[current_x][current_y] = grid->prior_occ;
 
 	  /* Adjust the map */
-	  new_prob = 1 - 1 / (1 + (1 - grid->prior_occ) / grid->prior_occ * 
+	  new_prob = 1 - 1 / (1 + (1 - grid->prior_occ) / grid->prior_occ *
 			      p_filled / (1 - p_filled) *
-			      grid->prob[current_x][current_y] / 
+			      grid->prob[current_x][current_y] /
 			      (1 - grid->prob[current_x][current_y]));
 
 	  grid->prob[current_x][current_y] = new_prob;
@@ -207,7 +207,7 @@ void carmen_mapper_update_evidence_grid(evidence_grid *grid,
   }
 }
 
-void carmen_mapper_update_evidence_grid_general(evidence_grid *grid, 
+void carmen_mapper_update_evidence_grid_general(evidence_grid *grid,
 						double laser_x, double laser_y,
 						double laser_theta, int num_readings,
 						float *laser_range,
@@ -221,7 +221,7 @@ void carmen_mapper_update_evidence_grid_general(evidence_grid *grid,
   carmen_bresenham_param_t b_params;
   double new_prob;
   double correction_angle = 0;
-  
+
   if(grid->first) {
     grid->start_x = laser_x / grid->resolution;
     grid->start_y = laser_y / grid->resolution;
@@ -237,9 +237,9 @@ void carmen_mapper_update_evidence_grid_general(evidence_grid *grid,
   temp_laser_y = laser_x * sin(correction_angle) +
     laser_y * cos(correction_angle);
 
-  laser_x = grid->size_x / 2.0 + (temp_laser_x / grid->resolution - 
+  laser_x = grid->size_x / 2.0 + (temp_laser_x / grid->resolution -
 				  grid->start_x);
-  laser_y = grid->size_y / 2.0 + (temp_laser_y / grid->resolution - 
+  laser_y = grid->size_y / 2.0 + (temp_laser_y / grid->resolution -
 				  grid->start_y);
 
   x1int = (int)floor(laser_x);
@@ -251,9 +251,9 @@ void carmen_mapper_update_evidence_grid_general(evidence_grid *grid,
   for(i = 0; i < num_readings; i++) {
     if(laser_range[i] < LASER_RANGE_LIMIT) {
       theta = laser_theta + laser_angle[i];
-      x2int = (int)(laser_x + (laser_range[i] + grid->wall_thickness) * 
+      x2int = (int)(laser_x + (laser_range[i] + grid->wall_thickness) *
 		    cos(theta) / grid->resolution);
-      y2int = (int)(laser_y + (laser_range[i] + grid->wall_thickness) * 
+      y2int = (int)(laser_y + (laser_range[i] + grid->wall_thickness) *
 		    sin(theta) / grid->resolution);
       carmen_get_bresenham_parameters(x1int, y1int, x2int, y2int, &b_params);
       do {
@@ -263,18 +263,18 @@ void carmen_mapper_update_evidence_grid_general(evidence_grid *grid,
 	  /* Calculate distance from laser */
 	  x_diff = abs(current_x - x1int);
 	  y_diff = abs(current_y - y1int);
-	  if(x_diff >= grid->distance_table_size || 
+	  if(x_diff >= grid->distance_table_size ||
 	     y_diff >= grid->distance_table_size)
 	    d = 1e6;
 	  else
 	    d = grid->distance_table[x_diff][y_diff];
-	  
+
 	  if(d < laser_range[i]) {       /* Free observation */
 	    if(d < grid->max_sure_range)
 	      p_filled = grid->emp_evidence;
 	    else if(d < grid->max_range)
 	      p_filled = grid->emp_evidence +
-		(d - grid->max_sure_range) / grid->max_range * 
+		(d - grid->max_sure_range) / grid->max_range *
 		(grid->prior_occ - grid->emp_evidence);
 	    else
 	      break;
@@ -283,20 +283,20 @@ void carmen_mapper_update_evidence_grid_general(evidence_grid *grid,
 	    if(d < grid->max_sure_range)
 	      p_filled = grid->occ_evidence;
 	    else if(d < grid->max_range)
-	      p_filled = grid->occ_evidence + 
-		(d - grid->max_sure_range) / grid->max_range * 
+	      p_filled = grid->occ_evidence +
+		(d - grid->max_sure_range) / grid->max_range *
 		(grid->prior_occ - grid->occ_evidence);
 	    else
 	      break;
 	  }
-	  
+
 	  if(grid->prob[current_x][current_y] == -1)
 	    grid->prob[current_x][current_y] = grid->prior_occ;
 
 	  /* Adjust the map */
-	  new_prob = 1 - 1 / (1 + (1 - grid->prior_occ) / grid->prior_occ * 
+	  new_prob = 1 - 1 / (1 + (1 - grid->prior_occ) / grid->prior_occ *
 			      p_filled / (1 - p_filled) *
-			      grid->prob[current_x][current_y] / 
+			      grid->prob[current_x][current_y] /
 			      (1 - grid->prob[current_x][current_y]));
 
 	  grid->prob[current_x][current_y] = new_prob;
@@ -309,13 +309,13 @@ void carmen_mapper_update_evidence_grid_general(evidence_grid *grid,
 void carmen_mapper_clear_evidence_grid(evidence_grid *grid)
 {
   int x, y;
-  
+
   for(x = 0; x < grid->size_x; x++)
     for(y = 0; y < grid->size_y; y++)
       grid->prob[x][y] = grid->prior_occ;
 }
 
-void carmen_mapper_finish_evidence_grid(evidence_grid *grid, int downsample, 
+void carmen_mapper_finish_evidence_grid(evidence_grid *grid, int downsample,
 					int border)
 {
   int min_x = 1e6, min_y = 1e6, max_x = 0, max_y = 0;
@@ -375,7 +375,7 @@ void carmen_mapper_finish_evidence_grid(evidence_grid *grid, int downsample,
   min_y -= border; if(min_y < 0) min_y = 0;
   max_x += border; if(max_x >= size_x) max_x = size_x - 1;
   max_y += border; if(max_y >= size_y) max_y = size_y - 1;
-  
+
   grid->size_x = max_x - min_x;
   grid->size_y = max_y - min_y;
   grid->resolution *= downsample;
@@ -388,7 +388,7 @@ void carmen_mapper_finish_evidence_grid(evidence_grid *grid, int downsample,
       grid->prob[x] = (float *)calloc(grid->size_y, sizeof(float));
       carmen_test_alloc(grid->prob[x]);
     }
-  
+
   for(x = 0; x < grid->size_x; x++)
     for(y = 0; y < grid->size_y; y++)
       grid->prob[x][y] = prob2[x + min_x][y + min_y];

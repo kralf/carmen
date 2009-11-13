@@ -1,0 +1,2 @@
+remake_add_executables(LINK param_interface base_interface robot_interface
+  localize_interface navigator_core)

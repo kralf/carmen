@@ -1,4 +1,4 @@
-/*********************************************************
+ /*********************************************************
  *
  * This source code is part of the Carnegie Mellon Robot
  * Navigation Toolkit (CARMEN)
@@ -26,22 +26,39 @@
  *
  ********************************************************/
 
-#ifndef history_h
-#define history_h
+#include "global.h"
 
-#include "robot_messages.h"
+#include "navigator_interface.h"
 
-#define HISTORY_SIZE 10
+static void
+handler(carmen_navigator_autonomous_stopped_message *msg
+	__attribute__ ((unused)))
+{
+  carmen_die("Received autonomous stopped\n");
+}
 
-extern carmen_robot_laser_message* scan_list_history[];
-extern int history_pos;
+int main(int argc, char **argv)
+{
+  carmen_point_t goal;
+  carmen_navigator_status_message *status;
 
-void history_init();
-void history_restore();
-void history_undo();
-void history_redo();
-void history_add();
+  carmen_ipc_initialize(argc, argv);
 
-void history_shutdown();
+  carmen_navigator_query_status(&status);
+  carmen_warn("status %f %f %f\n", status->robot.x,
+	      status->robot.y, carmen_radians_to_degrees(status->robot.theta));
+  goal.x = status->robot.x;
+  goal.y = status->robot.y;
+  goal.theta = carmen_normalize_theta(status->robot.theta + M_PI);
+  free(status);
+  carmen_navigator_set_goal_triplet(&goal);
 
-#endif
+  carmen_navigator_subscribe_autonomous_stopped_message
+    (NULL, (carmen_handler_t)handler, CARMEN_SUBSCRIBE_LATEST);
+
+  carmen_navigator_go();
+  carmen_ipc_dispatch();
+
+  return 0;
+}
+

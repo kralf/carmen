@@ -26,10 +26,10 @@
  *
  ********************************************************/
 
+#include "global_graphics.h"
+
 #include "history.h"
 #include "laserscans.h"
-
-#include "robot_messages.h"
 
 carmen_robot_laser_message* scan_list_history[HISTORY_SIZE];
 int history_pos = 0;

@@ -26,40 +26,24 @@
  *
  ********************************************************/
 
-#ifndef tools_h
-#define tools_h
+#ifndef MAP_MODIFY_H
+#define MAP_MODIFY_H
 
-#include "global_graphics.h"
+#include "navigator.h"
+#include "robot_messages.h"
 
-#define TOOL_NONE      0
-#define TOOL_SHIFT     1
-#define TOOL_ROTATE    2
-#define TOOL_STRETCH   3
-#define TOOL_BEND      4
-#define TOOL_DELETE    5
-#define TOOL_ZOOM_IN   6
-#define TOOL_ZOOM_OUT  7
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-extern long tool;
-extern double button1_x, button1_y;
+  void map_modify_update(carmen_robot_laser_message *laser_msg,
+			 carmen_navigator_config_t *navigator_config,
+			 carmen_world_point_p world_point,
+			 carmen_map_p true_map, carmen_map_p modify_map);
+  void map_modify_clear(carmen_map_p true_map, carmen_map_p modify_map);
 
-extern GtkWidget *shift_button;
-extern GtkWidget *rotate_button;
-extern GtkWidget *stretch_button;
-extern GtkWidget *bend_button;
-extern GtkWidget *zoom_in_button;
-extern GtkWidget *zoom_out_button;
-
-void set_tool(GtkWidget *widget, gpointer data);
-void shift_scans(double x, double y);
-void shift_scans_by_motion(int x, int y);
-void rotate_scans(double radians);
-void rotate_scans_by_motion(int x, int y);
-void stretch_scans(double x, double y);
-void stretch_scans_by_motion(int x, int y);
-void bend_scans(double radians);
-void bend_scans_by_motion(int x, int y);
-void zoom_in(int x, int y);
-void zoom_out(int x, int y);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

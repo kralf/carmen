@@ -26,40 +26,41 @@
  *
  ********************************************************/
 
-#ifndef tools_h
-#define tools_h
+#ifndef NAVIGATOR_PANEL_H
+#define NAVIGATOR_PANEL_H
 
-#include "global_graphics.h"
+#include "navigator_messages.h"
 
-#define TOOL_NONE      0
-#define TOOL_SHIFT     1
-#define TOOL_ROTATE    2
-#define TOOL_STRETCH   3
-#define TOOL_BEND      4
-#define TOOL_DELETE    5
-#define TOOL_ZOOM_IN   6
-#define TOOL_ZOOM_OUT  7
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-extern long tool;
-extern double button1_x, button1_y;
+  typedef struct {
+    double initial_map_zoom;
+    int track_robot;
+    int draw_waypoints;
+    int show_particles;
+    int show_gaussians;
+    int show_lasers;
+    int show_simulator_objects;
+    int show_true_pos;
+    int show_tracked_objects;
+  } carmen_navigator_panel_config_t;
 
-extern GtkWidget *shift_button;
-extern GtkWidget *rotate_button;
-extern GtkWidget *stretch_button;
-extern GtkWidget *bend_button;
-extern GtkWidget *zoom_in_button;
-extern GtkWidget *zoom_out_button;
+  void navigator_create_map(void);
+  carmen_map_p navigator_get_map(void);
+  void navigator_change_map(carmen_map_p new_map);
+  void navigator_destroy_map(void);
 
-void set_tool(GtkWidget *widget, gpointer data);
-void shift_scans(double x, double y);
-void shift_scans_by_motion(int x, int y);
-void rotate_scans(double radians);
-void rotate_scans_by_motion(int x, int y);
-void stretch_scans(double x, double y);
-void stretch_scans_by_motion(int x, int y);
-void bend_scans(double radians);
-void bend_scans_by_motion(int x, int y);
-void zoom_in(int x, int y);
-void zoom_out(int x, int y);
+  void navigator_update_robot(carmen_world_point_p robot);
+  void navigator_set_goal(double x, double y);
+  void navigator_set_goal_by_place(carmen_place_p place);
+  void navigator_stop_moving(void);
+  void navigator_start_moving(void);
+  void navigator_display_map(carmen_navigator_map_t New_Display);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

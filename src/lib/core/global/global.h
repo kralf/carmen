@@ -7,21 +7,21 @@
  * Roy, Sebastian Thrun, Dirk Haehnel, Cyrill Stachniss,
  * and Jared Glover
  *
- * CARMEN is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public 
- * License as published by the Free Software Foundation; 
+ * CARMEN is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
  * either version 2 of the License, or (at your option)
  * any later version.
  *
  * CARMEN is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied 
+ * but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more 
+ * PURPOSE.  See the GNU General Public License for more
  * details.
  *
- * You should have received a copy of the GNU General 
+ * You should have received a copy of the GNU General
  * Public License along with CARMEN; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, 
+ * Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA  02111-1307 USA
  *
  ********************************************************/
@@ -69,8 +69,6 @@ extern "C" {
 #include <math.h>
 #include <ctype.h>
 #include <signal.h>
-
-#include "ipc.h"
 
 #include "ipc_wrapper.h"
 
@@ -189,11 +187,11 @@ char *carmen_get_param_by_num(int param_index);
 
 int carmen_read_commandline_parameters(int argc, char **argv);
 
-int carmen_process_param_int(char *lvalue, carmen_usage_func usage, int *return_value); 
+int carmen_process_param_int(char *lvalue, carmen_usage_func usage, int *return_value);
 
 double carmen_process_param_double(char *lvalue, carmen_usage_func usage, double *return_value);
 
-int carmen_process_param_onoff(char *lvalue, carmen_usage_func usage, int *return_value); 
+int carmen_process_param_onoff(char *lvalue, carmen_usage_func usage, int *return_value);
 
 char *carmen_process_param_string(char *lvalue, carmen_usage_func usage);
 
@@ -217,7 +215,7 @@ extern carmen_inline double carmen_get_time(void)
   struct timeval tv;
   double t;
 
-  if (gettimeofday(&tv, NULL) < 0) 
+  if (gettimeofday(&tv, NULL) < 0)
     carmen_warn("carmen_get_time encountered error in gettimeofday : %s\n",
 	      strerror(errno));
   t = tv.tv_sec + tv.tv_usec/1000000.0;
@@ -253,7 +251,7 @@ extern carmen_inline int carmen_round(double X)
     return (int)(X - 0.5);
 }
 
-extern carmen_inline double carmen_clamp(double X, double Y, double Z) 
+extern carmen_inline double carmen_clamp(double X, double Y, double Z)
 {
   if (Y < X)
     return X;
@@ -276,10 +274,10 @@ extern carmen_inline void carmen_erase_structure(void* ptr, int size_of_struture
 extern carmen_inline double carmen_normalize_theta(double theta)
 {
   int multiplier;
-  
+
   if (theta >= -M_PI && theta < M_PI)
     return theta;
-  
+
   multiplier = (int)(theta / (2*M_PI));
   theta = theta - multiplier*2*M_PI;
   if (theta >= M_PI)
@@ -351,23 +349,23 @@ extern carmen_inline double carmen_angle_between(carmen_traj_point_p p1, carmen_
   return atan2(p2->y - p1->y, p2->x - p1->x);
 }
 
-extern carmen_inline double carmen_distance(carmen_point_p p1, carmen_point_p p2) 
+extern carmen_inline double carmen_distance(carmen_point_p p1, carmen_point_p p2)
 {
   return sqrt((p1->x-p2->x)*(p1->x-p2->x) + (p1->y-p2->y)*(p1->y-p2->y));
 }
 
-void carmen_get_bresenham_parameters(int p1x, int p1y, int p2x, int p2y, 
+void carmen_get_bresenham_parameters(int p1x, int p1y, int p2x, int p2y,
 				   carmen_bresenham_param_t *params);
 extern carmen_inline void carmen_get_current_point(carmen_bresenham_param_t *params, int *x, int *y)
 {
-  if (params->UsingYIndex) 
+  if (params->UsingYIndex)
     {
       *y = params->XIndex;
       *x = params->YIndex;
       if (params->Flipped)
 	*x = -*x;
-    } 
-  else 
+    }
+  else
     {
       *x = params->XIndex;
       *y = params->YIndex;
@@ -383,9 +381,9 @@ extern carmen_inline int carmen_get_next_point(carmen_bresenham_param_t *params)
       return 0;
     }
   params->XIndex += params->Increment;
-  if (params->DTerm < 0 || (params->Increment < 0 && params->DTerm <= 0))     
+  if (params->DTerm < 0 || (params->Increment < 0 && params->DTerm <= 0))
     params->DTerm += params->IncrE;
-  else 
+  else
     {
       params->DTerm += params->IncrNE;
       params->YIndex += params->Increment;
@@ -413,7 +411,7 @@ char *carmen_file_find(const char *filename);
 char **carmen_get_search_path(int *num_paths);
 
 void carmen_global_start_progress_bar(char *label);
-void carmen_global_end_progress_bar(void);  
+void carmen_global_end_progress_bar(void);
 void carmen_global_update_progress_bar(int count, int size);
 
 int carmen_strcasecmp (const char *s1, const char *s2);
@@ -436,7 +434,7 @@ int carmen_terminal_cbreak(int blocking);
 int carmen_terminal_restore(void);
 
 carmen_list_t *carmen_list_create(int entry_size, int initial_capacity);
-carmen_list_t *carmen_list_create_from_data(int entry_size, int num_elements, 
+carmen_list_t *carmen_list_create_from_data(int entry_size, int num_elements,
 					    void *data);
 carmen_list_t *carmen_list_duplicate(carmen_list_t *list);
 void carmen_list_add(carmen_list_t *list, void *entry);

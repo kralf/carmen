@@ -26,40 +26,47 @@
  *
  ********************************************************/
 
-#ifndef tools_h
-#define tools_h
+#ifndef NAVIGATOR_H
+#define NAVIGATOR_H
 
-#include "global_graphics.h"
+#include "localize_messages.h"
 
-#define TOOL_NONE      0
-#define TOOL_SHIFT     1
-#define TOOL_ROTATE    2
-#define TOOL_STRETCH   3
-#define TOOL_BEND      4
-#define TOOL_DELETE    5
-#define TOOL_ZOOM_IN   6
-#define TOOL_ZOOM_OUT  7
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-extern long tool;
-extern double button1_x, button1_y;
+  typedef struct {
+    int num_lasers_to_use;
+    int use_fast_laser;
+    double map_update_radius;
+    int map_update_obstacles;
+    int map_update_freespace;
+    double replan_frequency;
+    int smooth_path;
+    double waypoint_tolerance;
+    double goal_size;
+    double goal_theta_tolerance;
+    int dont_integrate_odometry;
+    int plan_to_nearest_free_point;
+  } carmen_navigator_config_t;
 
-extern GtkWidget *shift_button;
-extern GtkWidget *rotate_button;
-extern GtkWidget *stretch_button;
-extern GtkWidget *bend_button;
-extern GtkWidget *zoom_in_button;
-extern GtkWidget *zoom_out_button;
+  void carmen_navigator_goal_triplet(carmen_point_p point);
+  void carmen_navigator_goal(double x, double y);
+  int carmen_navigator_goal_place(char *name);
+  void carmen_navigator_set_max_velocity(double vel);
+  carmen_map_placelist_p carmen_navigator_get_places(void);
+  int carmen_navigator_autonomous_status(void);
 
-void set_tool(GtkWidget *widget, gpointer data);
-void shift_scans(double x, double y);
-void shift_scans_by_motion(int x, int y);
-void rotate_scans(double radians);
-void rotate_scans_by_motion(int x, int y);
-void stretch_scans(double x, double y);
-void stretch_scans_by_motion(int x, int y);
-void bend_scans(double radians);
-void bend_scans_by_motion(int x, int y);
-void zoom_in(int x, int y);
-void zoom_out(int x, int y);
+  void carmen_navigator_start_autonomous(void);
+  void carmen_navigator_stop_autonomous(void);
+
+  typedef struct {
+    double tv;
+    double rv;
+  } command_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

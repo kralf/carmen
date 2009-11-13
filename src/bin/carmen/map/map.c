@@ -26,40 +26,50 @@
  *
  ********************************************************/
 
-#ifndef tools_h
-#define tools_h
+#include "global.h"
 
-#include "global_graphics.h"
+#include "map_io.h"
 
-#define TOOL_NONE      0
-#define TOOL_SHIFT     1
-#define TOOL_ROTATE    2
-#define TOOL_STRETCH   3
-#define TOOL_BEND      4
-#define TOOL_DELETE    5
-#define TOOL_ZOOM_IN   6
-#define TOOL_ZOOM_OUT  7
+/* signal handler for C^c */
+void
+shutdown_mapServer(int x)
+{
+  if (x == SIGINT) {
+    carmen_ipc_disconnect();
+    exit(1);
+  }
+}
 
-extern long tool;
-extern double button1_x, button1_y;
+static void
+read_parameters(int argc, char **argv)
+{
+  if (argc != 2)
+    carmen_die("Usage: %s <map filename>\n", argv[0]);
 
-extern GtkWidget *shift_button;
-extern GtkWidget *rotate_button;
-extern GtkWidget *stretch_button;
-extern GtkWidget *bend_button;
-extern GtkWidget *zoom_in_button;
-extern GtkWidget *zoom_out_button;
+  if (carmen_file_exists(argv[1]) == 0)
+    carmen_die("Could not find file %s\n", argv[1]);
 
-void set_tool(GtkWidget *widget, gpointer data);
-void shift_scans(double x, double y);
-void shift_scans_by_motion(int x, int y);
-void rotate_scans(double radians);
-void rotate_scans_by_motion(int x, int y);
-void stretch_scans(double x, double y);
-void stretch_scans_by_motion(int x, int y);
-void bend_scans(double radians);
-void bend_scans_by_motion(int x, int y);
-void zoom_in(int x, int y);
-void zoom_out(int x, int y);
+  carmen_map_set_filename(argv[1]);
+}
 
-#endif
+
+/* main */
+int
+main(int argc, char** argv)
+{
+  carmen_ipc_initialize(argc, argv);
+  carmen_param_check_version(argv[0]);
+
+  read_parameters(argc, argv);
+
+  if(carmen_map_initialize_ipc() < 0)
+    carmen_die("\nError: Could not initialize IPC.\n");
+
+  signal(SIGINT, shutdown_mapServer);
+
+  while(1) {
+    carmen_ipc_sleep(1.0);
+  }
+
+  return 0;
+}
