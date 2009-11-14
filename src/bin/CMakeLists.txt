@@ -9,9 +9,3 @@ remake_add_directories(
   COMPONENT test
   IF WITH_TESTING
 )
-if(WITH_GUI AND WITH_TESTING)
-  remake_add_directories(
-    gui-test
-    COMPONENT test
-  )
-endif(WITH_GUI AND WITH_TESTING)
