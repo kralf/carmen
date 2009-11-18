@@ -3,6 +3,7 @@ remake_project_option(WITH_GUI "graphical user interface (GUI)" ON)
 
 if(WITH_GUI)
   remake_find_package(GTK+2 CONFIG gtk+-2.0)
+  remake_find_package(gthread2 CONFIG gthread-2.0)
   remake_find_package(libart2 CONFIG libart-2.0)
   remake_find_package(JPEG)
 endif(WITH_GUI)
