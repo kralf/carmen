@@ -7,21 +7,21 @@
  * Roy, Sebastian Thrun, Dirk Haehnel, Cyrill Stachniss,
  * and Jared Glover
  *
- * CARMEN is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public 
- * License as published by the Free Software Foundation; 
+ * CARMEN is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
  * either version 2 of the License, or (at your option)
  * any later version.
  *
  * CARMEN is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied 
+ * but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more 
+ * PURPOSE.  See the GNU General Public License for more
  * details.
  *
- * You should have received a copy of the GNU General 
+ * You should have received a copy of the GNU General
  * Public License along with CARMEN; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, 
+ * Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA  02111-1307 USA
  *
  ********************************************************/
@@ -68,7 +68,7 @@ int carmen_map_read_comment_chunk(carmen_FILE *fp)
     c = (char) result;
     if(result == EOF)
       return -1;
-    else if(c == '#') 
+    else if(c == '#')
       {
 	err = carmen_fgets(comment_str, 100, fp);
 	if(err == NULL)
@@ -85,7 +85,7 @@ int carmen_map_read_comment_chunk(carmen_FILE *fp)
     return -1;
   if(strncmp(id, CARMEN_MAP_LABEL, strlen(CARMEN_MAP_LABEL)) != 0)
     return 1;
-  if(strncmp(id + strlen(CARMEN_MAP_LABEL), CARMEN_MAP_VERSION, 
+  if(strncmp(id + strlen(CARMEN_MAP_LABEL), CARMEN_MAP_VERSION,
 	     strlen(CARMEN_MAP_VERSION)) != 0)
     return 1;
 
@@ -135,12 +135,12 @@ int carmen_map_copy_comments(carmen_FILE *fp_in, carmen_FILE *fp_out)
   if(carmen_fread(id, strlen(CARMEN_MAP_LABEL) + strlen(CARMEN_MAP_VERSION),
 		  1, fp_in) < 1)
     return -1;
-  carmen_fwrite(id, strlen(CARMEN_MAP_LABEL) + strlen(CARMEN_MAP_VERSION), 
+  carmen_fwrite(id, strlen(CARMEN_MAP_LABEL) + strlen(CARMEN_MAP_VERSION),
 		1, fp_out);
   return 0;
 }
 
-int carmen_map_vstrip(carmen_FILE *fp_in, carmen_FILE *fp_out, 
+int carmen_map_vstrip(carmen_FILE *fp_in, carmen_FILE *fp_out,
 		      int num_chunks, ...)
 {
   static int strip[128];
@@ -149,7 +149,7 @@ int carmen_map_vstrip(carmen_FILE *fp_in, carmen_FILE *fp_out,
   va_list chunks;
 
   memset(strip, 0, 128 * sizeof(int));
-  
+
   va_start(chunks, num_chunks);
   for (i = 0; i < num_chunks; i++){
     chunk_type = va_arg(chunks, int);
@@ -162,7 +162,7 @@ int carmen_map_vstrip(carmen_FILE *fp_in, carmen_FILE *fp_out,
   }
 
   va_end(chunks);
- 
+
   if(carmen_map_copy_comments(fp_in, fp_out) < 0)
     return -1;
 
@@ -170,7 +170,7 @@ int carmen_map_vstrip(carmen_FILE *fp_in, carmen_FILE *fp_out,
     chunk_type = carmen_fgetc(fp_in);
     if(chunk_type == EOF)
       done = 1;
-    
+
     if(!done)
       if(carmen_fread(&chunk_size, sizeof(int), 1, fp_in) < 1)
         done = 1;
@@ -181,7 +181,7 @@ int carmen_map_vstrip(carmen_FILE *fp_in, carmen_FILE *fp_out,
       buffer = (char *)calloc(chunk_size, sizeof(char));
       carmen_test_alloc(buffer);
       if(carmen_fread(buffer, chunk_size, 1, fp_in) < 1) {
-	fprintf(stderr, "Error: error writing new file: %s\n", 
+	fprintf(stderr, "Error: error writing new file: %s\n",
 		strerror(errno));
 	return -1;
       }
@@ -206,7 +206,7 @@ int carmen_map_strip(carmen_FILE *fp_in, carmen_FILE *fp_out, int chunk_id)
   return carmen_map_vstrip(fp_in, fp_out, 1, chunk_id);
 }
 
-int carmen_map_name_chunk(char *in_file, char *out_file, int chunk_type, 
+int carmen_map_name_chunk(char *in_file, char *out_file, int chunk_type,
 			  char *chunk_name)
 {
   unsigned char *buf;
@@ -250,7 +250,7 @@ int carmen_map_name_chunk(char *in_file, char *out_file, int chunk_type,
   carmen_fread(buf, 1, size, in_fp);
 
   carmen_fclose(in_fp);
-  
+
   retval = carmen_map_named_chunk_exists(out_file, chunk_type, chunk_name);
   if(retval < 0)
     return -1;
@@ -268,10 +268,10 @@ int carmen_map_name_chunk(char *in_file, char *out_file, int chunk_type,
   carmen_fputc(chunk_type | CARMEN_MAP_NAMED_CHUNK_FLAG, out_fp);
   size += strlen(chunk_name) + 1;
   carmen_fwrite(&size, sizeof(int), 1, out_fp);
-  carmen_fwrite(buf, sizeof(char), 10, out_fp);  
+  carmen_fwrite(buf, sizeof(char), 10, out_fp);
   carmen_fprintf(out_fp, "%s", chunk_name);
   carmen_fputc('\0', out_fp);
-  size -= 10 + strlen(chunk_name) + 1;  
+  size -= 10 + strlen(chunk_name) + 1;
   carmen_fwrite(buf+10, sizeof(char), size, out_fp);
 
   carmen_fclose(out_fp);
@@ -281,7 +281,7 @@ int carmen_map_name_chunk(char *in_file, char *out_file, int chunk_type,
 void strip_trailing_spaces(char *str, int len)
 {
   int i;
-  
+
   i = len - 1;
   while(i >= 0 && str[i] == ' ')
     i--;
@@ -324,7 +324,7 @@ int carmen_map_advance_to_chunk(carmen_FILE *fp, int specific_chunk)
   return -1;
 }
 
-int carmen_map_advance_to_named_chunk(carmen_FILE *fp, int specific_chunk, 
+int carmen_map_advance_to_named_chunk(carmen_FILE *fp, int specific_chunk,
 				      char *name)
 {
   int chunk_type, named, chunk_size, len, done = 0;
@@ -392,7 +392,7 @@ int carmen_map_chunk_exists(char *filename, int specific_chunk)
   }
 }
 
-int carmen_map_named_chunk_exists(char *filename, int specific_chunk, 
+int carmen_map_named_chunk_exists(char *filename, int specific_chunk,
 				  char *name)
 {
   carmen_FILE *fp;
@@ -417,9 +417,9 @@ int carmen_map_named_chunk_exists(char *filename, int specific_chunk,
   }
 }
 
-static int carmen_map_read_creator_chunk_data(carmen_FILE *fp, 
-					      time_t *creation_time, 
-					      char *username, char *origin, 
+static int carmen_map_read_creator_chunk_data(carmen_FILE *fp,
+					      time_t *creation_time,
+					      char *username, char *origin,
 					      char *description)
 {
   carmen_fread(username, 10, 1, fp);
@@ -433,8 +433,8 @@ static int carmen_map_read_creator_chunk_data(carmen_FILE *fp,
   return 0;
 }
 
-int carmen_map_read_creator_chunk(char *filename, time_t *creation_time, 
-				  char *username, char *origin, 
+int carmen_map_read_creator_chunk(char *filename, time_t *creation_time,
+				  char *username, char *origin,
 				  char *description)
 {
   carmen_FILE *fp;
@@ -447,9 +447,9 @@ int carmen_map_read_creator_chunk(char *filename, time_t *creation_time,
 	    filename);
     return -1;
   }
-  if(carmen_map_advance_to_chunk(fp, CARMEN_MAP_CREATOR_CHUNK) < 0) 
+  if(carmen_map_advance_to_chunk(fp, CARMEN_MAP_CREATOR_CHUNK) < 0)
     {
-      if (carmen_map_advance_to_chunk(fp, 0) < 0) 
+      if (carmen_map_advance_to_chunk(fp, 0) < 0)
 	{
 	  carmen_warn("You have an old-style map. The creator chunk id "
 		      "is wrong.\n\nFIX IT!\n\n");
@@ -471,13 +471,13 @@ int carmen_map_read_creator_chunk(char *filename, time_t *creation_time,
       return -1;
     }
   }
-  return carmen_map_read_creator_chunk_data(fp, creation_time, username, 
+  return carmen_map_read_creator_chunk_data(fp, creation_time, username,
 					    origin, description);
 }
 
-int carmen_map_read_named_creator_chunk(char *filename, char *chunk_name, 
+int carmen_map_read_named_creator_chunk(char *filename, char *chunk_name,
 					time_t *creation_time,
-					char *username, char *origin, 
+					char *username, char *origin,
 					char *description)
 {
   carmen_FILE *fp;
@@ -490,14 +490,14 @@ int carmen_map_read_named_creator_chunk(char *filename, char *chunk_name,
 	    filename);
     return -1;
   }
-  if(carmen_map_advance_to_named_chunk(fp, CARMEN_MAP_CREATOR_CHUNK, 
+  if(carmen_map_advance_to_named_chunk(fp, CARMEN_MAP_CREATOR_CHUNK,
 				       chunk_name) < 0) {
     if(carmen_map_advance_to_chunk(fp, 0) < 0) {
       carmen_warn("You have an old-style map. The creator chunk id "
 		  "is wrong.\n\nFIX IT!\n\n");
     }
     else {
-      carmen_warn("Error: Could not find a creator chunk named \"%s\"\n", 
+      carmen_warn("Error: Could not find a creator chunk named \"%s\"\n",
 		  chunk_name);
       carmen_fclose(fp);
       return -1;
@@ -515,12 +515,12 @@ int carmen_map_read_named_creator_chunk(char *filename, char *chunk_name,
     }
   }
 
-  return carmen_map_read_creator_chunk_data(fp, creation_time, username, 
+  return carmen_map_read_creator_chunk_data(fp, creation_time, username,
 					    origin, description);
 }
 
-static int carmen_map_read_gridmap_config_data(carmen_FILE *fp, 
-					       carmen_map_config_p config) 
+static int carmen_map_read_gridmap_config_data(carmen_FILE *fp,
+					       carmen_map_config_p config)
 {
   int size_x, size_y;
   float resolution;
@@ -537,7 +537,7 @@ static int carmen_map_read_gridmap_config_data(carmen_FILE *fp,
   return 0;
 }
 
-int carmen_map_read_gridmap_config(char *filename, carmen_map_config_p config) 
+int carmen_map_read_gridmap_config(char *filename, carmen_map_config_p config)
 {
   carmen_FILE *fp;
   int chunk_type, chunk_size;
@@ -581,8 +581,8 @@ int carmen_map_read_gridmap_config(char *filename, carmen_map_config_p config)
   return carmen_map_read_gridmap_config_data(fp, config);
 }
 
-int carmen_map_read_named_gridmap_config(char *filename, char *chunk_name, 
-					 carmen_map_config_p config) 
+int carmen_map_read_named_gridmap_config(char *filename, char *chunk_name,
+					 carmen_map_config_p config)
 {
   carmen_FILE *fp;
   int chunk_type, chunk_size;
@@ -601,9 +601,9 @@ int carmen_map_read_named_gridmap_config(char *filename, char *chunk_name,
     return -1;
   }
 
-  if(carmen_map_advance_to_named_chunk(fp, CARMEN_MAP_GRIDMAP_CHUNK, 
+  if(carmen_map_advance_to_named_chunk(fp, CARMEN_MAP_GRIDMAP_CHUNK,
 				       chunk_name) < 0) {
-    fprintf(stderr, "Error: Could not find a gridmap chunk named \"%s\"\n", 
+    fprintf(stderr, "Error: Could not find a gridmap chunk named \"%s\"\n",
 	    chunk_name);
     fprintf(stderr, "       This file is probably not a map file.\n");
     carmen_fclose(fp);
@@ -628,7 +628,7 @@ int carmen_map_read_named_gridmap_config(char *filename, char *chunk_name,
   return carmen_map_read_gridmap_config_data(fp, config);
 }
 
-static int carmen_map_read_gridmap_chunk_data(carmen_FILE *fp, 
+static int carmen_map_read_gridmap_chunk_data(carmen_FILE *fp,
 					      carmen_map_p map)
 {
   int size_x, size_y;
@@ -638,12 +638,12 @@ static int carmen_map_read_gridmap_chunk_data(carmen_FILE *fp,
   carmen_fread(&size_x, sizeof(int), 1, fp);
   carmen_fread(&size_y, sizeof(int), 1, fp);
   carmen_fread(&resolution, sizeof(float), 1, fp);
-  
+
   map->config.x_size = size_x;
   map->config.y_size = size_y;
   map->config.resolution = resolution;
 
-  map->complete_map = 
+  map->complete_map =
     (float *)calloc(map->config.x_size * map->config.y_size, sizeof(float));
   carmen_test_alloc(map->complete_map);
   map->map = (float **)calloc(map->config.x_size, sizeof(float *));
@@ -698,7 +698,7 @@ int carmen_map_read_gridmap_chunk(char *filename, carmen_map_p map)
   return carmen_map_read_gridmap_chunk_data(fp, map);
 }
 
-int carmen_map_read_named_gridmap_chunk(char *filename, char *chunk_name, 
+int carmen_map_read_named_gridmap_chunk(char *filename, char *chunk_name,
 					carmen_map_p map)
 {
   carmen_FILE *fp;
@@ -714,9 +714,9 @@ int carmen_map_read_named_gridmap_chunk(char *filename, char *chunk_name,
 	    filename);
     return -1;
   }
-  if(carmen_map_advance_to_named_chunk(fp, CARMEN_MAP_GRIDMAP_CHUNK, 
+  if(carmen_map_advance_to_named_chunk(fp, CARMEN_MAP_GRIDMAP_CHUNK,
 				       chunk_name) < 0) {
-    fprintf(stderr, "Error: Could not find a gridmap chunk named \"%s\"\n", 
+    fprintf(stderr, "Error: Could not find a gridmap chunk named \"%s\"\n",
 	    chunk_name);
     carmen_fclose(fp);
     return -1;
@@ -740,7 +740,7 @@ int carmen_map_read_named_gridmap_chunk(char *filename, char *chunk_name,
   return carmen_map_read_gridmap_chunk_data(fp, map);
 }
 
-static int carmen_map_read_offlimits_chunk_data(carmen_FILE *fp, 
+static int carmen_map_read_offlimits_chunk_data(carmen_FILE *fp,
 						carmen_offlimits_p
 						*offlimits_list,
 						int *list_length)
@@ -754,7 +754,7 @@ static int carmen_map_read_offlimits_chunk_data(carmen_FILE *fp,
   }
 
   *list_length = 0;
-  
+
   carmen_fread(&num_points, sizeof(int), 1, fp);
 
   if (num_points > 0) {
@@ -803,14 +803,14 @@ static int carmen_map_read_offlimits_chunk_data(carmen_FILE *fp,
 
   if (num_rects > 0)
     {
-      if (*list_length == 0)				
+      if (*list_length == 0)
 	{
 	  *list_length = num_rects;
 	  *offlimits_list = (carmen_offlimits_p)calloc
 	    (num_rects, sizeof(carmen_offlimits_t));
 	  carmen_test_alloc(*offlimits_list);
 	}
-      else 
+      else
 	{
 	  *list_length += num_rects;
 	  *offlimits_list = (carmen_offlimits_p)realloc
@@ -832,7 +832,7 @@ static int carmen_map_read_offlimits_chunk_data(carmen_FILE *fp,
   return 0;
 }
 
-int carmen_map_read_offlimits_chunk(char *filename, 
+int carmen_map_read_offlimits_chunk(char *filename,
 				    carmen_offlimits_p *offlimits_list,
 				    int *list_length)
 {
@@ -905,7 +905,7 @@ int carmen_map_read_named_offlimits_chunk(char *filename, char *chunk_name,
   return carmen_map_read_offlimits_chunk_data(fp, offlimits_list, list_length);
 }
 
-int carmen_map_read_global_offset_chunk(char *filename, 
+int carmen_map_read_global_offset_chunk(char *filename,
 					carmen_global_offset_t *global_offset)
 {
   carmen_FILE *fp;
@@ -941,7 +941,7 @@ int carmen_map_read_global_offset_chunk(char *filename,
 }
 
 int carmen_map_read_named_global_offset_chunk(char *filename, char *chunk_name,
-					      carmen_global_offset_t 
+					      carmen_global_offset_t
 					      *global_offset)
 {
   carmen_FILE *fp;
@@ -1003,7 +1003,7 @@ static int carmen_map_read_places_chunk_data(carmen_FILE *fp, carmen_map_placeli
   float float_var;
 
   carmen_fread(&(places->num_places), sizeof(int), 1, fp);
-  places->places = (carmen_place_p)calloc(places->num_places, 
+  places->places = (carmen_place_p)calloc(places->num_places,
 					  sizeof(carmen_place_t));
   carmen_test_alloc(places->places);
   for(i = 0; i < places->num_places; i++) {
@@ -1232,7 +1232,7 @@ static int carmen_map_read_hmap_chunk_data(carmen_FILE *fp, carmen_hmap_p hmap)
     carmen_test_alloc(hmap->zone_names[i]);
     strncpy(hmap->zone_names[i], buf, n+1);
   }
-    
+
   carmen_fread(&hmap->num_links, sizeof(int), 1, fp);
   hmap->links = (carmen_hmap_link_p) calloc(hmap->num_links, sizeof(carmen_hmap_link_t));
   carmen_test_alloc(hmap->links);

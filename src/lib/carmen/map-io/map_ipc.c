@@ -7,30 +7,31 @@
  * Roy, Sebastian Thrun, Dirk Haehnel, Cyrill Stachniss,
  * and Jared Glover
  *
- * CARMEN is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public 
- * License as published by the Free Software Foundation; 
+ * CARMEN is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
  * either version 2 of the License, or (at your option)
  * any later version.
  *
  * CARMEN is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied 
+ * but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more 
+ * PURPOSE.  See the GNU General Public License for more
  * details.
  *
- * You should have received a copy of the GNU General 
+ * You should have received a copy of the GNU General
  * Public License along with CARMEN; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, 
+ * Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA  02111-1307 USA
  *
  ********************************************************/
 
-#include "global.h"
-#include "map_io.h"
 #ifndef NO_ZLIB
 #include <zlib.h>
 #endif
+
+#include "global.h"
+#include "map_io.h"
 
 /*****************************************
  * ipc library for the map server        *
@@ -40,7 +41,7 @@ static char *filename = NULL;
 static char *map_zone_name = NULL;
 
 static void
-hmap_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData, 
+hmap_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 		     void *clientData __attribute__ ((unused)))
 {
   carmen_hmap_request_message req;
@@ -49,11 +50,11 @@ hmap_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   IPC_RETURN_TYPE err;
 
   formatter = IPC_msgInstanceFormatter(msgRef);
-  err = IPC_unmarshallData(formatter, callData, &req, 
+  err = IPC_unmarshallData(formatter, callData, &req,
 			   sizeof(carmen_default_message));
-  IPC_freeByteArray(callData);  
+  IPC_freeByteArray(callData);
 
-  carmen_test_ipc_return(err, "Could not unmarshall data", 
+  carmen_test_ipc_return(err, "Could not unmarshall data",
 			 IPC_msgInstanceName(msgRef));
 
   if (carmen_map_read_hmap_chunk(filename, &hmap_msg.hmap) < 0)
@@ -62,7 +63,7 @@ hmap_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   hmap_msg.timestamp = carmen_get_time();
   hmap_msg.host = carmen_get_host();
 
-  err = IPC_respondData(msgRef, CARMEN_MAP_HMAP_NAME, &hmap_msg);  
+  err = IPC_respondData(msgRef, CARMEN_MAP_HMAP_NAME, &hmap_msg);
   carmen_test_ipc(err, "Could not respond", CARMEN_MAP_HMAP_NAME);
 
   carmen_map_free_hmap(&hmap_msg.hmap);
@@ -84,7 +85,7 @@ publish_map_zone(void)
 }
 
 static void
-change_map_zone_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData, 
+change_map_zone_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 				void *clientData __attribute__ ((unused)))
 {
   carmen_map_change_map_zone_request request;
@@ -97,9 +98,9 @@ change_map_zone_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   formatter = IPC_msgInstanceFormatter(msgRef);
   err = IPC_unmarshallData(formatter, callData, &request,
 			   sizeof(carmen_map_change_map_zone_request));
-  IPC_freeByteArray(callData);  
+  IPC_freeByteArray(callData);
 
-  carmen_test_ipc_return(err, "Could not unmarshall data", 
+  carmen_test_ipc_return(err, "Could not unmarshall data",
 			 IPC_msgInstanceName(msgRef));
 
   if (carmen_map_read_hmap_chunk(filename, &hmap) < 0)
@@ -120,7 +121,7 @@ change_map_zone_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   response.timestamp = carmen_get_time();
   response.host = carmen_get_host();
 
-  err = IPC_respondData(msgRef, CARMEN_CHANGE_MAP_ZONE_RESPONSE_NAME, &response);  
+  err = IPC_respondData(msgRef, CARMEN_CHANGE_MAP_ZONE_RESPONSE_NAME, &response);
   carmen_test_ipc(err, "Could not respond", CARMEN_CHANGE_MAP_ZONE_RESPONSE_NAME);
 
   if (response.err_msg)
@@ -130,7 +131,7 @@ change_map_zone_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 }
 
 /* handler for map requests.
-   loads a map from a file and sends it 
+   loads a map from a file and sends it
    back to the client */
 
 #ifndef NO_ZLIB
@@ -146,19 +147,19 @@ compress_map_msg(carmen_grid_map_message *map_msg, carmen_map_t *map)
   map_msg->map = (unsigned char *)
     calloc(compress_buf_size, sizeof(unsigned char));
   carmen_test_alloc(map_msg->map);
-  compress_return = compress((void *)map_msg->map, 
+  compress_return = compress((void *)map_msg->map,
 			     (uLong *)&compress_buf_size,
-			     (void *)map->complete_map, 
-			     (uLong)map->config.x_size * 
+			     (void *)map->complete_map,
+			     (uLong)map->config.x_size *
 			     map->config.y_size*sizeof(float));
-  if (compress_return != Z_OK) 
+  if (compress_return != Z_OK)
     {
       free(map_msg->map);
       map_msg->map = (unsigned char *)map->complete_map;
       map_msg->size = map->config.x_size * map->config.y_size*sizeof(float);
       map_msg->compressed = 0;
-    } 
-  else 
+    }
+  else
     {
       map_msg->size = compress_buf_size;
       map_msg->compressed = 1;
@@ -216,8 +217,8 @@ assemble_map_msg(carmen_grid_map_message *map_msg)
   assemble_named_map_msg(map_zone_name, map_msg);
 }
 
-static void 
-gridmap_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData, 
+static void
+gridmap_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 			void *clientData __attribute__ ((unused)))
 {
   carmen_gridmap_request_message req;
@@ -226,24 +227,24 @@ gridmap_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   IPC_RETURN_TYPE err;
 
   formatter = IPC_msgInstanceFormatter(msgRef);
-  err = IPC_unmarshallData(formatter, callData, &req, 
+  err = IPC_unmarshallData(formatter, callData, &req,
 			   sizeof(carmen_default_message));
-  IPC_freeByteArray(callData);  
+  IPC_freeByteArray(callData);
 
-  carmen_test_ipc_return(err, "Could not unmarshall data", 
+  carmen_test_ipc_return(err, "Could not unmarshall data",
 			 IPC_msgInstanceName(msgRef));
 
   assemble_map_msg(&map_msg);
 
-  err = IPC_respondData(msgRef, CARMEN_MAP_GRIDMAP_NAME, &map_msg);  
+  err = IPC_respondData(msgRef, CARMEN_MAP_GRIDMAP_NAME, &map_msg);
   carmen_test_ipc(err, "Could not respond", CARMEN_MAP_GRIDMAP_NAME);
 
   free(map_msg.map);
   free(map_msg.err_mesg);
 }
 
-static void 
-named_gridmap_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData, 
+static void
+named_gridmap_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 			      void *clientData __attribute__ ((unused)))
 {
   carmen_named_gridmap_request req;
@@ -252,16 +253,16 @@ named_gridmap_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   IPC_RETURN_TYPE err;
 
   formatter = IPC_msgInstanceFormatter(msgRef);
-  err = IPC_unmarshallData(formatter, callData, &req, 
+  err = IPC_unmarshallData(formatter, callData, &req,
 			   sizeof(carmen_named_gridmap_request));
-  IPC_freeByteArray(callData);  
+  IPC_freeByteArray(callData);
 
-  carmen_test_ipc_return(err, "Could not unmarshall data", 
+  carmen_test_ipc_return(err, "Could not unmarshall data",
 			 IPC_msgInstanceName(msgRef));
 
   assemble_named_map_msg(req.name, &map_msg);
 
-  err = IPC_respondData(msgRef, CARMEN_MAP_GRIDMAP_NAME, &map_msg);  
+  err = IPC_respondData(msgRef, CARMEN_MAP_GRIDMAP_NAME, &map_msg);
   carmen_test_ipc(err, "Could not respond", CARMEN_MAP_GRIDMAP_NAME);
 
   free(map_msg.map);
@@ -269,8 +270,8 @@ named_gridmap_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 }
 
 
-static void 
-placelist_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData, 
+static void
+placelist_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 			  void *clientData __attribute__ ((unused)))
 {
   carmen_placelist_request_message req;
@@ -280,11 +281,11 @@ placelist_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   IPC_RETURN_TYPE err;
 
   formatter = IPC_msgInstanceFormatter(msgRef);
-  err = IPC_unmarshallData(formatter, callData, &req, 
+  err = IPC_unmarshallData(formatter, callData, &req,
 			   sizeof(carmen_default_message));
-  IPC_freeByteArray(callData);  
+  IPC_freeByteArray(callData);
 
-  carmen_test_ipc_return(err, "Could not unmarshall data", 
+  carmen_test_ipc_return(err, "Could not unmarshall data",
 			 IPC_msgInstanceName(msgRef));
 
   if (map_zone_name) {
@@ -312,16 +313,16 @@ placelist_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 
   placelist_msg.timestamp = carmen_get_time();
   placelist_msg.host = carmen_get_host();
-  
-  err = IPC_respondData(msgRef, CARMEN_MAP_PLACELIST_NAME, &placelist_msg);  
+
+  err = IPC_respondData(msgRef, CARMEN_MAP_PLACELIST_NAME, &placelist_msg);
   carmen_test_ipc(err, "Could not respond", CARMEN_MAP_PLACELIST_NAME);
 
-  if (placelist.num_places > 0)    
+  if (placelist.num_places > 0)
     free(placelist.places);
 }
 
-static void 
-named_placelist_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData, 
+static void
+named_placelist_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 				void *clientData __attribute__ ((unused)))
 {
   carmen_map_named_placelist_request req;
@@ -331,14 +332,14 @@ named_placelist_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   IPC_RETURN_TYPE err;
 
   formatter = IPC_msgInstanceFormatter(msgRef);
-  err = IPC_unmarshallData(formatter, callData, &req, 
+  err = IPC_unmarshallData(formatter, callData, &req,
 			   sizeof(carmen_map_named_placelist_request));
-  IPC_freeByteArray(callData);  
+  IPC_freeByteArray(callData);
 
-  carmen_test_ipc_return(err, "Could not unmarshall data", 
+  carmen_test_ipc_return(err, "Could not unmarshall data",
 			 IPC_msgInstanceName(msgRef));
 
-  if (carmen_map_read_named_places_chunk(filename, req.name, &placelist) == 0) 
+  if (carmen_map_read_named_places_chunk(filename, req.name, &placelist) == 0)
     {
       placelist_msg.places = placelist.places;
       placelist_msg.num_places = placelist.num_places;
@@ -348,20 +349,20 @@ named_placelist_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
       placelist_msg.places = NULL;
       placelist_msg.num_places = 0;
       placelist.num_places = 0;
-    } 
+    }
 
   placelist_msg.timestamp = carmen_get_time();
   placelist_msg.host = carmen_get_host();
-  
-  err = IPC_respondData(msgRef, CARMEN_MAP_PLACELIST_NAME, &placelist_msg);  
+
+  err = IPC_respondData(msgRef, CARMEN_MAP_PLACELIST_NAME, &placelist_msg);
   carmen_test_ipc(err, "Could not respond", CARMEN_MAP_PLACELIST_NAME);
 
-  if (placelist.num_places > 0)    
+  if (placelist.num_places > 0)
     free(placelist.places);
 }
 
-static void 
-offlimits_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData, 
+static void
+offlimits_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 			  void *clientData __attribute__ ((unused)))
 {
   carmen_offlimits_request_message query;
@@ -372,13 +373,13 @@ offlimits_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   IPC_RETURN_TYPE err;
 
   formatter = IPC_msgInstanceFormatter(msgRef);
-  err = IPC_unmarshallData(formatter, callData, &query, 
+  err = IPC_unmarshallData(formatter, callData, &query,
 			   sizeof(carmen_default_message));
-  IPC_freeByteArray(callData);  
+  IPC_freeByteArray(callData);
 
-  carmen_test_ipc_return(err, "Could not unmarshall data", 
+  carmen_test_ipc_return(err, "Could not unmarshall data",
 			 IPC_msgInstanceName(msgRef));
-  
+
   if(carmen_map_read_offlimits_chunk(filename, &offlimits, &list_length) < 0)
     {
       offlimits_msg.offlimits_list = NULL;
@@ -390,16 +391,16 @@ offlimits_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 
   offlimits_msg.timestamp = carmen_get_time();
   offlimits_msg.host = carmen_get_host();
-  
-  err = IPC_respondData(msgRef, CARMEN_MAP_OFFLIMITS_NAME, &offlimits_msg);  
+
+  err = IPC_respondData(msgRef, CARMEN_MAP_OFFLIMITS_NAME, &offlimits_msg);
   carmen_test_ipc(err, "Could not respond", CARMEN_MAP_OFFLIMITS_NAME);
 
-  if (list_length > 0)    
+  if (list_length > 0)
     free(offlimits);
 }
 
-static void 
-named_offlimits_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData, 
+static void
+named_offlimits_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 				void *clientData __attribute__ ((unused)))
 {
   carmen_map_named_offlimits_request query;
@@ -410,13 +411,13 @@ named_offlimits_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   IPC_RETURN_TYPE err;
 
   formatter = IPC_msgInstanceFormatter(msgRef);
-  err = IPC_unmarshallData(formatter, callData, &query, 
+  err = IPC_unmarshallData(formatter, callData, &query,
 			   sizeof(carmen_map_named_offlimits_request));
-  IPC_freeByteArray(callData);  
+  IPC_freeByteArray(callData);
 
-  carmen_test_ipc_return(err, "Could not unmarshall data", 
+  carmen_test_ipc_return(err, "Could not unmarshall data",
 			 IPC_msgInstanceName(msgRef));
-  
+
   if(carmen_map_read_named_offlimits_chunk(filename, query.name, &offlimits, &list_length) < 0)
     {
       offlimits_msg.offlimits_list = NULL;
@@ -429,16 +430,16 @@ named_offlimits_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 
   offlimits_msg.timestamp = carmen_get_time();
   offlimits_msg.host = carmen_get_host();
-  
-  err = IPC_respondData(msgRef, CARMEN_MAP_OFFLIMITS_NAME, &offlimits_msg);  
+
+  err = IPC_respondData(msgRef, CARMEN_MAP_OFFLIMITS_NAME, &offlimits_msg);
   carmen_test_ipc(err, "Could not respond", CARMEN_MAP_OFFLIMITS_NAME);
 
-  if (list_length > 0)    
+  if (list_length > 0)
     free(offlimits);
 }
 
-static void 
-global_offset_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData, 
+static void
+global_offset_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 			  void *clientData __attribute__ ((unused)))
 {
   carmen_global_offset_request_message query;
@@ -447,26 +448,26 @@ global_offset_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   IPC_RETURN_TYPE err;
 
   formatter = IPC_msgInstanceFormatter(msgRef);
-  err = IPC_unmarshallData(formatter, callData, &query, 
+  err = IPC_unmarshallData(formatter, callData, &query,
 			   sizeof(carmen_default_message));
-  IPC_freeByteArray(callData);  
+  IPC_freeByteArray(callData);
 
-  carmen_test_ipc_return(err, "Could not unmarshall data", 
+  carmen_test_ipc_return(err, "Could not unmarshall data",
 			 IPC_msgInstanceName(msgRef));
-  
-  carmen_map_read_global_offset_chunk(filename, 
+
+  carmen_map_read_global_offset_chunk(filename,
 				      &global_offset_msg.global_offset);
 
   global_offset_msg.timestamp = carmen_get_time();
   global_offset_msg.host = carmen_get_host();
-  
-  err = IPC_respondData(msgRef, CARMEN_MAP_GLOBAL_OFFSET_NAME, 
-			&global_offset_msg);  
+
+  err = IPC_respondData(msgRef, CARMEN_MAP_GLOBAL_OFFSET_NAME,
+			&global_offset_msg);
   carmen_test_ipc(err, "Could not respond", CARMEN_MAP_GLOBAL_OFFSET_NAME);
 }
 
-static void 
-named_global_offset_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData, 
+static void
+named_global_offset_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 				void *clientData __attribute__ ((unused)))
 {
   carmen_map_named_global_offset_request query;
@@ -475,153 +476,153 @@ named_global_offset_request_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
   IPC_RETURN_TYPE err;
 
   formatter = IPC_msgInstanceFormatter(msgRef);
-  err = IPC_unmarshallData(formatter, callData, &query, 
+  err = IPC_unmarshallData(formatter, callData, &query,
 			   sizeof(carmen_map_named_global_offset_request));
-  IPC_freeByteArray(callData);  
+  IPC_freeByteArray(callData);
 
-  carmen_test_ipc_return(err, "Could not unmarshall data", 
+  carmen_test_ipc_return(err, "Could not unmarshall data",
 			 IPC_msgInstanceName(msgRef));
-  
-  carmen_map_read_named_global_offset_chunk(filename, query.name, 
+
+  carmen_map_read_named_global_offset_chunk(filename, query.name,
 					    &global_offset_msg.global_offset);
 
   global_offset_msg.timestamp = carmen_get_time();
   global_offset_msg.host = carmen_get_host();
-  
-  err = IPC_respondData(msgRef, CARMEN_MAP_GLOBAL_OFFSET_NAME, 
-			&global_offset_msg);  
-  carmen_test_ipc(err, "Could not respond", CARMEN_MAP_GLOBAL_OFFSET_NAME);  
+
+  err = IPC_respondData(msgRef, CARMEN_MAP_GLOBAL_OFFSET_NAME,
+			&global_offset_msg);
+  carmen_test_ipc(err, "Could not respond", CARMEN_MAP_GLOBAL_OFFSET_NAME);
 }
 
 /* set up the ipc connection with central
    subscribe to map requests
    define map messages */
-int 
+int
 carmen_map_initialize_ipc(void)
 {
   IPC_RETURN_TYPE err;
 
   /* define messages created by this module */
-  err = IPC_defineMsg(CARMEN_MAP_HMAP_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_MAP_HMAP_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_MAP_HMAP_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_MAP_HMAP_NAME);
 
-  err = IPC_defineMsg(CARMEN_HMAP_REQUEST_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_HMAP_REQUEST_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_DEFAULT_MESSAGE_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_HMAP_REQUEST_NAME);
 
-  err = IPC_defineMsg(CARMEN_MAP_ZONE_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_MAP_ZONE_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_MAP_ZONE_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_MAP_ZONE_NAME);
 
-  err = IPC_defineMsg(CARMEN_CHANGE_MAP_ZONE_REQUEST_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_CHANGE_MAP_ZONE_REQUEST_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_CHANGE_MAP_ZONE_REQUEST_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_CHANGE_MAP_ZONE_REQUEST_NAME);
 
-  err = IPC_defineMsg(CARMEN_CHANGE_MAP_ZONE_RESPONSE_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_CHANGE_MAP_ZONE_RESPONSE_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_CHANGE_MAP_ZONE_RESPONSE_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_CHANGE_MAP_ZONE_RESPONSE_NAME);
 
-  err = IPC_defineMsg(CARMEN_MAP_GRIDMAP_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_MAP_GRIDMAP_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_MAP_GRIDMAP_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_MAP_GRIDMAP_NAME);
 
-  err = IPC_defineMsg(CARMEN_MAP_GRIDMAP_UPDATE_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_MAP_GRIDMAP_UPDATE_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_MAP_GRIDMAP_FMT);
-  carmen_test_ipc_exit(err, "Could not define", 
+  carmen_test_ipc_exit(err, "Could not define",
 		       CARMEN_MAP_GRIDMAP_UPDATE_NAME);
 
-  err = IPC_defineMsg(CARMEN_GRIDMAP_REQUEST_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_GRIDMAP_REQUEST_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_DEFAULT_MESSAGE_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_GRIDMAP_REQUEST_NAME);
 
-  err = IPC_defineMsg(CARMEN_NAMED_GRIDMAP_REQUEST_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_NAMED_GRIDMAP_REQUEST_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_NAMED_GRIDMAP_REQUEST_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_NAMED_GRIDMAP_REQUEST_NAME);
 
-  err = IPC_defineMsg(CARMEN_PLACELIST_REQUEST_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_PLACELIST_REQUEST_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_DEFAULT_MESSAGE_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_PLACELIST_REQUEST_NAME);
 
-  err = IPC_defineMsg(CARMEN_NAMED_PLACELIST_REQUEST_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_NAMED_PLACELIST_REQUEST_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_NAMED_PLACELIST_REQUEST_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_NAMED_PLACELIST_REQUEST_NAME);
 
-  err = IPC_defineMsg(CARMEN_MAP_PLACELIST_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_MAP_PLACELIST_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_MAP_PLACELIST_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_MAP_PLACELIST_NAME);
 
-  err = IPC_defineMsg(CARMEN_OFFLIMITS_REQUEST_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_OFFLIMITS_REQUEST_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_DEFAULT_MESSAGE_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_OFFLIMITS_REQUEST_NAME);
 
-  err = IPC_defineMsg(CARMEN_NAMED_OFFLIMITS_REQUEST_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_NAMED_OFFLIMITS_REQUEST_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_NAMED_OFFLIMITS_REQUEST_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_NAMED_OFFLIMITS_REQUEST_NAME);
 
-  err = IPC_defineMsg(CARMEN_MAP_OFFLIMITS_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_MAP_OFFLIMITS_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_MAP_OFFLIMITS_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_MAP_OFFLIMITS_NAME);
 
-  err = IPC_defineMsg(CARMEN_GLOBAL_OFFSET_REQUEST_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_GLOBAL_OFFSET_REQUEST_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_DEFAULT_MESSAGE_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_GLOBAL_OFFSET_REQUEST_NAME);
 
-  err = IPC_defineMsg(CARMEN_NAMED_GLOBAL_OFFSET_REQUEST_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_NAMED_GLOBAL_OFFSET_REQUEST_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_NAMED_GLOBAL_OFFSET_REQUEST_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_NAMED_GLOBAL_OFFSET_REQUEST_NAME);
 
-  err = IPC_defineMsg(CARMEN_MAP_GLOBAL_OFFSET_NAME, IPC_VARIABLE_LENGTH, 
+  err = IPC_defineMsg(CARMEN_MAP_GLOBAL_OFFSET_NAME, IPC_VARIABLE_LENGTH,
 		      CARMEN_MAP_GLOBAL_OFFSET_FMT);
   carmen_test_ipc_exit(err, "Could not define", CARMEN_MAP_GLOBAL_OFFSET_NAME);
 
   /* setup incoming message handlers */
-  err = IPC_subscribe(CARMEN_HMAP_REQUEST_NAME, hmap_request_handler, 
+  err = IPC_subscribe(CARMEN_HMAP_REQUEST_NAME, hmap_request_handler,
 		      NULL);
   carmen_test_ipc(err, "Could not subscribe", CARMEN_HMAP_REQUEST_NAME);
   IPC_setMsgQueueLength(CARMEN_HMAP_REQUEST_NAME, 100);
 
-  err = IPC_subscribe(CARMEN_CHANGE_MAP_ZONE_REQUEST_NAME, change_map_zone_request_handler, 
+  err = IPC_subscribe(CARMEN_CHANGE_MAP_ZONE_REQUEST_NAME, change_map_zone_request_handler,
 		      NULL);
   carmen_test_ipc(err, "Could not subscribe", CARMEN_CHANGE_MAP_ZONE_REQUEST_NAME);
   IPC_setMsgQueueLength(CARMEN_CHANGE_MAP_ZONE_REQUEST_NAME, 100);
 
-  err = IPC_subscribe(CARMEN_GRIDMAP_REQUEST_NAME, gridmap_request_handler, 
+  err = IPC_subscribe(CARMEN_GRIDMAP_REQUEST_NAME, gridmap_request_handler,
 		      NULL);
   carmen_test_ipc(err, "Could not subscribe", CARMEN_GRIDMAP_REQUEST_NAME);
   IPC_setMsgQueueLength(CARMEN_GRIDMAP_REQUEST_NAME, 100);
 
-  err = IPC_subscribe(CARMEN_NAMED_GRIDMAP_REQUEST_NAME, named_gridmap_request_handler, 
+  err = IPC_subscribe(CARMEN_NAMED_GRIDMAP_REQUEST_NAME, named_gridmap_request_handler,
 		      NULL);
   carmen_test_ipc(err, "Could not subscribe", CARMEN_NAMED_GRIDMAP_REQUEST_NAME);
   IPC_setMsgQueueLength(CARMEN_NAMED_GRIDMAP_REQUEST_NAME, 100);
 
-  err = IPC_subscribe(CARMEN_PLACELIST_REQUEST_NAME, 
+  err = IPC_subscribe(CARMEN_PLACELIST_REQUEST_NAME,
 		      placelist_request_handler, NULL);
   carmen_test_ipc(err, "Could not subscribe", CARMEN_PLACELIST_REQUEST_NAME);
   IPC_setMsgQueueLength(CARMEN_PLACELIST_REQUEST_NAME, 100);
 
-  err = IPC_subscribe(CARMEN_NAMED_PLACELIST_REQUEST_NAME, 
+  err = IPC_subscribe(CARMEN_NAMED_PLACELIST_REQUEST_NAME,
 		      named_placelist_request_handler, NULL);
   carmen_test_ipc(err, "Could not subscribe", CARMEN_NAMED_PLACELIST_REQUEST_NAME);
   IPC_setMsgQueueLength(CARMEN_NAMED_PLACELIST_REQUEST_NAME, 100);
 
-  err = IPC_subscribe(CARMEN_OFFLIMITS_REQUEST_NAME, 
+  err = IPC_subscribe(CARMEN_OFFLIMITS_REQUEST_NAME,
 		      offlimits_request_handler, NULL);
   carmen_test_ipc(err, "Could not subscribe", CARMEN_OFFLIMITS_REQUEST_NAME);
   IPC_setMsgQueueLength(CARMEN_OFFLIMITS_REQUEST_NAME, 100);
 
-  err = IPC_subscribe(CARMEN_NAMED_OFFLIMITS_REQUEST_NAME, 
+  err = IPC_subscribe(CARMEN_NAMED_OFFLIMITS_REQUEST_NAME,
 		      named_offlimits_request_handler, NULL);
   carmen_test_ipc(err, "Could not subscribe", CARMEN_NAMED_OFFLIMITS_REQUEST_NAME);
   IPC_setMsgQueueLength(CARMEN_NAMED_OFFLIMITS_REQUEST_NAME, 100);
 
-  err = IPC_subscribe(CARMEN_GLOBAL_OFFSET_REQUEST_NAME, 
+  err = IPC_subscribe(CARMEN_GLOBAL_OFFSET_REQUEST_NAME,
 		      global_offset_request_handler, NULL);
   carmen_test_ipc(err, "Could not subscribe", CARMEN_GLOBAL_OFFSET_REQUEST_NAME);
   IPC_setMsgQueueLength(CARMEN_GLOBAL_OFFSET_REQUEST_NAME, 100);
 
-  err = IPC_subscribe(CARMEN_NAMED_GLOBAL_OFFSET_REQUEST_NAME, 
+  err = IPC_subscribe(CARMEN_NAMED_GLOBAL_OFFSET_REQUEST_NAME,
 		      named_global_offset_request_handler, NULL);
   carmen_test_ipc(err, "Could not subscribe", CARMEN_NAMED_GLOBAL_OFFSET_REQUEST_NAME);
   IPC_setMsgQueueLength(CARMEN_NAMED_GLOBAL_OFFSET_REQUEST_NAME, 100);
