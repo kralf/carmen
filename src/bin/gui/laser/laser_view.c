@@ -7,21 +7,21 @@
  * Roy, Sebastian Thrun, Dirk Haehnel, Cyrill Stachniss,
  * and Jared Glover
  *
- * CARMEN is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public 
- * License as published by the Free Software Foundation; 
+ * CARMEN is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
  * either version 2 of the License, or (at your option)
  * any later version.
  *
  * CARMEN is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied 
+ * but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more 
+ * PURPOSE.  See the GNU General Public License for more
  * details.
  *
- * You should have received a copy of the GNU General 
+ * You should have received a copy of the GNU General
  * Public License along with CARMEN; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, 
+ * Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA  02111-1307 USA
  *
  ********************************************************/
@@ -48,19 +48,19 @@ static double start_time = 0.0;
 static GdkColor gradient[256];
 
 static void
-setup_colors(void) 
-{  
+setup_colors(void)
+{
   int i;
-  
+
   for(i = 0; i < 256; i++) {
     gradient[i] = carmen_graphics_add_color_rgb(i,i,i);
-  }  
+  }
 }
 
 
 static void Redraw(void);
 
-static void 
+static void
 laser_handler(void)
 {
   received_laser = 1;
@@ -69,7 +69,7 @@ laser_handler(void)
   Redraw();
 }
 
-static void 
+static void
 shutdown_laserview(int x)
 {
   if(x == SIGINT) {
@@ -78,23 +78,23 @@ shutdown_laserview(int x)
   }
 }
 
-static gint 
-updateIPC(gpointer *data __attribute__ ((unused))) 
+static gint
+updateIPC(gpointer *data __attribute__ ((unused)))
 {
   carmen_ipc_sleep(0.01);
   carmen_graphics_update_ipc_callbacks((GdkInputFunction)updateIPC);
   return 1;
 }
 
-static gint 
-Expose_Event(GtkWidget *widget __attribute__ ((unused)), 
-	     GdkEventExpose *event __attribute__ ((unused))) 
+static gint
+Expose_Event(GtkWidget *widget __attribute__ ((unused)),
+	     GdkEventExpose *event __attribute__ ((unused)))
 {
   Redraw();
   return 1;
 }
 
-static void 
+static void
 Redraw(void)
 {
   float origin_x, origin_y, x = 0, y = 0,  angle, scale;
@@ -102,9 +102,8 @@ Redraw(void)
   static GdkGC *Drawing_GC = NULL;
   static GdkPixmap *pixmap = NULL;
   GdkPoint *poly = NULL;
-  char str[20];
+  char str[255];
   static double framerate = 0.0;
-
 
   int numreadings;
   float *laserrange = NULL;
@@ -119,7 +118,7 @@ Redraw(void)
 
   /* setup graphics parameters */
   if(pixmap == NULL)
-    pixmap = gdk_pixmap_new(drawing_area->window, 
+    pixmap = gdk_pixmap_new(drawing_area->window,
 			    drawing_area->allocation.width,
 			    drawing_area->allocation.height, -1);
   if(pixmap == NULL)
@@ -127,29 +126,29 @@ Redraw(void)
 
   /* erase window with light blue */
   gdk_gc_set_foreground(Drawing_GC, &carmen_light_blue);
-  gdk_draw_rectangle(pixmap, Drawing_GC, TRUE, 0, 0, 
-		     drawing_area->allocation.width, 
+  gdk_draw_rectangle(pixmap, Drawing_GC, TRUE, 0, 0,
+		     drawing_area->allocation.width,
 		     drawing_area->allocation.height);
 
   gdk_gc_set_line_attributes(Drawing_GC, 4, GDK_LINE_SOLID,
                              GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
   gdk_gc_set_foreground(Drawing_GC, &carmen_blue);
-  gdk_draw_arc(pixmap, Drawing_GC, FALSE, 0, 0, 
+  gdk_draw_arc(pixmap, Drawing_GC, FALSE, 0, 0,
 	       drawing_area->allocation.width,
 	       drawing_area->allocation.height * 2, 0, 180 * 64);
-  gdk_draw_line(pixmap, Drawing_GC, 
+  gdk_draw_line(pixmap, Drawing_GC,
 		0, drawing_area->allocation.height,
-		drawing_area->allocation.width, 
+		drawing_area->allocation.width,
 		drawing_area->allocation.height);
   gdk_gc_set_line_attributes(Drawing_GC, 1, GDK_LINE_SOLID,
                              GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
 
   if(received_laser) {
     /* draw the empty space */
-    poly = (GdkPoint *)realloc(poly, sizeof(GdkPoint) * 
+    poly = (GdkPoint *)realloc(poly, sizeof(GdkPoint) *
 			       (numreadings + 1));
     carmen_test_alloc(poly);
-    origin_x = drawing_area->allocation.width / 2; 
+    origin_x = drawing_area->allocation.width / 2;
     origin_y = drawing_area->allocation.height - 1;
     scale = drawing_area->allocation.height / (double)laser_range;
     for(i = 0; i < numreadings; i++) {
@@ -169,14 +168,14 @@ Redraw(void)
     poly[numreadings].x = origin_x;
     poly[numreadings].y = origin_y;
     gdk_gc_set_foreground(Drawing_GC, &carmen_white);
-    gdk_draw_polygon(pixmap, Drawing_GC, TRUE, poly, 
+    gdk_draw_polygon(pixmap, Drawing_GC, TRUE, poly,
 		     numreadings + 1);
 
     /* connect nearby laser points with lines */
     gdk_gc_set_line_attributes(Drawing_GC, 2, GDK_LINE_SOLID,
 			       GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
-    free(poly); 
-  } 
+    free(poly);
+  }
 
   if (laser_count == 1) {
     if (laser.config.fov > M_PI+0.0001) {
@@ -189,52 +188,52 @@ Redraw(void)
 
   sprintf(str, "Laser %d : %.1f fps", laser_num, framerate);
   gdk_gc_set_foreground(Drawing_GC, &carmen_black);
-  gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC, 
+  gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC,
 		  10, drawing_area->allocation.height - 40, str);
 
-  sprintf(str, "fov %.1f deg / %d pts", 
+  sprintf(str, "fov %.1f deg / %d pts",
 	  carmen_radians_to_degrees(laser.config.fov), numreadings);
   gdk_gc_set_foreground(Drawing_GC, &carmen_black);
-  gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC, 
+  gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC,
 		  10, drawing_area->allocation.height - 25, str);
 
-  sprintf(str, "1st beam %.1f deg", 
+  sprintf(str, "1st beam %.1f deg",
 	  carmen_radians_to_degrees(laser.config.start_angle));
   gdk_gc_set_foreground(Drawing_GC, &carmen_black);
-  gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC, 
+  gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC,
 		  10, drawing_area->allocation.height - 10, str);
 
   if (laser.num_remissions > 0) {
     sprintf(str, "remission: on");
     gdk_gc_set_foreground(Drawing_GC, &carmen_black);
-    gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC, 
-		    drawing_area->allocation.width - 155.0, 
+    gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC,
+		    drawing_area->allocation.width - 155.0,
 		    drawing_area->allocation.height - 40, str);
   }
 
   sprintf(str, "Sensor maxrange  = %.3fm", laser.config.maximum_range);
   gdk_gc_set_foreground(Drawing_GC, &carmen_black);
-  gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC, 
-		  drawing_area->allocation.width - 155.0, 
+  gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC,
+		  drawing_area->allocation.width - 155.0,
 		  drawing_area->allocation.height - 25, str);
 
   sprintf(str, "Viewer maxrange  = %.1fm", laser_range);
   gdk_gc_set_foreground(Drawing_GC, &carmen_black);
-  gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC, 
-		  drawing_area->allocation.width - 155.0, 
+  gdk_draw_string(pixmap, gtk_style_get_font(drawing_area->style), Drawing_GC,
+		  drawing_area->allocation.width - 155.0,
 		  drawing_area->allocation.height - 10, str);
 
-  
+
   /* udpate the whole window */
-  gdk_draw_pixmap(drawing_area->window, 
+  gdk_draw_pixmap(drawing_area->window,
 		  drawing_area->style->fg_gc[GTK_WIDGET_STATE (drawing_area)],
-                  pixmap, 0, 0, 0, 0, 
-		  drawing_area->allocation.width, 
+                  pixmap, 0, 0, 0, 0,
+		  drawing_area->allocation.width,
 		  drawing_area->allocation.height);
 }
 
-static void 
-start_graphics(int argc, char *argv[]) 
+static void
+start_graphics(int argc, char *argv[])
 {
   GtkWidget *main_window;
   Pixmap mask;
@@ -258,7 +257,7 @@ start_graphics(int argc, char *argv[])
   //  gdk_window_set_decorations(main_window->window, GDK_DECOR_TITLE);
   gdk_window_set_decorations(main_window->window, 0);
   gdk_window_set_functions(main_window->window, 0);
-  
+
   gtk_widget_show(drawing_area);
   gtk_widget_show(main_window);
 
@@ -287,58 +286,58 @@ usage(char* argv0) {
   exit(1);
 }
 
-int 
+int
 main(int argc, char **argv)
-{  
+{
   carmen_ipc_initialize(argc, argv);
   carmen_param_check_version(argv[0]);
 
   carmen_read_commandline_parameters(argc, argv);
 
 
-  if ( carmen_find_param("h") || carmen_find_param("help") || 
+  if ( carmen_find_param("h") || carmen_find_param("help") ||
        carmen_find_param("-h") || carmen_find_param("-help") )
     usage(argv[0]);
-  
+
   if (carmen_find_param_pair("range")) {
     laser_range = atof(carmen_param_pair("range"));
   }
-  
-  if (carmen_find_param("flaser") || carmen_find_param("frontlaser") || 
-      carmen_find_param("laser1")) 
+
+  if (carmen_find_param("flaser") || carmen_find_param("frontlaser") ||
+      carmen_find_param("laser1"))
     laser_num  = 1;
-  else if (carmen_find_param("rlaser") || carmen_find_param("rearlaser") || 
-	   carmen_find_param("laser2")) 
+  else if (carmen_find_param("rlaser") || carmen_find_param("rearlaser") ||
+	   carmen_find_param("laser2"))
     laser_num  = 2;
-  else if (carmen_find_param("laser3")) 
+  else if (carmen_find_param("laser3"))
     laser_num  = 3;
-  else if (carmen_find_param("laser4")) 
+  else if (carmen_find_param("laser4"))
     laser_num  = 4;
-  else if (carmen_find_param("laser5")) 
+  else if (carmen_find_param("laser5"))
     laser_num  = 5;
   else
     laser_num  = 1;
-  
+
   if (laser_num == 1)
     carmen_laser_subscribe_frontlaser_message
       (&laser, (carmen_handler_t)laser_handler, CARMEN_SUBSCRIBE_LATEST);
 
-  if(laser_num == 2) 
+  if(laser_num == 2)
     carmen_laser_subscribe_rearlaser_message
       (&laser, (carmen_handler_t)laser_handler, CARMEN_SUBSCRIBE_LATEST);
 
-  else if(laser_num == 3) 
+  else if(laser_num == 3)
     carmen_laser_subscribe_laser3_message
       (&laser, (carmen_handler_t) laser_handler, CARMEN_SUBSCRIBE_LATEST);
-    
-  else if(laser_num == 4) 
+
+  else if(laser_num == 4)
     carmen_laser_subscribe_laser4_message
       (&laser, (carmen_handler_t)laser_handler, CARMEN_SUBSCRIBE_LATEST);
-  
-  else if(laser_num == 5) 
+
+  else if(laser_num == 5)
     carmen_laser_subscribe_laser5_message
       (&laser, (carmen_handler_t)laser_handler, CARMEN_SUBSCRIBE_LATEST);
-  
+
   signal(SIGINT, shutdown_laserview);
   start_time = carmen_get_time();
   start_graphics(argc, argv);
