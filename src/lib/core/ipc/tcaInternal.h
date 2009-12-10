@@ -1,14 +1,14 @@
 /******************************************************************************
  *
  * PROJECT: Carnegie Mellon Planetary Rover Project
- *          Task Control Architecture 
- * 
+ *          Task Control Architecture
+ *
  * MODULE: x_ipc includes
  *
  * FILE: x_ipcInternal.h
  *
  * ABSTRACT:
- * 
+ *
  * Common include items and defines.
  *
  * REVISION HISTORY
@@ -270,7 +270,7 @@
  * Moved Makefile to Makefile.generic to encourage people to use
  * GNUmakefile.
  * Fixed a memory leak when a module is closed and some other small fixes.
- * 
+ *
  * Revision 1.63.2.7  1995/12/19  21:27:43  reids
  * Ooops.  Serves me right for cutting and pasting late at night!
  *
@@ -629,7 +629,7 @@
  *
  *
  * 31-Dec-91 Reid Simmons, School of Computer Science, CMU
- * Added slot to MSG_TYPE to enable adding exception handlers to class 
+ * Added slot to MSG_TYPE to enable adding exception handlers to class
  *  of messages, rather than just a single task tree node.
  *
  * 27-May-91 Christopher Fedor, School of Computer Science, CMU
@@ -640,9 +640,9 @@
  *
  * 18-Aug-90 Christopher Fedor, School of Computer Science, CMU
  * Removed service define SERVER_NAME and explicitly specified the
- * SERVER_PORT number to avoid calls to service lookup routines. 
+ * SERVER_PORT number to avoid calls to service lookup routines.
  * The number needed to be explicit for VxWorks and this simplified
- * initiating a connection. 
+ * initiating a connection.
  *
  * Lookup routines for a service should be added for an external release.
  *
@@ -713,7 +713,7 @@
 #define MSG_HASH_TABLE_SIZE (203)
 #define DISPATCH_TABLE_SIZE (100)
 
-/* 
+/*
  * For direct port connections start at LISTEN_PORT
  * and if unavailable on current host increment by 1 until
  * LISTEN_PORT_MAX and report error.
@@ -736,7 +736,7 @@
 #endif
 #endif
 
-/* the new sunos 4.1 for sun3 leaves out tolower/toupper in ctypes.h 
+/* the new sunos 4.1 for sun3 leaves out tolower/toupper in ctypes.h
    this is still needed for the 4.0.3 systems */
 
 #ifndef VXWORKS
@@ -751,7 +751,7 @@
 #endif /* VXWORKS */
 
 
-/* 
+/*
  * define system constants
  */
 
@@ -879,6 +879,8 @@ typedef struct _X_IPC_REF {
   BOOLEAN responded;
   unsigned int dataLength;
 #endif
+  int32 byteOrder;
+  ALIGNMENT_TYPE alignment;
 } X_IPC_REF_TYPE;
 
 typedef struct {
@@ -996,7 +998,7 @@ typedef struct { int32 num; /* Number of handlers working on the multi-query */
 #define FLUSH_IF_NEEDED(stream) \
 { LOCK_M_MUTEX; if (IS_LISP_MODULE()) fflush(stream); UNLOCK_M_MUTEX; }
 #else /* !LISP */
-#define FLUSH_IF_NEEDED(stream) 
+#define FLUSH_IF_NEEDED(stream)
 #endif /* !LISP */
 
 #ifndef offsetof

@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * PROJECT: Carnegie Mellon Planetary Rover Project
- *          Task Control Architecture 
+ *          Task Control Architecture
  *
  * (c) Copyright 1991 Christopher Fedor and Reid Simmons.  All rights reserved.
  *
@@ -10,7 +10,7 @@
  * FILE: behaviors.c
  *
  * ABSTRACT:
- * 
+ *
  * x_ipc behavior level.
  *
  * REVISION HISTORY
@@ -475,7 +475,7 @@
  * Moved "CreateReference" to tasktree.c
  *
  *  2-Aug-89 Reid Simmons, School of Computer Science, CMU
- * Added checks to ensure that routines are called with the 
+ * Added checks to ensure that routines are called with the
  * correct message class.
  *
  * 28-Jun-89 Reid Simmons, School of Computer Science, CMU
@@ -491,7 +491,7 @@
  * Changed route_module.c to behaviors.c
  *
  *  1-May-89 Reid Simmons, School of Computer Science, CMU
- * Added code for sending temporal constraints with goal messages.  
+ * Added code for sending temporal constraints with goal messages.
  * Re-modularized.
  *
  * 28-Apr-89 Reid Simmons, School of Computer Science, CMU
@@ -502,7 +502,7 @@
  *
  *  6-Mar-89 Christopher Fedor, School of Computer Science, CMU
  * created behaviors.
- * 
+ *
  *  1-Dec-88 Christopher Fedor, School of Computer Science, CMU
  * created message cache.
  *
@@ -521,19 +521,19 @@
 #endif
 #endif
 
-
+
 /******************************************************************************
  *
  * FUNCTION: MSG_PTR x_ipc_msgHndFind(name, hndName)
  *           MSG_PTR x_ipc_msgFind(name)
  *
- * DESCRIPTION: 
+ * DESCRIPTION:
  * Performs a message lookup for a message of name. If the message is not
  * found the central server is queried and the information is cached.
  * If the message is still not found or the information returned from the
- * central server is not complete an error is issued. 
+ * central server is not complete an error is issued.
  *
- * INPUTS: 
+ * INPUTS:
  * char *name, *hndName;
  *
  * OUTPUTS: MSG_PTR
@@ -543,7 +543,7 @@
 static void x_ipc_relinkMessagesAndHandlers(MSG_PTR msg, MSG_PTR oldMsg)
 {
   const HND_TYPE *hnd;
-  
+
   /* Update priority and limits, if needed */
   if (oldMsg->priority > msg->priority) msg->priority = oldMsg->priority;
   if (oldMsg->limit > msg->limit)       msg->limit = oldMsg->limit;
@@ -592,11 +592,11 @@ static MSG_PTR x_ipc_msgHndFind(const char *name, const char *hndName)
   MSG_ASK_TYPE msgAsk;
   int32 byteOrder, sd;
   ALIGNMENT_TYPE alignment;
-  
+
   LOCK_M_MUTEX;
   msg = GET_MESSAGE(name);
   UNLOCK_M_MUTEX;
-  
+
   if (!msg || msg->msgData->msg_class == HandlerRegClass) {
     LOCK_CM_MUTEX;
     sd = GET_C_GLOBAL(serverRead);
@@ -605,7 +605,7 @@ static MSG_PTR x_ipc_msgHndFind(const char *name, const char *hndName)
       oldMsg = msg;
       msgAsk.msgName = name;
       msgAsk.hndName = hndName;
-      
+
       LOCK_M_MUTEX;
       byteOrder = GET_M_GLOBAL(byteOrder);
       alignment = GET_M_GLOBAL(alignment);
@@ -624,7 +624,7 @@ static MSG_PTR x_ipc_msgHndFind(const char *name, const char *hndName)
       UNLOCK_M_MUTEX;
       if (oldMsg && oldMsg != currentMsg) {
 	/* This message has already been found and replaced */
-	x_ipcFree((char *)msgData->name);	
+	x_ipcFree((char *)msgData->name);
 	x_ipcFree((char *)msgData);
 	LOCK_M_MUTEX;
 	currentMsg = GET_MESSAGE(name);
@@ -642,7 +642,7 @@ static MSG_PTR x_ipc_msgHndFind(const char *name, const char *hndName)
 		    name);
 	return NULL;
       }
-      
+
       /* Cache formatter attribtues */
       if (msgData->msgFormat != NULL)
 	cacheFormatterAttributes((FORMAT_PTR)msgData->msgFormat);
@@ -666,7 +666,7 @@ static MSG_PTR x_ipc_msgHndFind(const char *name, const char *hndName)
     msg->direct = TRUE;
     x_ipc_establishDirect(msg);
   }
-  
+
   return msg;
 }
 
@@ -685,7 +685,7 @@ MSG_PTR x_ipc_msgFind2(const char *name, const char *hndName)
   MSG_PTR msg, oldMsg, currentMsg;
   MSG_DATA_PTR msgData;
   MSG_ASK_TYPE msgAsk;
-  
+
   LOCK_M_MUTEX;
   msg = GET_MESSAGE(name);
   UNLOCK_M_MUTEX;
@@ -694,7 +694,7 @@ MSG_PTR x_ipc_msgFind2(const char *name, const char *hndName)
     oldMsg = msg;
     msgAsk.msgName = name;
     msgAsk.hndName = hndName;
-    
+
     if (x_ipcQueryCentral(X_IPC_MSG_INFO_QUERY, (void *)&msgAsk,
 			(void *)&msgData) != Success) {
       return NULL;
@@ -711,7 +711,7 @@ MSG_PTR x_ipc_msgFind2(const char *name, const char *hndName)
     UNLOCK_M_MUTEX;
     if (oldMsg && oldMsg != currentMsg) {
       /* This message has already been found and replaced */
-      x_ipcFree((char *)msgData->name);	
+      x_ipcFree((char *)msgData->name);
       x_ipcFree((char *)msgData);
       LOCK_M_MUTEX;
       currentMsg = GET_MESSAGE(name);
@@ -733,7 +733,7 @@ MSG_PTR x_ipc_msgFind2(const char *name, const char *hndName)
   return msg;
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: CONST_FORMAT_PTR x_ipc_fmtFind(const char *name)
@@ -782,7 +782,7 @@ CONST_FORMAT_PTR x_ipc_fmtFind(const char *name)
       format->format->formatter.f = NULL;
     }
     LOCK_M_MUTEX;
-    x_ipc_hashTableInsert((void *)name, 1+strlen(name), 
+    x_ipc_hashTableInsert((void *)name, 1+strlen(name),
 			  (void *)format, GET_M_GLOBAL(formatNamesTable));
     UNLOCK_M_MUTEX;
   }
@@ -797,7 +797,7 @@ CONST_FORMAT_PTR x_ipc_fmtFind(const char *name)
   return (CONST_FORMAT_PTR) format->format;
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: const char *x_ipc_messageClassName(msg_class)
@@ -812,22 +812,22 @@ CONST_FORMAT_PTR x_ipc_fmtFind(const char *name)
  *****************************************************************************/
 
 const char *x_ipc_messageClassName(X_IPC_MSG_CLASS_TYPE msg_class)
-{ 
+{
   switch(msg_class) {
-  case QueryClass: 
+  case QueryClass:
     return("Query");
-  case GoalClass: 
+  case GoalClass:
     return("Goal");
-  case CommandClass: 
+  case CommandClass:
     return("Command");
-  case PointMonitorClass: 
+  case PointMonitorClass:
     return("PMonitor");
-  case DemonMonitorClass: 
-  case PollingMonitorClass: 
+  case DemonMonitorClass:
+  case PollingMonitorClass:
     return("IMonitor");
-  case InformClass: 
+  case InformClass:
     return("Inform");
-  case ExceptionClass: 
+  case ExceptionClass:
     return("Exception");
   case BroadcastClass:
     return("Broadcast");
@@ -844,13 +844,13 @@ const char *x_ipc_messageClassName(X_IPC_MSG_CLASS_TYPE msg_class)
     return ("UNKNOWN CLASS");
 
 #ifndef TEST_CASE_COVERAGE
-  default: 
+  default:
     return ("UNKNOWN CLASS");
 #endif
   }
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: void x_ipc_checkMessageClass(msg, class)
@@ -868,18 +868,18 @@ const char *x_ipc_messageClassName(X_IPC_MSG_CLASS_TYPE msg_class)
  *****************************************************************************/
 
 void x_ipc_checkMessageClass(MSG_PTR msg, X_IPC_MSG_CLASS_TYPE msg_class)
-{ 
+{
   const char *name, *use=NULL;
-  
+
   if (msg->msgData->msg_class != msg_class) {
     name = x_ipc_messageClassName(msg_class);
-    
+
     switch (msg->msgData->msg_class) {
-    case QueryClass: 
-      use = "x_ipcQuery"; 
+    case QueryClass:
+      use = "x_ipcQuery";
       break;
     case GoalClass:
-      use = "x_ipcExpandGoal"; 
+      use = "x_ipcExpandGoal";
       break;
     case CommandClass:
       use = "x_ipcExecuteCommand";
@@ -887,19 +887,19 @@ void x_ipc_checkMessageClass(MSG_PTR msg, X_IPC_MSG_CLASS_TYPE msg_class)
     case PointMonitorClass:
       use = "x_ipcPointMonitor";
       break;
-    case InformClass: 
-      use = "x_ipcInform"; 
+    case InformClass:
+      use = "x_ipcInform";
       break;
-    case BroadcastClass: 
-      use = "x_ipcBroadcast"; 
+    case BroadcastClass:
+      use = "x_ipcBroadcast";
       break;
-    case MultiQueryClass: 
-      use = "x_ipcMultiQuery"; 
+    case MultiQueryClass:
+      use = "x_ipcMultiQuery";
       break;
 
     case UNKNOWN:
     case HandlerRegClass:
-    case ExecHndClass: 
+    case ExecHndClass:
     case ExceptionClass:
     case PollingMonitorClass:
     case DemonMonitorClass:
@@ -914,20 +914,20 @@ void x_ipc_checkMessageClass(MSG_PTR msg, X_IPC_MSG_CLASS_TYPE msg_class)
 		    msg->msgData->msg_class);
       break;
     }
-    
+
     X_IPC_MOD_ERROR3("ERROR: %s is not a %s class message.  Use function '%s' instead\n",
 		msg->msgData->name, name, use);
   }
 }
 #ifdef NMP_IPC
-
-/* Determine whether format is "[type: n]", "{int, <type: n>}", 
+
+/* Determine whether format is "[type: n]", "{int, <type: n>}",
    or something else */
 FORMAT_CLASS_TYPE ipcFormatClassType (CONST_FORMAT_PTR format)
 {
   if (!format) {
     return BadFormatFMT;
-  } else if (format->type == FixedArrayFMT) { 
+  } else if (format->type == FixedArrayFMT) {
     return FixedArrayFMT;
   } else if (format->type == StructFMT && format->formatter.a[0].i == 3 &&
 	     format->formatter.a[1].f->type == PrimitiveFMT &&
@@ -948,19 +948,19 @@ char *ipcData (CONST_FORMAT_PTR formatter, char *data)
   } else {
     switch (ipcFormatClassType(formatter)) {
     case FixedArrayFMT: return data;
-    case VarArrayFMT: 
+    case VarArrayFMT:
       data1 = data;
       data = (char *)((IPC_VAR_DATA_PTR)data1)->content;
       x_ipcFree(data1);
-      return data; 
-    default: 
+      return data;
+    default:
       X_IPC_MOD_ERROR("ipcData: Passed a general formatter\n"); return data;
       return NULL;
     }
   }
 }
 #endif /* NMP_IPC */
-
+
 #ifdef LISPWORKS_FFI_HACK
 static void setExecHndState (X_IPC_REF_PTR x_ipcRef, const char* hndName,
 			     void *data, void *clientData,
@@ -1000,7 +1000,7 @@ static void setExecHndState (X_IPC_REF_PTR x_ipcRef, const char* hndName,
  *****************************************************************************/
 
 void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
-{ 
+{
   MSG_PTR msg;
   HND_PTR hnd;
   char *data=NULL, *name, **pointerToName;
@@ -1012,7 +1012,7 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
 #ifdef LISPWORKS_FFI_HACK
   BOOLEAN isLisp;
 #endif
-  
+
   /* RTG Don't really know what intent is, but trying to use it. */
   if (dataMsg->intent == QUERY_REPLY_INTENT) {
     X_IPC_MOD_WARNING("Warning: Unknown query reply\n");
@@ -1032,17 +1032,17 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
       X_IPC_MOD_ERROR("Internal Error: x_ipc_execHnd, missing ExecHndClass class format.");
       return;
     }
-    
+
     pointerToName = (char **)x_ipc_dataMsgDecodeClass(classForm->format, dataMsg);
     name = (char *)(*pointerToName);
-    
+
     msg = x_ipc_msgHndFind(name, hnd->hndData->hndName);
     x_ipc_classDataFree(msg_class, (char *)pointerToName);
     hnd->msg = msg;
   }
   else
     msg = hnd->msg;
-  
+
   if (!msg) {
     msg = x_ipc_msgHndFind(hnd->hndData->msgName, hnd->hndData->hndName);
     hnd->msg = msg;
@@ -1051,20 +1051,20 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
       return;
     }
   }
-  
+
   x_ipcRef = x_ipcRefCreate(msg, msg->msgData->name, dataMsg->msgRef);
   x_ipcRef->responseSd = connection->writeSd;
 #ifdef NMP_IPC
   x_ipcRef->dataLength = dataMsg->msgTotal;
 #endif
-  
-  /* If the handler is *not* in the message list, it was probably deregistered 
+
+  /* If the handler is *not* in the message list, it was probably deregistered
      after central sent it the message */
   if (x_ipc_listMemberItem(hnd, msg->hndList)) {
-    data = (char *)x_ipc_decodeDataInLanguage(dataMsg, msg->msgData->msgFormat, 
+    data = (char *)x_ipc_decodeDataInLanguage(dataMsg, msg->msgData->msgFormat,
 					hnd->hndLanguage);
     x_ipc_dataMsgFree(dataMsg);
-    
+
     LOCK_CM_MUTEX;
     tmpParentRef = GET_C_GLOBAL(parentRefGlobal);
     GET_C_GLOBAL(parentRefGlobal) = (DIRECT_CONNECTION(connection)
@@ -1098,7 +1098,7 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
 	    byteOrder = GET_M_GLOBAL(byteOrder);
 	    UNLOCK_M_MUTEX;
 	      /* Skip if the data is simple -- already fully decoded */
-	    if (!(byteOrder == BYTE_ORDER && 
+	    if (!(byteOrder == BYTE_ORDER &&
 		  x_ipc_sameFixedSizeDataBuffer(msg->msgData->resFormat))) {
 	      void *data1;
 	      IPC_unmarshall(msg->msgData->resFormat, data, &data1);
@@ -1106,6 +1106,8 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
 	      data = (char *)data1;
 	    }
 	  }
+    x_ipcRef->byteOrder = dataMsg->dataByteOrder;
+    x_ipcRef->alignment = dataMsg->alignment;
 	  (*((X_IPC_HND_DATA_FN)hnd->hndProc))(x_ipcRef, data, hnd->clientData);
 	  x_ipcSetContext(currentContext);
 	  endExecHandler(x_ipcRef, connection, msg, tmpParentRef);
@@ -1117,13 +1119,13 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
     endExecHandler(x_ipcRef, connection, msg, tmpParentRef);
 #endif
   } else {
-    X_IPC_MOD_WARNING2("WARNING: Message '%s' received but not processed: Handler '%s' not registered\n", 
+    X_IPC_MOD_WARNING2("WARNING: Message '%s' received but not processed: Handler '%s' not registered\n",
 		  msg->msgData->name, hnd->hndData->hndName);
     switch (msg->msgData->msg_class) {
     case QueryClass:
     case MultiQueryClass:
       x_ipcNullReply(x_ipcRef); break;
-      
+
     case InformClass:
     case BroadcastClass: {
       BOOLEAN direct;
@@ -1149,7 +1151,7 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
 #ifndef TEST_CASE_COVERAGE
     default:
 #endif
-      x_ipcFailure(x_ipcRef, "Deregistered Handler", NULL); break;      
+      x_ipcFailure(x_ipcRef, "Deregistered Handler", NULL); break;
     }
     LOCK_M_MUTEX;
     if (!GET_M_GLOBAL(enableDistributedResponses)) {
@@ -1158,8 +1160,8 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
     UNLOCK_M_MUTEX;
   }
 }
-    
-void endExecHandler (X_IPC_REF_PTR x_ipcRef, CONNECTION_PTR connection, 
+
+void endExecHandler (X_IPC_REF_PTR x_ipcRef, CONNECTION_PTR connection,
 		     MSG_PTR msg, int tmpParentRef)
 {
   int sd = connection->readSd;
@@ -1217,12 +1219,12 @@ void endExecHandler (X_IPC_REF_PTR x_ipcRef, CONNECTION_PTR connection,
     }
     if (x_ipcRef->responded == TRUE) x_ipcRefFree(x_ipcRef);
   }
-    
+
   LOCK_CM_MUTEX;
   GET_C_GLOBAL(parentRefGlobal) = tmpParentRef;
   UNLOCK_CM_MUTEX;
 }
-
+
 /******************************************************************************
  *
  * FUNCTION: BOOLEAN x_ipc_execFdHnd(fd)
@@ -1249,7 +1251,7 @@ BOOLEAN x_ipc_execFdHnd(int fd)
   }
   return (fdHndData != NULL);
 }
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcReply(dispatch, data)
@@ -1267,7 +1269,7 @@ BOOLEAN x_ipc_execFdHnd(int fd)
 X_IPC_RETURN_VALUE_TYPE x_ipcReply(X_IPC_REF_PTR ref, const void *data)
 {
   X_IPC_RETURN_VALUE_TYPE status;
-  
+
   ref->responded = TRUE;
 
   status = x_ipc_sendResponse(ref, (MSG_PTR)NULL, (char *)data, ReplyClass,
@@ -1278,11 +1280,11 @@ X_IPC_RETURN_VALUE_TYPE x_ipcReply(X_IPC_REF_PTR ref, const void *data)
     x_ipcRefFree(ref);
   }
   UNLOCK_M_MUTEX;
-  
+
   return status;
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcNullReply(ref)
@@ -1300,7 +1302,7 @@ X_IPC_RETURN_VALUE_TYPE x_ipcNullReply(X_IPC_REF_PTR ref)
   return x_ipcReply(ref, (void *)NULL);
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcSuccess(ref)
@@ -1325,19 +1327,19 @@ X_IPC_RETURN_VALUE_TYPE x_ipcSuccess(X_IPC_REF_PTR ref)
   ref->responded = TRUE;
 #endif
 
-  status = x_ipc_sendResponse(ref, (MSG_PTR)NULL, (char *)NULL, 
+  status = x_ipc_sendResponse(ref, (MSG_PTR)NULL, (char *)NULL,
 			      SuccessClass, (char *)NULL, sd);
-  
+
   LOCK_M_MUTEX;
   if (GET_M_GLOBAL(enableDistributedResponses)) {
     x_ipcRefFree(ref);
   }
   UNLOCK_M_MUTEX;
-  
+
   return status;
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcFailure(ref, description, data)
@@ -1353,20 +1355,20 @@ X_IPC_RETURN_VALUE_TYPE x_ipcSuccess(X_IPC_REF_PTR ref)
  *
  *****************************************************************************/
 
-X_IPC_RETURN_VALUE_TYPE x_ipcFailure(X_IPC_REF_PTR ref, const char *description, 
+X_IPC_RETURN_VALUE_TYPE x_ipcFailure(X_IPC_REF_PTR ref, const char *description,
 				 const void *data)
 {
   MSG_PTR msg;
   int tplConstr, tmpParentRef=0, sd;
   X_IPC_RETURN_VALUE_TYPE status;
-  
+
   LOCK_CM_MUTEX;
   ref->responded = TRUE;
 
   /* If the response is to a message, but not from within the handler,
      need to force the parent reference to be correct */
   if (GET_M_GLOBAL(enableDistributedResponses) && ref) {
-    tmpParentRef = GET_C_GLOBAL(parentRefGlobal);    
+    tmpParentRef = GET_C_GLOBAL(parentRefGlobal);
     GET_C_GLOBAL(parentRefGlobal) = ref->refId;
   }
   UNLOCK_CM_MUTEX;
@@ -1379,29 +1381,29 @@ X_IPC_RETURN_VALUE_TYPE x_ipcFailure(X_IPC_REF_PTR ref, const char *description,
 		  msg->msgData->name);
       return WrongMsgClass;
     }
-    
+
     tplConstr = NO_TPLCONSTR;
-    (void)x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg, (char *)data, 
+    (void)x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg, (char *)data,
 			    (char *)&tplConstr, NO_REF);
   }
-  
+
   LOCK_CM_MUTEX;
   sd =  GET_C_GLOBAL(serverWrite);
   UNLOCK_CM_MUTEX;
   status = x_ipc_sendResponse(ref, (MSG_PTR)NULL, (char *)NULL, FailureClass,
 			      (char *)&description, sd);
-  
+
   LOCK_CM_MUTEX;
   if (GET_M_GLOBAL(enableDistributedResponses) && ref) {
     GET_C_GLOBAL(parentRefGlobal) = tmpParentRef;
     x_ipcRefFree(ref);
   }
   UNLOCK_CM_MUTEX;
-  
+
   return status;
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcQuerySend(name, query, ref)
@@ -1419,33 +1421,33 @@ X_IPC_RETURN_VALUE_TYPE x_ipcFailure(X_IPC_REF_PTR ref, const char *description,
  *
  *****************************************************************************/
 #ifndef NMP_IPC
-X_IPC_RETURN_VALUE_TYPE x_ipcQuerySend(const char *name, 
-				   void *query, 
+X_IPC_RETURN_VALUE_TYPE x_ipcQuerySend(const char *name,
+				   void *query,
 				   X_IPC_REF_PTR *ref)
 {
   int32 refId;
   MSG_PTR msg;
   X_IPC_RETURN_VALUE_TYPE returnValue;
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
   x_ipc_checkMessageClass(msg, QueryClass);
-  
+
   refId = x_ipc_nextSendMessageRef();
-  returnValue = x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg, 
+  returnValue = x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg,
 				  (char *)query, (char *)NULL, refId);
-  
+
   *ref = x_ipcRefCreate(msg, name, refId);
 #ifdef LISP
   LOCK_M_MUTEX;
   GET_M_GLOBAL(lispRefSaveGlobal) = *ref;
   UNLOCK_M_MUTEX;
 #endif /* LISP */
-  
+
   return returnValue;
 }
 #endif
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcQueryReceive(ref, reply)
@@ -1471,17 +1473,17 @@ X_IPC_RETURN_VALUE_TYPE x_ipcQuerySend(const char *name,
 X_IPC_RETURN_VALUE_TYPE x_ipcQueryReceive(X_IPC_REF_PTR ref, void *reply)
 {
   X_IPC_RETURN_VALUE_TYPE returnValue;
-  
+
   returnValue = x_ipc_waitForReply(ref, (char *)reply);
-  
+
   x_ipcRefFree(ref);
-  
+
   return returnValue;
 }
-
+
 /******************************************************************************
  *
- * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcQueryNotify(name, query, 
+ * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcQueryNotify(name, query,
  *                                                replyHandler, clientData)
  *
  * DESCRIPTION: Send the query and invoke the replyHandler function when
@@ -1500,7 +1502,7 @@ X_IPC_RETURN_VALUE_TYPE x_ipcQueryReceive(X_IPC_REF_PTR ref, void *reply)
 
 X_IPC_RETURN_VALUE_TYPE x_ipc_queryNotifySend (MSG_PTR msg, const char *name,
 					       void *query,
-					       REPLY_HANDLER_FN replyHandler, 
+					       REPLY_HANDLER_FN replyHandler,
 					       HND_LANGUAGE_ENUM language,
 					       void *clientData)
 {
@@ -1540,27 +1542,27 @@ X_IPC_RETURN_VALUE_TYPE x_ipc_queryNotifySend (MSG_PTR msg, const char *name,
 }
 
 #ifndef NMP_IPC
-X_IPC_RETURN_VALUE_TYPE _x_ipcQueryNotify(const char *name, void *query, 
-				      REPLY_HANDLER_FN replyHandler, 
+X_IPC_RETURN_VALUE_TYPE _x_ipcQueryNotify(const char *name, void *query,
+				      REPLY_HANDLER_FN replyHandler,
 				      HND_LANGUAGE_ENUM language,
 				      void *clientData)
 {
   MSG_PTR msg;
- 
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
   x_ipc_checkMessageClass(msg, QueryClass);
   return x_ipc_queryNotifySend(msg, name, query, replyHandler, language, clientData);
 }
 
-X_IPC_RETURN_VALUE_TYPE x_ipcQueryNotify(const char *name, void *query, 
-				     REPLY_HANDLER_FN replyHandler, 
+X_IPC_RETURN_VALUE_TYPE x_ipcQueryNotify(const char *name, void *query,
+				     REPLY_HANDLER_FN replyHandler,
 				     void *clientData)
 {
   return _x_ipcQueryNotify(name, query, replyHandler, C_LANGUAGE, clientData);
 }
 #endif
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcQuery(name, query, reply)
@@ -1588,23 +1590,23 @@ X_IPC_RETURN_VALUE_TYPE x_ipcQueryFd(const char *name,
   MSG_PTR msg;
   X_IPC_REF_PTR ref;
   X_IPC_RETURN_VALUE_TYPE returnValue;
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
   x_ipc_checkMessageClass(msg, QueryClass);
-  
+
   refId = x_ipc_nextSendMessageRef();
-  returnValue = x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg, 
+  returnValue = x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg,
 				  (char *)queryData, (char *)NULL, refId);
-  
+
   ref = x_ipcRefCreate(msg, name, refId);
-  
+
   if (returnValue == Success) {
     returnValue = x_ipc_waitForReplyFrom(ref, (char *)replyData,
 				   FALSE, WAITFOREVER, fd);
   }
   x_ipcRefFree(ref);
-  
+
   return returnValue;
 }
 
@@ -1627,7 +1629,7 @@ X_IPC_RETURN_VALUE_TYPE x_ipcQuery(const char *name,
   return x_ipcQueryFd(name,queryData,replyData,NO_FD);
 }
 
-
+
 #ifndef NMP_IPC
 /******************************************************************************
  *
@@ -1647,12 +1649,12 @@ X_IPC_RETURN_VALUE_TYPE x_ipcQuery(const char *name,
 int32 testInconsistent(int32 tplConstraints)
 {
   int index;
-  
+
   LOCK_M_MUTEX;
   for (index=0; GET_M_GLOBAL(inconsistentConstraintsGlobal)[index] != 0;
        index++)
-    if ((GET_M_GLOBAL(inconsistentConstraintsGlobal)[index] & 
-	 tplConstraints) == 
+    if ((GET_M_GLOBAL(inconsistentConstraintsGlobal)[index] &
+	 tplConstraints) ==
 	GET_M_GLOBAL(inconsistentConstraintsGlobal)[index]) {
       UNLOCK_M_MUTEX;
       return TRUE;
@@ -1661,12 +1663,12 @@ int32 testInconsistent(int32 tplConstraints)
   return FALSE;
 }
 
-
+
 
 /******************************************************************************
  *
- * FUNCTION: X_IPC_RETURN_VALUE_TYPE 
- * x_ipcExpandGoalWithConstraints(ref, name, 
+ * FUNCTION: X_IPC_RETURN_VALUE_TYPE
+ * x_ipcExpandGoalWithConstraints(ref, name,
  *                              data, tplConstr)
  *
  * DESCRIPTION:
@@ -1674,32 +1676,32 @@ int32 testInconsistent(int32 tplConstraints)
  * INPUTS:
  * X_IPC_REF_PTR ref;
  * const char *name;
- * void *data; 
+ * void *data;
  * int tplConstr;
  *
  * OUTPUTS: X_IPC_RETURN_VALUE_TYPE
  *
  *****************************************************************************/
 
-X_IPC_RETURN_VALUE_TYPE x_ipcExpandGoalWithConstraints(X_IPC_REF_PTR ref, 
+X_IPC_RETURN_VALUE_TYPE x_ipcExpandGoalWithConstraints(X_IPC_REF_PTR ref,
 						   const char *name,
 						   const void *data,
 						   int32 tplConstr)
-{ 
+{
   MSG_PTR msg;
-  
+
   if (testInconsistent(tplConstr)) {
     X_IPC_MOD_ERROR1("ERROR: Inconsistent temporal constraints for goal %s\n", name);
     return Failure;
   }
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
   x_ipc_checkMessageClass(msg, GoalClass);
   return x_ipc_sendMessage(ref, msg, (char *)data, (char *)&tplConstr, NO_REF);
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcExpandGoal(name, data)
@@ -1714,21 +1716,21 @@ X_IPC_RETURN_VALUE_TYPE x_ipcExpandGoalWithConstraints(X_IPC_REF_PTR ref,
  *****************************************************************************/
 
 X_IPC_RETURN_VALUE_TYPE x_ipcExpandGoal(const char *name, const void *data)
-{ 
+{
   MSG_PTR msg;
   int tplConstr;
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
   x_ipc_checkMessageClass(msg, GoalClass);
-  
+
   tplConstr = SEQ_ACH;
-  
+
   return x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg, (char *)data,
 			   (char *)&tplConstr, NO_REF);
 }
 #endif /* NMP_IPC */
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcInform(name, data)
@@ -1743,13 +1745,13 @@ X_IPC_RETURN_VALUE_TYPE x_ipcExpandGoal(const char *name, const void *data)
  *****************************************************************************/
 
 X_IPC_RETURN_VALUE_TYPE x_ipcInform(const char *name, const void *data)
-{ 
+{
   MSG_PTR msg;
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return Failure;
   x_ipc_checkMessageClass(msg, InformClass);
-  
+
   return x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg, (char *)data,
 			   (char *)NULL, NO_REF);
 }
@@ -1770,11 +1772,11 @@ X_IPC_RETURN_VALUE_TYPE x_ipcInform(const char *name, const void *data)
  *****************************************************************************/
 
 X_IPC_RETURN_VALUE_TYPE x_ipcAddConstraint(const char *name, const void *data)
-{ 
+{
   return x_ipcInform(name, data);
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcExecuteCommand(name, data)
@@ -1789,65 +1791,65 @@ X_IPC_RETURN_VALUE_TYPE x_ipcAddConstraint(const char *name, const void *data)
  *****************************************************************************/
 
 X_IPC_RETURN_VALUE_TYPE x_ipcExecuteCommand(const char *name, const void *data)
-{ 
+{
   MSG_PTR msg;
   BLOCK_COM_TYPE blockCom;
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL)
     return MsgUndefined;
-  
+
   x_ipc_checkMessageClass(msg, CommandClass);
-  
+
   blockCom.waitFlag = 0;
   blockCom.tplConstr = SEQ_ACH;
-  
+
   return x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg, (char *)data,
 			   (char *)&blockCom, NO_REF);
 }
 
-
+
 /******************************************************************************
  *
- * FUNCTION: X_IPC_RETURN_VALUE_TYPE 
- * x_ipcExecuteCommandWithConstraints(ref, name, 
+ * FUNCTION: X_IPC_RETURN_VALUE_TYPE
+ * x_ipcExecuteCommandWithConstraints(ref, name,
  *                                  data, tplConstr)
  *
  * DESCRIPTION:
  *
  * INPUTS:
- * X_IPC_REF_PTR ref; 
+ * X_IPC_REF_PTR ref;
  * const char *name;
- * void *data; 
+ * void *data;
  * int tplConstr;
  *
  * OUTPUTS: X_IPC_RETURN_VALUE_TYPE
  *
  *****************************************************************************/
 
-X_IPC_RETURN_VALUE_TYPE x_ipcExecuteCommandWithConstraints(X_IPC_REF_PTR ref, 
+X_IPC_RETURN_VALUE_TYPE x_ipcExecuteCommandWithConstraints(X_IPC_REF_PTR ref,
 						       const char *name,
-						       const void *data, 
+						       const void *data,
 						       int32 tplConstr)
-{ 
+{
   MSG_PTR msg;
   BLOCK_COM_TYPE blockCom;
-  
+
   if (testInconsistent(tplConstr)) {
     X_IPC_MOD_ERROR1("ERROR: Inconsistent temporal constraints for command %s\n", name);
     return Failure;
   }
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
   x_ipc_checkMessageClass(msg, CommandClass);
-  
+
   blockCom.waitFlag = 0;
   blockCom.tplConstr = tplConstr;
   return x_ipc_sendMessage(ref, msg, (char *)data, (char *)&blockCom, NO_REF);
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcWaitForCommand(name, data)
@@ -1860,7 +1862,7 @@ X_IPC_RETURN_VALUE_TYPE x_ipcExecuteCommandWithConstraints(X_IPC_REF_PTR ref,
  * OUTPUTS: X_IPC_RETURN_VALUE_TYPE
  *
  * NOTES:
- * 14-Aug-91: fedor: should check return valuse from 
+ * 14-Aug-91: fedor: should check return valuse from
  * x_ipc_sendMessage and x_ipc_waitForReply.
  *
  *****************************************************************************/
@@ -1871,71 +1873,71 @@ X_IPC_RETURN_VALUE_TYPE x_ipcWaitForCommand(const char *name, const void *data)
   return x_ipcWaitForCommandWithConstraints((X_IPC_REF_PTR)NULL,name,data,SEQ_ACH);
 }
 
-
+
 /******************************************************************************
  *
- * FUNCTION: X_IPC_RETURN_VALUE_TYPE 
- * x_ipcWaitForCommandWithConstraints(ref, name, 
+ * FUNCTION: X_IPC_RETURN_VALUE_TYPE
+ * x_ipcWaitForCommandWithConstraints(ref, name,
  *                                  data, tplConstr)
  *
  * DESCRIPTION:
  *
  * INPUTS:
- * X_IPC_REF_PTR ref; 
+ * X_IPC_REF_PTR ref;
  * const char *name;
- * void *data; 
+ * void *data;
  * int tplConstr;
  *
  * OUTPUTS: X_IPC_RETURN_VALUE_TYPE
  *
  * NOTES:
- * 14-Aug-91: fedor: should check return valuse from 
+ * 14-Aug-91: fedor: should check return valuse from
  * x_ipc_sendMessage and x_ipc_waitForReply.
  *
  *****************************************************************************/
 
-X_IPC_RETURN_VALUE_TYPE x_ipcWaitForCommandWithConstraints(X_IPC_REF_PTR ref, 
+X_IPC_RETURN_VALUE_TYPE x_ipcWaitForCommandWithConstraints(X_IPC_REF_PTR ref,
 						       const char *name,
-						       const void *data, 
+						       const void *data,
 						       int32 tplConstr)
-{ 
+{
   int32 refId;
   MSG_PTR msg;
   X_IPC_REF_PTR x_ipcRef;
   BLOCK_COM_TYPE blockCom;
   X_IPC_MSG_CLASS_TYPE replyClass;
-  
+
   if (testInconsistent(tplConstr)) {
     X_IPC_MOD_ERROR1("ERROR: Inconsistent temporal constraints for command %s\n", name);
     return Failure;
   }
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
   x_ipc_checkMessageClass(msg, CommandClass);
-  
+
   blockCom.waitFlag = 1;
   blockCom.tplConstr = tplConstr;
-  
+
   refId = x_ipc_nextSendMessageRef();
   if (x_ipc_sendMessage(ref, msg, (char *)data, (char *)&blockCom, refId)
       != Success){
     return Failure;
   }
-  
+
   x_ipcRef = x_ipcRefCreate(msg, name, refId);
-  
+
   (void)x_ipc_waitForReply(x_ipcRef, (char *)&replyClass);
-  
+
   x_ipcRefFree(x_ipcRef);
-  
+
   if (replyClass == SuccessClass)
     return Success;
   else
     return Failure;
 }
 #endif /* NMP_IPC */
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcBroadcast(name, data)
@@ -1951,25 +1953,25 @@ X_IPC_RETURN_VALUE_TYPE x_ipcWaitForCommandWithConstraints(X_IPC_REF_PTR ref,
  *****************************************************************************/
 
 X_IPC_RETURN_VALUE_TYPE x_ipcBroadcast(const char *name, const void *data)
-{ 
+{
   MSG_PTR msg;
   STR_LIST_PTR broadcasts;
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
   x_ipc_checkMessageClass(msg, BroadcastClass);
-  
+
   LOCK_CM_MUTEX;
   broadcasts = GET_C_GLOBAL(broadcastMsgs);
   UNLOCK_CM_MUTEX;
   if ((broadcasts == NULL) || (x_ipc_strListMemberItem(name, broadcasts)))
-    return x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg, (char *)data, 
+    return x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg, (char *)data,
 			     (char *)NULL, NO_REF);
   else
     return Success;
 }
 
-
+
 #ifndef NMP_IPC
 /******************************************************************************
  *
@@ -2003,27 +2005,27 @@ X_IPC_RETURN_VALUE_TYPE x_ipcMultiQuery(const char *name, void *query, int32 max
   MSG_PTR msg;
   MULTI_QUERY_CLASS_TYPE multiQueryClassData;
   X_IPC_RETURN_VALUE_TYPE returnValue;
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
   x_ipc_checkMessageClass(msg, MultiQueryClass);
-  
+
   refId = x_ipc_nextSendMessageRef();
   multiQueryClassData.num = 0;
   multiQueryClassData.max = max;
   returnValue = x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg, (char *)query,
 				  (char *)&multiQueryClassData, refId);
-  
+
   *refPtr = x_ipcRefCreate(msg, name, refId);
 #ifdef LISP
   LOCK_CM_MUTEX;
   GET_M_GLOBAL(lispRefSaveGlobal) = *refPtr;
   UNLOCK_CM_MUTEX;
 #endif /* LISP */
-  
+
   return returnValue;
 }
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcMultiReceive(ref, reply, timeout)
@@ -2038,9 +2040,9 @@ X_IPC_RETURN_VALUE_TYPE x_ipcMultiQuery(const char *name, void *query, int32 max
  *  The defined
  *    value WAITFOREVER indicates not to return until the reply is received .
  * To receive all the responses to a multi-query, loop doing a x_ipcMultiReceive.
- *    When no more responses will be forthcoming, the return value of 
+ *    When no more responses will be forthcoming, the return value of
  *    x_ipcMultiReceive is "NullReply".
- * For example:  
+ * For example:
  * while (x_ipcMultiReceive(mqRef, WAITFOREVER, &reply) != NullReply) {
  *                 -- Process and/or save reply data here --
  *                 }
@@ -2050,18 +2052,18 @@ X_IPC_RETURN_VALUE_TYPE x_ipcMultiQuery(const char *name, void *query, int32 max
  *         long timeout;
  *
  * OUTPUTS: X_IPC_RETURN_VALUE_TYPE
- *          Can have the values: 
+ *          Can have the values:
  *          "Success" -- a reply was received
  *          "NullReply" -- indicates that no more replies will be forthcoming.
  *		          This can come about either because the "max" number
- *                         of replies were received (see x_ipcMultiSend), or all 
+ *                         of replies were received (see x_ipcMultiSend), or all
  *                         the handlers registered for that message replied.
- *          "TimeOut" -- "timeout" seconds elapsed without a message being 
+ *          "TimeOut" -- "timeout" seconds elapsed without a message being
  *                        received.
  *
- * NOTE: The responses are received in the order that the modules handle 
+ * NOTE: The responses are received in the order that the modules handle
  *       the query.
- *       If "max" < number registered handlers, then the "max" fastest replies 
+ *       If "max" < number registered handlers, then the "max" fastest replies
  *       will be reported.
  *
  *****************************************************************************/
@@ -2070,16 +2072,16 @@ X_IPC_RETURN_VALUE_TYPE x_ipcMultiReceive(X_IPC_REF_PTR ref, void *reply,
 				      long timeout)
 {
   X_IPC_RETURN_VALUE_TYPE returnValue;
-  
+
   returnValue = x_ipc_waitForReplyFrom(ref, (char *)reply, FALSE, timeout, NO_FD);
-  
-  if (returnValue == NullReply) 
+
+  if (returnValue == NullReply)
     x_ipcRefFree(ref);
-  
+
   return returnValue;
 }
 #endif /* NMP_IPC */
-
+
 /******************************************************************************
  *
  * FUNCTION: void x_ipcEnableDistributedResponses()
@@ -2088,12 +2090,12 @@ X_IPC_RETURN_VALUE_TYPE x_ipcMultiReceive(X_IPC_REF_PTR ref, void *reply,
  * DESCRIPTION: Enable messages to be replied to (via x_ipcReply, x_ipcSuccess,
  *              x_ipcFailure) by a procedure other than the handler.  In other
  *              words, a handler can return without issuing a response, and
- *              (later) another procedure can asynchronously respond to the 
+ *              (later) another procedure can asynchronously respond to the
  *              message (using the X_IPC_REF_PTR that has been saved somehow by
  *              the original handler).
  *
  *              This capability is useful for modules that must interact with
- *              an asynchronous device: a command or query is passed to the 
+ *              an asynchronous device: a command or query is passed to the
  *              device, and the response is handled by a different call-back
  *              procedure.
  *
@@ -2102,10 +2104,10 @@ X_IPC_RETURN_VALUE_TYPE x_ipcMultiReceive(X_IPC_REF_PTR ref, void *reply,
  *
  * OUTPUTS: none
  *
- * NOTES: If distributed responses are enabled, x_ipcReply, x_ipcSuccess and 
+ * NOTES: If distributed responses are enabled, x_ipcReply, x_ipcSuccess and
  *        x_ipcFailure all free the X_IPC_REF_PTR.  One should not attempt to
- *        access the pointer after one of those calls have been made 
- *        (in normal situations, the reference is not freed until after 
+ *        access the pointer after one of those calls have been made
+ *        (in normal situations, the reference is not freed until after
  *        the handler returns).
  *
  *****************************************************************************/
@@ -2124,7 +2126,7 @@ void x_ipcDisableDistributedResponses(void)
   UNLOCK_M_MUTEX;
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: void x_ipcWillListen(int listen)
@@ -2133,7 +2135,7 @@ void x_ipcDisableDistributedResponses(void)
  * listen for messages.
  *
  * INPUTS:
- * 
+ *
  * OUTPUTS: void
  *
  *****************************************************************************/
@@ -2145,19 +2147,19 @@ void x_ipcWillListen(int listen)
   UNLOCK_CM_MUTEX;
 }
 
-
+
 #ifndef NMP_IPC
 /******************************************************************************
  *
- * FUNCTION: X_IPC_RETURN_VALUE_TYPE 
+ * FUNCTION: X_IPC_RETURN_VALUE_TYPE
  * x_ipcExecute(ref, name, data, tplConstr)
  *
  * DESCRIPTION:
  *
  * INPUTS:
- * X_IPC_REF_PTR ref; 
+ * X_IPC_REF_PTR ref;
  * const char *name;
- * void *data; 
+ * void *data;
  * int tplConstr;
  *
  * OUTPUTS: X_IPC_RETURN_VALUE_TYPE
@@ -2168,7 +2170,7 @@ X_IPC_RETURN_VALUE_TYPE x_ipcExecute(const char *name,
 				 const void *data)
 {
   MSG_PTR msg;
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
 
@@ -2186,32 +2188,32 @@ X_IPC_RETURN_VALUE_TYPE x_ipcExecute(const char *name,
   return WrongMsgClass;
 }
 
-
+
 /******************************************************************************
  *
- * FUNCTION: X_IPC_RETURN_VALUE_TYPE 
- * x_ipcExecuteWithConstraints(ref, name, 
+ * FUNCTION: X_IPC_RETURN_VALUE_TYPE
+ * x_ipcExecuteWithConstraints(ref, name,
  *                                  data, tplConstr)
  *
  * DESCRIPTION:
  *
  * INPUTS:
- * X_IPC_REF_PTR ref; 
+ * X_IPC_REF_PTR ref;
  * const char *name;
- * void *data; 
+ * void *data;
  * int tplConstr;
  *
  * OUTPUTS: X_IPC_RETURN_VALUE_TYPE
  *
  *****************************************************************************/
 
-X_IPC_RETURN_VALUE_TYPE x_ipcExecuteWithConstraints(X_IPC_REF_PTR ref, 
+X_IPC_RETURN_VALUE_TYPE x_ipcExecuteWithConstraints(X_IPC_REF_PTR ref,
 						const char *name,
-						const void *data, 
+						const void *data,
 						int tplConstr)
 {
   MSG_PTR msg;
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
 
@@ -2229,31 +2231,31 @@ X_IPC_RETURN_VALUE_TYPE x_ipcExecuteWithConstraints(X_IPC_REF_PTR ref,
   return WrongMsgClass;
 }
 
-
+
 /******************************************************************************
  *
- * FUNCTION: X_IPC_RETURN_VALUE_TYPE 
+ * FUNCTION: X_IPC_RETURN_VALUE_TYPE
  * x_ipcWaitForGoalWithConstraints(ref, name, data, tplConstr)
  *
  * DESCRIPTION:
  *
  * INPUTS:
- * X_IPC_REF_PTR ref; 
+ * X_IPC_REF_PTR ref;
  * const char *name;
- * void *data; 
+ * void *data;
  * int tplConstr;
  *
  * OUTPUTS: X_IPC_RETURN_VALUE_TYPE
  *
  * NOTES:
- * 14-Aug-91: fedor: should check return valuse from 
+ * 14-Aug-91: fedor: should check return valuse from
  * x_ipc_sendMessage and x_ipc_waitForReply.
  *
  *****************************************************************************/
 
-X_IPC_RETURN_VALUE_TYPE x_ipcWaitForGoalWithConstraints(X_IPC_REF_PTR ref, 
+X_IPC_RETURN_VALUE_TYPE x_ipcWaitForGoalWithConstraints(X_IPC_REF_PTR ref,
 						    const char *name,
-						    const void *data, 
+						    const void *data,
 						    int tplConstr)
 {
   int32 refId;
@@ -2261,63 +2263,63 @@ X_IPC_RETURN_VALUE_TYPE x_ipcWaitForGoalWithConstraints(X_IPC_REF_PTR ref,
   X_IPC_REF_PTR x_ipcRef;
   BLOCK_COM_TYPE blockCom;
   X_IPC_MSG_CLASS_TYPE replyClass;
-  
+
   if (testInconsistent(tplConstr)) {
     X_IPC_MOD_ERROR1("ERROR: Inconsistent temporal constraints for command %s\n", name);
     return Failure;
   }
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
   x_ipc_checkMessageClass(msg, GoalClass);
-  
+
   blockCom.waitFlag = 1;
   blockCom.tplConstr = tplConstr;
-  
+
   refId = x_ipc_nextSendMessageRef();
   (void)x_ipc_sendMessage(ref, msg, (char *)data, (char *)&blockCom, refId);
-  
+
   x_ipcRef = x_ipcRefCreate(msg, name, refId);
-  
+
   (void)x_ipc_waitForReply(x_ipcRef, (char *)&replyClass);
-  
+
   x_ipcRefFree(x_ipcRef);
-  
+
   if (replyClass == SuccessClass)
     return Success;
   else
     return Failure;
 }
 
-
+
 /******************************************************************************
  *
- * FUNCTION: X_IPC_RETURN_VALUE_TYPE 
+ * FUNCTION: X_IPC_RETURN_VALUE_TYPE
  * x_ipcWaitForExecutionWithConstraints(ref, name, data, tplConstr)
  *
  * DESCRIPTION:
  *
  * INPUTS:
- * X_IPC_REF_PTR ref; 
+ * X_IPC_REF_PTR ref;
  * const char *name;
- * void *data; 
+ * void *data;
  * int tplConstr;
  *
  * OUTPUTS: X_IPC_RETURN_VALUE_TYPE
  *
  * NOTES:
- * 14-Aug-91: fedor: should check return valuse from 
+ * 14-Aug-91: fedor: should check return valuse from
  * x_ipc_sendMessage and x_ipc_waitForReply.
  *
  *****************************************************************************/
 
-X_IPC_RETURN_VALUE_TYPE x_ipcWaitForExecutionWithConstraints(X_IPC_REF_PTR ref, 
+X_IPC_RETURN_VALUE_TYPE x_ipcWaitForExecutionWithConstraints(X_IPC_REF_PTR ref,
 							 const char *name,
-							 const void *data, 
+							 const void *data,
 							 int tplConstr)
-{ 
+{
   MSG_PTR msg;
-  
+
   msg = x_ipc_msgFind(name);
   if (msg == NULL) return MsgUndefined;
 
@@ -2335,7 +2337,7 @@ X_IPC_RETURN_VALUE_TYPE x_ipcWaitForExecutionWithConstraints(X_IPC_REF_PTR ref,
   return WrongMsgClass;
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: X_IPC_RETURN_VALUE_TYPE x_ipcWaitForExecution(name, data)
@@ -2348,7 +2350,7 @@ X_IPC_RETURN_VALUE_TYPE x_ipcWaitForExecutionWithConstraints(X_IPC_REF_PTR ref,
  * OUTPUTS: X_IPC_RETURN_VALUE_TYPE
  *
  * NOTES:
- * 14-Aug-91: fedor: should check return valuse from 
+ * 14-Aug-91: fedor: should check return valuse from
  * x_ipc_sendMessage and x_ipc_waitForReply.
  *
  *****************************************************************************/
@@ -2356,7 +2358,7 @@ X_IPC_RETURN_VALUE_TYPE x_ipcWaitForExecutionWithConstraints(X_IPC_REF_PTR ref,
 X_IPC_RETURN_VALUE_TYPE x_ipcWaitForExecution(const char *name,
 					  const void *data)
 {
-  
+
   return x_ipcWaitForExecutionWithConstraints((X_IPC_REF_PTR)NULL,
 					    name,
 					    data,

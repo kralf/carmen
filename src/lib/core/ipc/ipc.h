@@ -6,7 +6,7 @@
  *
  * FILE: ipc.h
  *
- * ABSTRACT: External header file for IPC, defining API and 
+ * ABSTRACT: External header file for IPC, defining API and
  *           predefined constants.
  *
  * REVISION HISTORY
@@ -132,7 +132,7 @@
 /* Using MAXINT directly produces a compiler warning */
 #define IPC_VARIABLE_LENGTH (0xFFFFFFFF)
 #define IPC_FIXED_LENGTH    (IPC_VARIABLE_LENGTH-1)
-
+
 /*****************************************************************
  *                EXTERNAL TYPE DEFINITIONS
  *****************************************************************/
@@ -180,9 +180,9 @@ typedef void (*FD_HANDLER_TYPE)(int fd, void *clientData);
 
 typedef void (*CONNECT_HANDLE_TYPE)(const char *moduleName, void *clientData);
 
-typedef void (*CHANGE_HANDLE_TYPE)(const char *msgName, int numHandlers, 
+typedef void (*CHANGE_HANDLE_TYPE)(const char *msgName, int numHandlers,
 				   void *clientData);
-
+
 /*****************************************************************
  *                EXTERNAL GLOBAL VARIABLES
  *****************************************************************/
@@ -198,7 +198,7 @@ extern IPC_ERROR_TYPE IPC_errno;
  *****************************************************************/
 
 /*  EXTERN_FUNCTION( rtn name, (arg types) );
- *	Macro to make external function declarations portable between 
+ *	Macro to make external function declarations portable between
  *      the major C dialects: C, ANSI C, and C++.
  */
 
@@ -248,7 +248,7 @@ IPC_EXTERN_FUNCTION (int IPC_isModuleConnected,
 IPC_EXTERN_FUNCTION (fd_set IPC_getConnections, (void));
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_defineMsg,
-		     (const char *msgName, 
+		     (const char *msgName,
 		      unsigned int length,
 		      const char *formatString));
 
@@ -282,11 +282,11 @@ IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_subscribeData,
 		      void *clientData));
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_unsubscribe,
-		     (const char *msgName, 
+		     (const char *msgName,
 		      HANDLER_TYPE handler));
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_subscribeFD,
-		     (int fd, 
+		     (int fd,
 		      FD_HANDLER_TYPE handler,
 		      void *clientData));
 
@@ -358,7 +358,7 @@ IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_respond,
 		      unsigned int length,
 		      BYTE_ARRAY content));
 
-/* If the response (IPC_respond) happens outside of the handler, 
+/* If the response (IPC_respond) happens outside of the handler,
    must call this function from within the handler!! */
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_delayResponse,
 		     (MSG_INSTANCE msgInstance));
@@ -367,14 +367,14 @@ IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_queryNotify,
 		     (const char *msgName,
 		      unsigned int length,
 		      BYTE_ARRAY content,
-		      HANDLER_TYPE handler, 
+		      HANDLER_TYPE handler,
 		      void *clientData));
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_queryResponse,
-		     (const char *msgName, 
+		     (const char *msgName,
 		      unsigned int length,
 		      BYTE_ARRAY content,
-		      BYTE_ARRAY *replyHandle, 
+		      BYTE_ARRAY *replyHandle,
 		      unsigned int timeoutMsecs));
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_respondVC,
@@ -385,13 +385,13 @@ IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_respondVC,
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_queryNotifyVC,
 		     (const char *msgName,
 		      IPC_VARCONTENT_PTR varcontent,
-		      HANDLER_TYPE handler, 
+		      HANDLER_TYPE handler,
 		      void *clientData));
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_queryResponseVC,
-		     (const char *msgName, 
+		     (const char *msgName,
 		      IPC_VARCONTENT_PTR varcontent,
-		      BYTE_ARRAY *replyHandle, 
+		      BYTE_ARRAY *replyHandle,
 		      unsigned int timeoutMsecs));
 
 /*****************************************************************
@@ -417,12 +417,12 @@ IPC_EXTERN_FUNCTION (FORMATTER_PTR IPC_msgInstanceFormatter,
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_marshall,
 		     (FORMATTER_PTR formatter,
-		      void *dataptr, 
+		      void *dataptr,
 		      IPC_VARCONTENT_PTR varcontent));
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_unmarshall,
 		     (FORMATTER_PTR formatter,
-		      BYTE_ARRAY byteArray, 
+		      BYTE_ARRAY byteArray,
 		      void **dataHandle));
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_unmarshallData,
@@ -431,6 +431,13 @@ IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_unmarshallData,
 		      void *dataHandle,
 		      int dataSize));
 
+IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_saveUnmarshallData,
+         (MSG_INSTANCE msgRef,
+          FORMATTER_PTR formatter,
+          BYTE_ARRAY byteArray,
+          void *dataHandle,
+          int dataSize));
+
 IPC_EXTERN_FUNCTION (void IPC_freeByteArray,
 		     (BYTE_ARRAY byteArray));
 
@@ -438,7 +445,7 @@ IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_freeData,
 		     (FORMATTER_PTR formatter,
 		      void *dataptr));
 
-/* Frees any subelements (pointers, variable-length arrays), but does not 
+/* Frees any subelements (pointers, variable-length arrays), but does not
    free the top level data structure itself.  Useful with IPC_unmarshallData
  */
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_freeDataElements,
@@ -457,23 +464,23 @@ IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_respondData,
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_queryNotifyData,
 		     (const char *msgName,
 		      void *dataptr,
-		      HANDLER_TYPE handler, 
+		      HANDLER_TYPE handler,
 		      void *clientData));
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_queryResponseData,
-		     (const char *msgName, 
+		     (const char *msgName,
 		      void *dataptr,
-		      void **replyData, 
+		      void **replyData,
 		      unsigned int timeoutMsecs));
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_printData,
 		     (FORMATTER_PTR formatter,
-		      FILE *stream, 
+		      FILE *stream,
 		      void *dataptr));
 
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_readData,
 		     (FORMATTER_PTR formatter,
-		      FILE *stream, 
+		      FILE *stream,
 		      void **dataHandle));
 
 /* Added by TNgo, 5/14/98, to support multiple servers. */
@@ -497,7 +504,7 @@ IPC_EXTERN_FUNCTION (long IPC_getPID,
 #define TRIGGER_FOREVER (-1)
 
 typedef void (*TIMER_HANDLER_TYPE)(void *clientData,
-				   unsigned long currentTime, 
+				   unsigned long currentTime,
 				   unsigned long scheduledTime);
 typedef void *TIMER_REF;
 

@@ -129,7 +129,7 @@
 #endif
 #include "ipc.h"
 #include "ipcPriv.h"
-
+
 FORMATTER_PTR IPC_parseFormat (const char *formatString)
 {
   FORMATTER_PTR format;
@@ -174,7 +174,7 @@ FORMATTER_PTR IPC_msgFormatter (const char *msgName)
   return format;
 }
 
-/* Equivalent to, but more efficient than, 
+/* Equivalent to, but more efficient than,
    IPC_msgFormatter(IPC_msgInstanceName(msgInstance)); */
 FORMATTER_PTR IPC_msgInstanceFormatter (MSG_INSTANCE msgInstance)
 {
@@ -211,7 +211,7 @@ IPC_RETURN_TYPE IPC_defineFormat (const char *formatName,
 }
 
 static IPC_RETURN_TYPE _IPC_marshall (FORMATTER_PTR formatter,
-				      void *dataptr, 
+				      void *dataptr,
 				      IPC_VARCONTENT_PTR varcontent,
 				      BOOLEAN mallocData)
 {
@@ -224,7 +224,7 @@ static IPC_RETURN_TYPE _IPC_marshall (FORMATTER_PTR formatter,
   } else if (varcontent == NULL) {
     RETURN_ERROR(IPC_Null_Argument);
   } else {
-    varcontent->length = length = (unsigned)x_ipc_bufferSize(formatter, 
+    varcontent->length = length = (unsigned)x_ipc_bufferSize(formatter,
 							     dataptr);
     if (length > 0) {
       if (!mallocData && x_ipc_sameFixedSizeDataBuffer(formatter)) {
@@ -232,7 +232,7 @@ static IPC_RETURN_TYPE _IPC_marshall (FORMATTER_PTR formatter,
 	varcontent->content = dataptr;
       } else {
 	varcontent->content = x_ipcMalloc(length);
-	x_ipc_encodeData(formatter, dataptr, (char *)varcontent->content, 
+	x_ipc_encodeData(formatter, dataptr, (char *)varcontent->content,
 			 0, length);
       }
     } else {
@@ -243,14 +243,14 @@ static IPC_RETURN_TYPE _IPC_marshall (FORMATTER_PTR formatter,
 }
 
 IPC_RETURN_TYPE IPC_marshall (FORMATTER_PTR formatter,
-			      void *dataptr, 
+			      void *dataptr,
 			      IPC_VARCONTENT_PTR varcontent)
 {
   return _IPC_marshall(formatter, dataptr, varcontent, TRUE);
 }
 
 static IPC_RETURN_TYPE _IPC_unmarshall (FORMATTER_PTR formatter,
-					BYTE_ARRAY byteArray, 
+					BYTE_ARRAY byteArray,
 					void **dataHandle,
 					BOOLEAN mallocData)
 {
@@ -277,7 +277,7 @@ static IPC_RETURN_TYPE _IPC_unmarshall (FORMATTER_PTR formatter,
 	   x_ipc_sameFixedSizeDataBuffer(formatter) ) {
 	BCOPY(byteArray, *dataHandle, dataSize);
       } else {
-	x_ipc_decodeData(formatter, (char *)byteArray, 0, (char *)*dataHandle, 
+	x_ipc_decodeData(formatter, (char *)byteArray, 0, (char *)*dataHandle,
 			 byteOrder, alignment, -1);
       }
     }
@@ -285,8 +285,40 @@ static IPC_RETURN_TYPE _IPC_unmarshall (FORMATTER_PTR formatter,
   }
 }
 
+static IPC_RETURN_TYPE _IPC_saveUnmarshall (MSG_INSTANCE msgRef,
+          FORMATTER_PTR formatter,
+          BYTE_ARRAY byteArray,
+          void **dataHandle,
+          BOOLEAN mallocData)
+{
+  int32 dataSize;
+
+  if (!X_IPC_INITIALIZED()) {
+    RETURN_ERROR(IPC_Not_Initialized);
+  } else if (formatter && formatter->type == BadFormatFMT) {
+    RETURN_ERROR(IPC_Illegal_Formatter);
+  } else {
+    dataSize = x_ipc_dataStructureSize(formatter);
+    if (dataSize == 0) {
+      *dataHandle = NULL;
+    } else {
+      if (mallocData) {
+  *dataHandle = x_ipcMalloc((unsigned)dataSize);
+      }
+      if ( (EASY_STRUCTURE_COPY) && (msgRef->byteOrder == BYTE_ORDER) &&
+     x_ipc_sameFixedSizeDataBuffer(formatter) ) {
+  BCOPY(byteArray, *dataHandle, dataSize);
+      } else {
+  x_ipc_decodeData(formatter, (char *)byteArray, 0, (char *)*dataHandle,
+       msgRef->byteOrder, msgRef->alignment, -1);
+      }
+    }
+    return IPC_OK;
+  }
+}
+
 IPC_RETURN_TYPE IPC_unmarshall (FORMATTER_PTR formatter,
-				BYTE_ARRAY byteArray, 
+				BYTE_ARRAY byteArray,
 				void **dataHandle)
 {
   return _IPC_unmarshall(formatter, byteArray, dataHandle, TRUE);
@@ -310,6 +342,25 @@ IPC_RETURN_TYPE IPC_unmarshallData(FORMATTER_PTR formatter,
   }
 }
 
+IPC_RETURN_TYPE IPC_saveUnmarshallData(MSG_INSTANCE msgRef,
+           FORMATTER_PTR formatter,
+           BYTE_ARRAY byteArray,
+           void *dataHandle,
+           int dataSize)
+{
+  if (!formatter) {
+    RETURN_ERROR(IPC_Null_Argument);
+  } else if (formatter && formatter->type == BadFormatFMT) {
+    RETURN_ERROR(IPC_Illegal_Formatter);
+  } else if (!X_IPC_INITIALIZED()) {
+    RETURN_ERROR(IPC_Not_Initialized);
+  } else if (dataSize != x_ipc_dataStructureSize(formatter)) {
+    RETURN_ERROR(IPC_Wrong_Buffer_Length);
+  } else {
+    return _IPC_saveUnmarshall(msgRef, formatter, byteArray, &dataHandle, FALSE);
+  }
+}
+
 IPC_RETURN_TYPE IPC_publishData (const char *msgName, void *dataptr)
 {
   IPC_VARCONTENT_TYPE varcontent;
@@ -317,7 +368,7 @@ IPC_RETURN_TYPE IPC_publishData (const char *msgName, void *dataptr)
 
   if (!msgName || strlen(msgName) == 0) {
     RETURN_ERROR(IPC_Null_Argument);
-  } else if (_IPC_marshall(IPC_msgFormatter(msgName), 
+  } else if (_IPC_marshall(IPC_msgFormatter(msgName),
 			   dataptr, &varcontent, FALSE) != IPC_OK){
     PASS_ON_ERROR();
   } else {
@@ -355,7 +406,7 @@ IPC_RETURN_TYPE IPC_queryNotifyData (const char *msgName, void *dataptr,
 
   if (!msgName || strlen(msgName) == 0) {
     RETURN_ERROR(IPC_Null_Argument);
-  } else if (_IPC_marshall(IPC_msgFormatter(msgName), 
+  } else if (_IPC_marshall(IPC_msgFormatter(msgName),
 			   dataptr, &varcontent, FALSE) != IPC_OK) {
     PASS_ON_ERROR();
   } else {
@@ -365,7 +416,7 @@ IPC_RETURN_TYPE IPC_queryNotifyData (const char *msgName, void *dataptr,
   }
 }
 
-IPC_RETURN_TYPE IPC_queryResponseData (const char *msgName, 
+IPC_RETURN_TYPE IPC_queryResponseData (const char *msgName,
 				       void *dataptr, void **replyData,
 				       unsigned int timeoutMsecs)
 {
@@ -376,7 +427,7 @@ IPC_RETURN_TYPE IPC_queryResponseData (const char *msgName,
 
   if (!msgName || strlen(msgName) == 0) {
     RETURN_ERROR(IPC_Null_Argument);
-  } else if (_IPC_marshall(IPC_msgFormatter(msgName), 
+  } else if (_IPC_marshall(IPC_msgFormatter(msgName),
 			   dataptr, &varcontent, FALSE) != IPC_OK) {
     PASS_ON_ERROR();
   } else {
@@ -473,7 +524,7 @@ IPC_RETURN_TYPE IPC_checkMsgFormats (const char *msgName,
     }
   }
 }
-
+
 void IPC_freeByteArray (BYTE_ARRAY byteArray)
 {
   x_ipcFree(byteArray);
