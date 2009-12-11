@@ -7,21 +7,21 @@
  * Roy, Sebastian Thrun, Dirk Haehnel, Cyrill Stachniss,
  * and Jared Glover
  *
- * CARMEN is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public 
- * License as published by the Free Software Foundation; 
+ * CARMEN is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
  * either version 2 of the License, or (at your option)
  * any later version.
  *
  * CARMEN is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied 
+ * but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more 
+ * PURPOSE.  See the GNU General Public License for more
  * details.
  *
- * You should have received a copy of the GNU General 
+ * You should have received a copy of the GNU General
  * Public License along with CARMEN; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, 
+ * Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA  02111-1307 USA
  *
  ********************************************************/
@@ -45,16 +45,16 @@ int carmen_geometry_y_offset[CARMEN_NUM_OFFSETS] = {-1, -1, 0, 1, 1, 1, 0, -1};
 double carmen_geometry_compute_safety_distance(carmen_robot_config_t *robot_config,
 					       carmen_traj_point_t *robot)
 {
-  return robot_config->length / 2.0 + robot_config->approach_dist + 
-    robot->t_vel * robot_config->reaction_time + 
+  return robot_config->length / 2.0 + robot_config->approach_dist +
+    robot->t_vel * robot_config->reaction_time +
     robot->t_vel*robot->t_vel/(2*robot_config->acceleration) ;
 }
 
-static double compute_velocity_at_side(carmen_traj_point_t robot, 
+static double compute_velocity_at_side(carmen_traj_point_t robot,
 				       carmen_traj_point_t dest_pt,
-				       carmen_traj_point_t centre, 
+				       carmen_traj_point_t centre,
 				       double radius,
-				       carmen_robot_config_t *robot_config) 
+				       carmen_robot_config_t *robot_config)
 {
   double rotation_angle;
   double forward_safety_distance;
@@ -62,37 +62,37 @@ static double compute_velocity_at_side(carmen_traj_point_t robot,
   double velocity;
   double max_velocity = robot_config->max_t_vel;
   double motion_time;
-  
+
   forward_safety_distance = carmen_geometry_compute_safety_distance(robot_config, &robot);
 
   robot.x -= centre.x;
   robot.y -= centre.y;
   dest_pt.x -= centre.x;
   dest_pt.y -= centre.y;
-  
+
   rotation_angle = atan2(dest_pt.y, dest_pt.x) - atan2(robot.y, robot.x);
   rotation_angle = carmen_normalize_theta(rotation_angle);
-  
+
   forward_distance = fabs(rotation_angle * radius);
 
-  if (forward_distance < -robot_config->length/2.0) 
+  if (forward_distance < -robot_config->length/2.0)
     return max_velocity;
 
-  // How far to the obstacle? Remove the safety distance and the distance we travel 
-  // while reacting 
+  // How far to the obstacle? Remove the safety distance and the distance we travel
+  // while reacting
 
   forward_distance -= forward_safety_distance;
 
   if (forward_distance < 0)
     return max_velocity;
 
-  // 0 = v_0^2 - 2ad 
-  // velocity = sqrt (2 * acceleration * forward_distance) 
+  // 0 = v_0^2 - 2ad
+  // velocity = sqrt (2 * acceleration * forward_distance)
 
   velocity = sqrt(2 * robot_config->acceleration * forward_distance);
 
   // Velocity is now how fast we can go and still decelerate in time not to hit things.
-  // However, the point may be off to one side. if it is, 
+  // However, the point may be off to one side. if it is,
 
   motion_time = velocity / robot_config->acceleration;
 
@@ -100,64 +100,66 @@ static double compute_velocity_at_side(carmen_traj_point_t robot,
     return max_velocity;
 
   // If the robot is going slower than the maximum allowable speed, assume we
-  // accelerate over half the distance to the obstacle, and *then* start slowing down. 
+  // accelerate over half the distance to the obstacle, and *then* start slowing down.
 
   if (velocity > robot.t_vel) {
     velocity =  sqrt(2 * robot_config->acceleration * forward_distance/2);
   }
 
-  assert (!isnan(velocity));
-  
+  if (velocity != velocity)
+    return 0;
+
   return velocity;
 }
 
-static double compute_forward_velocity(carmen_traj_point_t robot, 
+static double compute_forward_velocity(carmen_traj_point_t robot,
 				       carmen_traj_point_t dest_pt,
-				       carmen_robot_config_t *robot_config) 
+				       carmen_robot_config_t *robot_config)
 {
   double forward_safety_distance;
   double forward_distance;
   double velocity;
 
-  forward_distance = dest_pt.x;    
+  forward_distance = dest_pt.x;
 
-  if (forward_distance < -robot_config->length/2.0) 
+  if (forward_distance < -robot_config->length/2.0)
     return robot_config->max_t_vel;
 
-  forward_safety_distance = 
+  forward_safety_distance =
     carmen_geometry_compute_safety_distance(robot_config, &robot);
 
-  // How far to the obstacle? Remove the safety distance and the distance we travel 
-  // while reacting 
+  // How far to the obstacle? Remove the safety distance and the distance we travel
+  // while reacting
 
   forward_distance -= forward_safety_distance;
 
   if (forward_distance < 0)
     return 0;
 
-  // 0 = v_0^2 - 2ad 
-  // velocity = sqrt (2 * acceleration * forward_distance) 
+  // 0 = v_0^2 - 2ad
+  // velocity = sqrt (2 * acceleration * forward_distance)
 
   velocity = sqrt(2 * robot_config->acceleration * forward_distance);
 
   // If the robot is going slower than the maximum allowable speed, assume we
-  // accelerate over half the distance to the obstacle, and *then* start slowing down. 
+  // accelerate over half the distance to the obstacle, and *then* start slowing down.
 
-  if (velocity > robot.t_vel) 
-    velocity =  sqrt(2 * robot_config->acceleration * forward_distance/2);  
+  if (velocity > robot.t_vel)
+    velocity =  sqrt(2 * robot_config->acceleration * forward_distance/2);
 
-  assert (!isnan(velocity));
-  
+  if (velocity != velocity)
+    return 0;
+
   return velocity;
 }
 
 
-void 
-carmen_geometry_compute_centre_and_curvature(carmen_traj_point_t start_point, 
-					     double theta, 
-					     carmen_traj_point_t end_point, 
-					     carmen_traj_point_t *centre, 
-					     double *radius) 
+void
+carmen_geometry_compute_centre_and_curvature(carmen_traj_point_t start_point,
+					     double theta,
+					     carmen_traj_point_t end_point,
+					     carmen_traj_point_t *centre,
+					     double *radius)
 {
   double m_perpendicular;
   double distance;
@@ -186,18 +188,18 @@ carmen_geometry_compute_centre_and_curvature(carmen_traj_point_t start_point,
     return;
   }
 
-  theta += M_PI/2;    
+  theta += M_PI/2;
 
   /* m_parallel would be sin_theta_parallel/cos_theta_parallel,
      and m_perpendicular = -1.0 / m_parallel, so
      m_perpendicular = -cos_theta_parallel/sin_theta_parallel
   */
   m_perpendicular = -cos_theta_parallel/sin_theta_parallel;
-  
+
   distance = 0.5*distance;
   x_intercept = distance*cos_theta_parallel;
   y_intercept = distance*sin_theta_parallel;
-  
+
   centre->x = (y_intercept - m_perpendicular*x_intercept)/
     (tan(theta) - m_perpendicular);
   centre->y = m_perpendicular*(centre->x - x_intercept) + y_intercept;
@@ -212,10 +214,10 @@ carmen_geometry_compute_centre_and_curvature(carmen_traj_point_t start_point,
   centre->y += start_point.y;
 }
 
-double 
-carmen_geometry_compute_velocity(carmen_traj_point_t robot, 
-				 carmen_traj_point_t dest_pt, 
-				 carmen_robot_config_t *robot_config) 
+double
+carmen_geometry_compute_velocity(carmen_traj_point_t robot,
+				 carmen_traj_point_t dest_pt,
+				 carmen_robot_config_t *robot_config)
 {
   carmen_traj_point_t left_point, right_point, centre;
   double max_velocity;
@@ -226,7 +228,7 @@ carmen_geometry_compute_velocity(carmen_traj_point_t robot,
 
   max_velocity = robot_config->max_t_vel;
 
-  /* Shift everything so the robot is centred at zero */ 
+  /* Shift everything so the robot is centred at zero */
 
   dest_pt.x -= robot.x;
   dest_pt.y -= robot.y;
@@ -240,40 +242,40 @@ carmen_geometry_compute_velocity(carmen_traj_point_t robot,
     temp_x = dest_pt.x*cos(robot.theta)+dest_pt.y*sin(robot.theta);
     dest_pt.y = dest_pt.y*cos(robot.theta)-dest_pt.x*sin(robot.theta);
     dest_pt.x = temp_x;
-    
+
     robot.theta = 0.0;
   }
-  
+
   side_theta = M_PI/2;
   side_safety_distance = robot_config->width / 2.0 + robot_config->side_dist;
-    
+
   left_point = robot;
   left_point.x = robot.x;
   left_point.y = robot.y + side_safety_distance;
-  
+
   right_point = robot;
   right_point.x = robot.x;
   right_point.y = robot.y - side_safety_distance;
 
-  /* Obstacle point is behind front of robot */ 
-  
+  /* Obstacle point is behind front of robot */
+
   if (dest_pt.x < 0) {
-    if (fabs(dest_pt.y) < side_safety_distance) 
+    if (fabs(dest_pt.y) < side_safety_distance)
       max_velocity = compute_velocity_at_side
 	(robot, dest_pt, robot, 0, robot_config);
-    else 
+    else
       max_velocity = robot_config->max_t_vel;
   } else {
 
     /* Obstacle point is in front of robot, but within the side
-       safety margins */ 
-    if (fabs(dest_pt.y) < side_safety_distance)  {    
+       safety margins */
+    if (fabs(dest_pt.y) < side_safety_distance)  {
       max_velocity = compute_forward_velocity
 	(robot, dest_pt, robot_config);
-    } 
+    }
 
-    /* Obstacle point is in front of robot, and outside the side safety margins. 
-       Will we hit it if we start rotating? */ 
+    /* Obstacle point is in front of robot, and outside the side safety margins.
+       Will we hit it if we start rotating? */
 
     else if (dest_pt.y > 0) {
       carmen_geometry_compute_centre_and_curvature
@@ -287,23 +289,23 @@ carmen_geometry_compute_velocity(carmen_traj_point_t robot,
 	(right_point, dest_pt, centre, radius, robot_config);
     }
   }
-  
+
   assert(!isnan(max_velocity));
 
   return max_velocity;
 }
 
 #ifndef COMPILE_WITHOUT_MAP_SUPPORT
-void 
-carmen_geometry_project_point(int x, int y, double theta, int *x2, int *y2, 
-			      carmen_map_config_t map_defn) 
+void
+carmen_geometry_project_point(int x, int y, double theta, int *x2, int *y2,
+			      carmen_map_config_t map_defn)
 {
   double delta_x, delta_y, delta_theta;
   double bounding_angle;
 
   theta = carmen_normalize_theta(theta);
 
-  if (theta < M_PI / 2 && theta >= -M_PI/2) 
+  if (theta < M_PI / 2 && theta >= -M_PI/2)
     delta_x = map_defn.x_size - 1 - x;
   else
     delta_x = -x;
@@ -319,39 +321,39 @@ carmen_geometry_project_point(int x, int y, double theta, int *x2, int *y2,
   /* This case if theta is going to run off the top of the bounding box. */
 
   if (theta >= 0 && ((theta < M_PI/2 && theta >= bounding_angle) ||
-		     (theta >= M_PI/2 && theta < bounding_angle))) 
+		     (theta >= M_PI/2 && theta < bounding_angle)))
     {
       *y2 = map_defn.y_size - 1;
       delta_theta = M_PI/2 - theta;
       *x2 = carmen_round(x + tan(delta_theta)*delta_y);
-    } 
+    }
 
-  /* This case if theta is going to run off the right side 
+  /* This case if theta is going to run off the right side
      of the bounding box. */
 
   else if ((theta < M_PI/2 && theta >= -M_PI/2) &&
 	   ((theta >= 0 && theta < bounding_angle) ||
-	    (theta < 0 && theta >= bounding_angle))) 
+	    (theta < 0 && theta >= bounding_angle)))
     {
       *x2 = map_defn.x_size - 1;
       delta_theta = theta;
       *y2 = carmen_round(y + tan(delta_theta)*delta_x);
-    } 
+    }
 
   /* This case if theta is going to run off the bottom of the bounding box. */
 
   else if (theta < 0 && ((theta >= -M_PI/2 && theta < bounding_angle) ||
-			 (theta < -M_PI/2 && theta >= bounding_angle))) 
+			 (theta < -M_PI/2 && theta >= bounding_angle)))
     {
       *y2 = 0;
       delta_theta = -M_PI/2 - theta;
       *x2 = carmen_round(x + tan(delta_theta)*(delta_y));
-    } 
+    }
 
-  /* This case if theta is going to run off the left side 
+  /* This case if theta is going to run off the left side
      of the bounding box. */
 
-  else 
+  else
     {
       *x2 = 0;
       if (theta < 0)
@@ -363,7 +365,7 @@ carmen_geometry_project_point(int x, int y, double theta, int *x2, int *y2,
 }
 #endif
 
-void 
+void
 carmen_geometry_move_pt_to_rotating_ref_frame(carmen_traj_point_p obstacle_pt,
 					      double tv, double rv)
 {
@@ -377,34 +379,34 @@ carmen_geometry_move_pt_to_rotating_ref_frame(carmen_traj_point_p obstacle_pt,
 
   radius = tv / rv;
 
-  if (fabs(tv) > 0.01 && fabs(rv) > 0.001) 
+  if (fabs(tv) > 0.01 && fabs(rv) > 0.001)
     {
       centre.x = 0;
       centre.y = radius;
       obstacle_radius = carmen_distance_traj(obstacle_pt, &centre);
       if (radius < 0)
 	obstacle_radius = -obstacle_radius;
-      obstacle_theta = carmen_angle_between(&centre, obstacle_pt) - 
+      obstacle_theta = carmen_angle_between(&centre, obstacle_pt) -
 	carmen_angle_between(&centre, &robot_posn);
-      
+
       obstacle_pt->x = radius * obstacle_theta;
       obstacle_pt->y = radius - obstacle_radius;
     }
 }
 
 
-double 
-carmen_geometry_compute_radius_and_centre_old(carmen_traj_point_p prev, 
+double
+carmen_geometry_compute_radius_and_centre_old(carmen_traj_point_p prev,
 					      carmen_traj_point_p current,
-					      carmen_traj_point_p next, 
+					      carmen_traj_point_p next,
 					      carmen_traj_point_p centre,
-					      carmen_traj_point_p end_curve) 
+					      carmen_traj_point_p end_curve)
 {
 
   /* The centre of the circle that lies inside the angle formed by these three
      points lies on one line, call this the centre_line. A second line runs
      through whichever point is closest to current, and is perpendicular to
-     the line between that point and current, call this the perp_line. 
+     the line between that point and current, call this the perp_line.
      The centre of the biggest circle lies at the intersection of these two
      lines, and has radius equal to the distance between the centre and the
      point closest to current. */
@@ -422,26 +424,26 @@ carmen_geometry_compute_radius_and_centre_old(carmen_traj_point_p prev,
   angle_to_prev = carmen_angle_between(current, prev);
   angle_from_current = carmen_angle_between(current, next);
 
-  centre_slope = 
+  centre_slope =
     tan(carmen_normalize_theta(angle_to_prev/2.0 + angle_from_current/2.0));
   centre_intersect = current->y - centre_slope*current->x;
 
   distance_from_prev = carmen_distance_traj(prev, current);
   distance_from_current = carmen_distance_traj(current, next);
-  if (distance_from_prev < distance_from_current) 
+  if (distance_from_prev < distance_from_current)
     {
       perp_slope = -1/tan(angle_from_prev);
       not_perp_slope = -1/tan(angle_from_current);
       end_slope = tan(angle_from_current);
       perp_intersect = prev->y - perp_slope*prev->x;
       perp_point = prev;
-    } 
-  else 
+    }
+  else
     {
       perp_slope = -1/tan(angle_from_current);
       not_perp_slope = -1/tan(angle_from_prev);
       end_slope = tan(angle_from_prev);
-      perp_intersect = next->y - perp_slope*next->x;    
+      perp_intersect = next->y - perp_slope*next->x;
       perp_point = next;
     }
 
@@ -460,22 +462,22 @@ carmen_geometry_compute_radius_and_centre_old(carmen_traj_point_p prev,
     carmen_warn("Is nan: centre %.2f %.2f, perp_point %.2f %.2f\n", centre->x,
 		centre->y, perp_point->x, perp_point->y);
 
-  
+
   return radius;
 }
 
-double 
-carmen_geometry_compute_radius_and_centre(carmen_traj_point_p prev, 
+double
+carmen_geometry_compute_radius_and_centre(carmen_traj_point_p prev,
 					  carmen_traj_point_p current,
-					  carmen_traj_point_p next, 
+					  carmen_traj_point_p next,
 					  carmen_traj_point_p centre,
-					  carmen_traj_point_p end_curve) 
+					  carmen_traj_point_p end_curve)
 {
 
   /* The centre of the circle that lies inside the angle formed by these three
      points lies on one line, call this the centre_line. A second line runs
      through whichever point is closest to current, and is perpendicular to
-     the line between that point and current, call this the perp_line. 
+     the line between that point and current, call this the perp_line.
      The centre of the biggest circle lies at the intersection of these two
      lines, and has radius equal to the distance between the centre and the
      point closest to current. */
@@ -485,7 +487,7 @@ carmen_geometry_compute_radius_and_centre(carmen_traj_point_p prev,
   double angle_perp, angle_not_perp;
 
 
-  double angle_from_prev, angle_to_prev, angle_from_current;  
+  double angle_from_prev, angle_to_prev, angle_from_current;
   double centre_a, centre_b, centre_c;
   double perp_a, perp_b, perp_c;
   double not_perp_a, not_perp_b, not_perp_c;
@@ -503,37 +505,37 @@ carmen_geometry_compute_radius_and_centre(carmen_traj_point_p prev,
   if (fabs(centre_a) > 1e6) {
     centre_a = 1;
     centre_b = 0;
-  } 
-  centre_c = -(centre_a*current->x + centre_b*current->y);  
+  }
+  centre_c = -(centre_a*current->x + centre_b*current->y);
 
   distance_from_prev = carmen_distance_traj(prev, current);
   distance_from_current = carmen_distance_traj(current, next);
-  if (distance_from_prev < distance_from_current) 
+  if (distance_from_prev < distance_from_current)
     {
       start = prev;
       angle_perp = angle_from_prev;
       angle_not_perp = angle_from_current;
-    } 
-  else 
+    }
+  else
     {
       start = next;
       angle_perp = angle_from_current;
       angle_not_perp = angle_from_prev;
     }
-  
+
   perp_a = 1;
   perp_b = tan(angle_perp);
-  if (fabs(perp_b) > 1e6) 
+  if (fabs(perp_b) > 1e6)
     {
       perp_a = 0;
       perp_b = 1;
-    } 
+    }
   perp_c = -(perp_a*start->x + perp_b*start->y);
-  
-  if (fabs(centre_b*perp_a - perp_b*centre_a) < .01) 
+
+  if (fabs(centre_b*perp_a - perp_b*centre_a) < .01)
     return 0.0;
 
-  centre->y = (perp_c*centre_a - centre_c*perp_a) / 
+  centre->y = (perp_c*centre_a - centre_c*perp_a) /
     (centre_b*perp_a - perp_b*centre_a);
   if (fabs(centre_a) < 0.01)
     centre->x = current->x;
@@ -542,16 +544,16 @@ carmen_geometry_compute_radius_and_centre(carmen_traj_point_p prev,
 
   not_perp_a = 1;
   not_perp_b = tan(angle_not_perp);
-  if (fabs(not_perp_b) > 1e6) 
+  if (fabs(not_perp_b) > 1e6)
     {
       not_perp_a = 0;
       not_perp_b = -1;
-    }  
+    }
   not_perp_c = -(not_perp_a*centre->x + not_perp_b*centre->y);
-  
+
   end_curve_a = tan(angle_not_perp);
   end_curve_b = -1;
-  if (fabs(end_curve_a) > 1e6) 
+  if (fabs(end_curve_a) > 1e6)
     {
       end_curve_a = 1;
       end_curve_b = 0;
@@ -561,7 +563,7 @@ carmen_geometry_compute_radius_and_centre(carmen_traj_point_p prev,
   if (fabs(end_curve_b*not_perp_a - not_perp_b*end_curve_a) < 0.01)
     return 0.0;
 
-  end_curve->y = (not_perp_c*end_curve_a - end_curve_c*not_perp_a) / 
+  end_curve->y = (not_perp_c*end_curve_a - end_curve_c*not_perp_a) /
     (end_curve_b*not_perp_a - not_perp_b*end_curve_a);
   if (fabs(end_curve_a) < 0.01)
     end_curve->x = current->x;
@@ -617,27 +619,27 @@ static void intersect(carmen_point_t *edge1, carmen_point_t *edge2,
     else {
       intersect_pt->x = ray4->x;
       intersect_pt->y = ray4->y;
-    }      
-    
+    }
+
     return;
   }
-  
+
   det = (edge1->x-edge2->x)*(ray3->y-ray4->y)-(ray3->x-ray4->x)*(edge1->y-edge2->y);
-  
+
   a = edge1->x*edge2->y - edge2->x*edge1->y;
   b = ray3->x*ray4->y-ray4->x*ray3->y;
-  
+
   x_nom = a*(ray3->x-ray4->x) - b*(edge1->x-edge2->x);
   intersect_pt->x = x_nom/det;
-  
+
   y_nom = a*(ray3->y-ray4->y) - b*(edge1->y-edge2->y);
   intersect_pt->y = y_nom/det;
 }
 
 #ifndef COMPILE_WITHOUT_MAP_SUPPORT
-double 
-carmen_geometry_compute_expected_distance(carmen_traj_point_p traj_point, 
-					  double theta, carmen_map_p map) 
+double
+carmen_geometry_compute_expected_distance(carmen_traj_point_p traj_point,
+					  double theta, carmen_map_p map)
 {
   int x2, y2, px, py;
   carmen_bresenham_param_t params;
@@ -673,26 +675,26 @@ carmen_geometry_compute_expected_distance(carmen_traj_point_p traj_point,
   carmen_geometry_project_point(map_x, map_y, theta, &x2, &y2, map_defn);
 
   carmen_get_bresenham_parameters(map_x, map_y, x2, y2, &params);
-  do 
+  do
     {
       carmen_get_current_point(&params, &map_x, &map_y);
-      if(map_x < 0 || map_x >= map->config.x_size || 
+      if(map_x < 0 || map_x >= map->config.x_size ||
 	 map_y < 0 || map_y >= map->config.y_size)
 	break;
-      if (map->map[map_x][map_y] > 0.15) 
+      if (map->map[map_x][map_y] > 0.15)
 	break;
-    } 
+    }
   while (carmen_get_next_point(&params));
 
   ray3.x = traj_point->x;
   ray3.y = traj_point->y;
   ray4.x = traj_point->x + (distance+1)*cos(theta);
   ray4.y = traj_point->y + (distance+1)*sin(theta);
-  
+
   for (index = 0; index < 4; index++) {
     edge1.x = map_x*resolution+x_offset[2*index]*resolution*0.5;
     edge1.y = map_y*resolution+y_offset[2*index]*resolution*0.5;
-  
+
     edge2.x = map_x*resolution+x_offset[2*index+1]*resolution*0.5;
     edge2.y = map_y*resolution+y_offset[2*index+1]*resolution*0.5;
 
@@ -701,12 +703,12 @@ carmen_geometry_compute_expected_distance(carmen_traj_point_p traj_point,
     distance = hypot(intersect_pt.x-traj_point->x, intersect_pt.y-traj_point->y);
     distance_to_obstacle = hypot(intersect_pt.x - map_x*resolution,
 				 intersect_pt.y - map_y*resolution);
-    
+
     if (distance_to_obstacle < min_distance_to_obstacle) {
       min_distance_to_obstacle = distance_to_obstacle;
       best_intersect_obstacle_pt = intersect_pt;
       best_obstacle = index;
-    }    
+    }
 
     if (index == 0 || index == 2) {
       if (intersect_pt.y >= edge1.y && intersect_pt.y <= edge2.y && distance < min_distance ) {
@@ -721,7 +723,7 @@ carmen_geometry_compute_expected_distance(carmen_traj_point_p traj_point,
     }
   }
 
-  if (min_distance > DBL_MAX/2) 
+  if (min_distance > DBL_MAX/2)
     min_distance = hypot(best_intersect_obstacle_pt.x-traj_point->x,
 			 best_intersect_obstacle_pt.y-traj_point->y);
 
@@ -744,24 +746,24 @@ carmen_geometry_compute_expected_distance(carmen_traj_point_p traj_point,
   carmen_get_bresenham_parameters(x2, y2, px, py, &params);
   obstacle.x = x2;
   obstacle.y = y2;
-  do 
+  do
     {
       carmen_get_current_point(&params, &px, &py);
       map_x = carmen_round(px / resolution);
       map_y = carmen_round(py / resolution);
-      if(map_x < 0 || map_x >= map->config.x_size || 
+      if(map_x < 0 || map_x >= map->config.x_size ||
 	 map_y < 0 || map_y >= map->config.y_size)
         break;
-      if (map->map[map_x][map_y] < 0.15) 
+      if (map->map[map_x][map_y] < 0.15)
         break;
       obstacle.x = px / 100;
       obstacle.y = py / 100;
 
-    } 
+    }
   while (carmen_get_next_point(&params));
 
   carmen_warn("now x2: %d %d px: %d %d d: %f\n", x2, y2, px, py, distance);
- 
+
   distance = carmen_distance_traj(&obstacle, traj_point);
 
   return distance;
@@ -769,9 +771,9 @@ carmen_geometry_compute_expected_distance(carmen_traj_point_p traj_point,
 }
 
 void
-carmen_geometry_generate_sonar_data(double *sonar_data, 
+carmen_geometry_generate_sonar_data(double *sonar_data,
 				    carmen_traj_point_p center,
-				    carmen_point_p sonar_offsets, 
+				    carmen_point_p sonar_offsets,
 				    int num_sonars, carmen_map_p map)
 {
   int i;
@@ -795,11 +797,11 @@ carmen_geometry_generate_sonar_data(double *sonar_data,
     }
 }
 
-void 
-carmen_geometry_generate_laser_data(float *laser_data, 
+void
+carmen_geometry_generate_laser_data(float *laser_data,
 				    carmen_traj_point_p traj_point,
-				    double start_theta, double end_theta, 
-				    int num_points, carmen_map_p map) 
+				    double start_theta, double end_theta,
+				    int num_points, carmen_map_p map)
 {
   int index;
   float *laser_data_ptr;
@@ -817,7 +819,7 @@ carmen_geometry_generate_laser_data(float *laser_data,
     separation = (end_theta - start_theta)/num_points;
 
   laser_data_ptr = laser_data;
-  for (index = 0; index < num_points; index++) 
+  for (index = 0; index < num_points; index++)
     {
       dist = carmen_geometry_compute_expected_distance(traj_point, theta, map);
       *(laser_data_ptr++) = dist;
@@ -831,17 +833,17 @@ carmen_geometry_generate_laser_data(float *laser_data,
  */
 
 static int num_points_to_generate=-1;
-static double ***cached_data = NULL;  
+static double ***cached_data = NULL;
 static carmen_map_p expected_map = NULL;
 static int cache_misses = 0;
 static int cache_hits = 0;
 
-void 
+void
 carmen_geometry_fast_generate_laser_data
 (float *laser_data, carmen_traj_point_p traj_point,
- double start_theta, 
- double end_theta __attribute__ ((unused)), 
- int num_points, carmen_map_p map) 
+ double start_theta,
+ double end_theta __attribute__ ((unused)),
+ int num_points, carmen_map_p map)
 {
   int index;
   float *laser_data_ptr;
@@ -852,25 +854,25 @@ carmen_geometry_fast_generate_laser_data
   int x, y;
   int offset;
 
-  if (num_points_to_generate < 0) 
+  if (num_points_to_generate < 0)
     num_points_to_generate = num_points;
 
-  if (num_points_to_generate != num_points) 
+  if (num_points_to_generate != num_points)
     carmen_die("You can't (yet!) call generate_laser_data with requests "
 	       "for different numbers \nof points. After the first time you "
 	       "call it, you have to use the same number of\n"
-	       "points always.\n");  
-  
-  if (expected_map == NULL) 
-    expected_map = map;
-  
+	       "points always.\n");
 
-  if (expected_map != map) 
+  if (expected_map == NULL)
+    expected_map = map;
+
+
+  if (expected_map != map)
     carmen_die("You can't (yet!) call generate_laser_data different maps. "
 	       "After the first time\nyou call it, you have to always re-use "
-	       "the same map.\n");    
+	       "the same map.\n");
 
-  if (cached_data == NULL) 
+  if (cached_data == NULL)
     {
       cached_data = (double ***)
 	calloc(map->config.x_size*map->config.resolution, sizeof(double **));
@@ -882,7 +884,7 @@ carmen_geometry_fast_generate_laser_data
   x = carmen_round(traj_point->x);
   y = carmen_round(traj_point->y);
 
-  if (cached_data[x] == NULL) 
+  if (cached_data[x] == NULL)
     {
       cached_data[x] = (double **)
 	calloc(map->config.y_size*map->config.resolution, sizeof(double *));
@@ -891,7 +893,7 @@ carmen_geometry_fast_generate_laser_data
 	     map->config.resolution*sizeof(double *));
     }
 
-  if (cached_data[x][y] == NULL) 
+  if (cached_data[x][y] == NULL)
     {
       cache_misses++;
       cached_data[x][y] = (double *)
@@ -901,15 +903,15 @@ carmen_geometry_fast_generate_laser_data
       dist_ptr = cached_data[x][y];
       laser_theta = 0;
       separation = 2*M_PI/num_points_to_generate;
-      for (index = 0; index < num_points_to_generate; index++) 
+      for (index = 0; index < num_points_to_generate; index++)
 	{
 	  dist = carmen_geometry_compute_expected_distance
 	    (traj_point, laser_theta, map);
 	  *(dist_ptr++) = dist;
 	  laser_theta = carmen_normalize_theta(laser_theta+separation);
-	}    
-    } 
-  else 
+	}
+    }
+  else
     cache_hits++;
 
   laser_data_ptr = laser_data;
@@ -919,11 +921,11 @@ carmen_geometry_fast_generate_laser_data
     offset += 360;
   offset = carmen_round(offset/360.0*num_points_to_generate);
   dist_ptr = cached_data[x][y] + offset;
-  for (index = 0; index < num_points; index++) 
+  for (index = 0; index < num_points; index++)
     {
       *(laser_data_ptr++) = *(dist_ptr++);
       offset++;
-      if (offset >= num_points) 
+      if (offset >= num_points)
 	{
 	  offset = 0;
 	  dist_ptr = cached_data[x][y];
@@ -931,16 +933,16 @@ carmen_geometry_fast_generate_laser_data
     }
 }
 
-void 
-carmen_geometry_cache_stats(int *hits, int *misses) 
+void
+carmen_geometry_cache_stats(int *hits, int *misses)
 {
   *hits = cache_hits;
   *misses = cache_misses;
 }
 
-void 
-carmen_geometry_map_to_cspace(carmen_map_p map, 
-			      carmen_robot_config_t *robot_conf) 
+void
+carmen_geometry_map_to_cspace(carmen_map_p map,
+			      carmen_robot_config_t *robot_conf)
 {
   int x_index, y_index, index;
   float *map_ptr;
@@ -949,18 +951,18 @@ carmen_geometry_map_to_cspace(carmen_map_p map,
   float resolution = map->config.resolution;
   float downgrade;
 
-  // This line makes downgrade equal to the number of cells that half the 
+  // This line makes downgrade equal to the number of cells that half the
   // robot width consumes
   downgrade = robot_conf->width/2/resolution;
 
-  // This line makes downgrade equal to the amount to take off so that 
+  // This line makes downgrade equal to the amount to take off so that
   // half the width of the robot away from a cell of value 1, the cell
   // has value 0.5
 
   downgrade = 0.5 / downgrade;
 
   /* Loop through map, starting at top left, updating value of cell
-     as max of itself and most expensive neighbour less the cost 
+     as max of itself and most expensive neighbour less the cost
      downgrade. */
 
   map_ptr = map->complete_map;
@@ -973,41 +975,41 @@ carmen_geometry_map_to_cspace(carmen_map_p map,
 	value = 1.0;
       *(map_ptr++) = value;
     }
-	
-  for (x_index = 1; x_index < map->config.x_size-1; x_index++) 
+
+  for (x_index = 1; x_index < map->config.x_size-1; x_index++)
     {
       map_ptr = map->map[x_index];
       for (y_index = 1; y_index < map->config.y_size-1; y_index++, map_ptr++)
 	{
-	  for (index = 0; index < CARMEN_NUM_OFFSETS; index++) 
+	  for (index = 0; index < CARMEN_NUM_OFFSETS; index++)
 	    {
 	      x = x_index + carmen_geometry_x_offset[index];
 	      y = y_index + carmen_geometry_y_offset[index];
-							
+
 	      value = map->map[x][y] - downgrade;
-	      if (value > *map_ptr) 
-		*map_ptr = value; 
+	      if (value > *map_ptr)
+		*map_ptr = value;
 	    }
 	}
     }
 
-  /* Loop through map again, starting at bottom right, updating value of 
-     cell as max of itself and most expensive neighbour less the cost 
+  /* Loop through map again, starting at bottom right, updating value of
+     cell as max of itself and most expensive neighbour less the cost
      downgrade. */
 
-  for (x_index = map->config.x_size-2; x_index >= 1; x_index--) 
+  for (x_index = map->config.x_size-2; x_index >= 1; x_index--)
     {
       map_ptr = map->map[x_index]+map->config.y_size-1;
       for (y_index = map->config.y_size-2; y_index >= 1; y_index--, map_ptr--)
 	{
-	  for (index = 0; index < CARMEN_NUM_OFFSETS; index++) 
+	  for (index = 0; index < CARMEN_NUM_OFFSETS; index++)
 	    {
 	      x = x_index + carmen_geometry_x_offset[index];
 	      y = y_index + carmen_geometry_y_offset[index];
-	      
+
 	      value = map->map[x][y] - downgrade;
-	      if (value > *map_ptr) 
-		*map_ptr = value; 
+	      if (value > *map_ptr)
+		*map_ptr = value;
 	    }
 	}
     }
@@ -1016,13 +1018,13 @@ carmen_geometry_map_to_cspace(carmen_map_p map,
      of the robot as impassable. Also, fix map so that the clear space
      is 0.0 */
 
-  for (x_index = 1; x_index < map->config.x_size-1; x_index++) 
+  for (x_index = 1; x_index < map->config.x_size-1; x_index++)
     {
       map_ptr = map->map[x_index];
       for (y_index = 1; y_index < map->config.y_size-1; y_index++)
 	{
 	  value = *map_ptr;
-	  if (value >= 0 && value < 0.5) 
+	  if (value >= 0 && value < 0.5)
 	    value = 0.0;
 	  else if (value >= 0.5)
 	    value = 1.0;
