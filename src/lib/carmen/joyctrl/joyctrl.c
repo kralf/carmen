@@ -7,21 +7,21 @@
  * Roy, Sebastian Thrun, Dirk Haehnel, Cyrill Stachniss,
  * and Jared Glover
  *
- * CARMEN is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public 
- * License as published by the Free Software Foundation; 
+ * CARMEN is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
  * either version 2 of the License, or (at your option)
  * any later version.
  *
  * CARMEN is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied 
+ * but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more 
+ * PURPOSE.  See the GNU General Public License for more
  * details.
  *
- * You should have received a copy of the GNU General 
+ * You should have received a copy of the GNU General
  * Public License along with CARMEN; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, 
+ * Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA  02111-1307 USA
  *
  ********************************************************/
@@ -32,7 +32,13 @@
 
 int carmen_initialize_joystick(carmen_joystick_type *joystick)
 {
-  if ((joystick->fd = open(CARMEN_JOYSTICK_DEVICE, 
+  carmen_initialize_joystick_device(joystick, CARMEN_JOYSTICK_DEVICE);
+}
+
+int carmen_initialize_joystick_device(carmen_joystick_type *joystick,
+  const char* joystick_device)
+{
+  if ((joystick->fd = open(joystick_device,
 			   O_RDONLY | O_NONBLOCK)) < 0) {
     carmen_warn("Warning: could not initialize joystick.\n");
     joystick->initialized = 0;
@@ -46,13 +52,13 @@ int carmen_initialize_joystick(carmen_joystick_type *joystick)
 	strncpy(name, "Unknown", sizeof(name));
   printf("Name: %s\n", name);
 
- 
+
 
  if (strstr(name,"RumblePad 2")!=NULL)
 	{
 	joystick->type = RUMBLEPAD2;
 	printf("Detected Rumblepad 2\n");
-	} 
+	}
 
 else if (strstr(name,"Wingman")!=NULL)
         {
@@ -65,11 +71,11 @@ else if (strstr(name,"Wingman")!=NULL)
   joystick->buttons = (int *)calloc(joystick->nb_buttons, sizeof(int));
   carmen_test_alloc(joystick->buttons);
   joystick->initialized = 1;
-  
+
   return 0;
 }
 
-void carmen_set_deadspot(carmen_joystick_type *joystick, 
+void carmen_set_deadspot(carmen_joystick_type *joystick,
 			 int on_off, double size)
 {
   joystick->deadspot = on_off;
@@ -92,24 +98,24 @@ int carmen_get_joystick_state(carmen_joystick_type *joystick)
       }
       else if(mybuffer[i].type == JS_EVENT_AXIS) {
 	joystick->axes[mybuffer[i].number] = mybuffer[i].value;
-	
+
 	if(mybuffer[i].number == 0 || mybuffer[i].number == 1) {
 	  if(joystick->deadspot) {
-	    if(abs(joystick->axes[mybuffer[i].number]) < 
+	    if(abs(joystick->axes[mybuffer[i].number]) <
 	       joystick->deadspot_size * 32767)
 	      joystick->axes[mybuffer[i].number] = 0;
 	    else if(joystick->axes[mybuffer[i].number] > 0)
-	      joystick->axes[mybuffer[i].number] = 
-		(joystick->axes[mybuffer[i].number] - 
+	      joystick->axes[mybuffer[i].number] =
+		(joystick->axes[mybuffer[i].number] -
 		 joystick->deadspot_size * 32767)
 		/ ((1-joystick->deadspot_size) * 32767) * 32767.0;
 	    else if(joystick->axes[mybuffer[i].number] < 0)
-	      joystick->axes[mybuffer[i].number] = 
-		(joystick->axes[mybuffer[i].number] + 
+	      joystick->axes[mybuffer[i].number] =
+		(joystick->axes[mybuffer[i].number] +
 		 joystick->deadspot_size * 32767)
 		/ ((1-joystick->deadspot_size) * 32767) * 32767.0;
 	  } else
-	    joystick->axes[mybuffer[i].number] = 
+	    joystick->axes[mybuffer[i].number] =
 	      joystick->axes[mybuffer[i].number];
 	}
 	if(mybuffer[i].number == 1 || mybuffer[i].number == 5)
@@ -130,7 +136,7 @@ void carmen_close_joystick(carmen_joystick_type *joystick)
   free(joystick->buttons);
 }
 
-void carmen_joystick_control(carmen_joystick_type *joystick, double max_tv, 
+void carmen_joystick_control(carmen_joystick_type *joystick, double max_tv,
 			     double max_rv, double *tv, double *rv)
 {
   if (joystick->initialized == 0)
@@ -138,6 +144,6 @@ void carmen_joystick_control(carmen_joystick_type *joystick, double max_tv,
 
   *tv = joystick->axes[1] / 32767.0 * max_tv;
   *rv = -1 * joystick->axes[0] / 32767.0 * max_rv;
-  carmen_verbose("axes[0]: %d axes[1]: %d tv: %f rv: %f\n", 
+  carmen_verbose("axes[0]: %d axes[1]: %d tv: %f rv: %f\n",
 	       joystick->axes[0], joystick->axes[1], *tv, *rv);
 }

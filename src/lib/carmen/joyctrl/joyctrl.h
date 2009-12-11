@@ -7,21 +7,21 @@
  * Roy, Sebastian Thrun, Dirk Haehnel, Cyrill Stachniss,
  * and Jared Glover
  *
- * CARMEN is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public 
- * License as published by the Free Software Foundation; 
+ * CARMEN is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
  * either version 2 of the License, or (at your option)
  * any later version.
  *
  * CARMEN is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied 
+ * but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more 
+ * PURPOSE.  See the GNU General Public License for more
  * details.
  *
- * You should have received a copy of the GNU General 
+ * You should have received a copy of the GNU General
  * Public License along with CARMEN; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, 
+ * Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA  02111-1307 USA
  *
  ********************************************************/
@@ -29,8 +29,8 @@
 /** @addtogroup joystick libjoyctrl **/
 // @{
 
-/** 
- * \file joyctrl.h 
+/**
+ * \file joyctrl.h
  * \brief Library for using joysticks.
  *
  * ...
@@ -86,6 +86,12 @@ void carmen_set_deadspot(carmen_joystick_type *joystick, int on_off, double size
  * returns 0 on success, else -1                                    */
 int carmen_initialize_joystick(carmen_joystick_type *joystick);
 
+/* Initialize joystick using the specified device; has to be called *
+ * before any other function;                                       *
+ * returns 0 on success, else -1                                    */
+int carmen_initialize_joystick_device(carmen_joystick_type *joystick,
+  const char* joy_device);
+
 /* Request joystick state; returns number of bytes read on success, *
  * else -1;                                                         */
 int carmen_get_joystick_state(carmen_joystick_type *joystick);
@@ -94,7 +100,7 @@ int carmen_get_joystick_state(carmen_joystick_type *joystick);
 void carmen_close_joystick(carmen_joystick_type *joystick);
 
 /* returns translational and rotational velocities from joystick */
-void carmen_joystick_control(carmen_joystick_type *joystick, double max_tv, 
+void carmen_joystick_control(carmen_joystick_type *joystick, double max_tv,
 			     double max_rv, double *tv, double *rv);
 
 #ifdef __cplusplus
