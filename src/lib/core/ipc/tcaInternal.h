@@ -873,14 +873,13 @@ typedef INT_STR_KEY_TYPE HND_KEY_TYPE, *HND_KEY_PTR;
 typedef struct _X_IPC_REF {
   int32 refId;
   MSG_PTR msg;
+  ENCODING_TYPE encoding;
   const char *name;
   int responseSd; /* Who to respond to */
 #ifdef NMP_IPC
   BOOLEAN responded;
   unsigned int dataLength;
 #endif
-  int32 byteOrder;
-  ALIGNMENT_TYPE alignment;
 } X_IPC_REF_TYPE;
 
 typedef struct {

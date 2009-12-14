@@ -3,7 +3,7 @@
  *          Task Control Architecture
  *
  * (c) Copyright 1991 Christopher Fedor and Reid Simmons.  All rights reserved.
- * 
+ *
  * MODULE: formatters
  *
  * FILE: formatters.h
@@ -11,7 +11,7 @@
  * ABSTRACT:
  *
  * Data Format Routines. Include File.
- * 
+ *
  * REVISION HISTORY
  *
  * $Log: formatters.h,v $
@@ -235,7 +235,7 @@
  * Revision 1.10  1994/05/05  00:46:10  rich
  * Added a gmake makefile GNUmakefile so that the system can be easily
  * compiled on different machines.
- * Can now create the targets: tarfile and ftp for creating versions for 
+ * Can now create the targets: tarfile and ftp for creating versions for
  * export.
  *
  * Fixed a number of places were x_ipcExitHnd was not expected to return.
@@ -269,7 +269,7 @@
  * Several major changes (and some minor ones)
  * 1. x_ipcFreeData and x_ipcFreeReply now work even if the data or message format
  *    is NULL
- * 2. Using the "-t" option in central, message taps are added as a child of 
+ * 2. Using the "-t" option in central, message taps are added as a child of
  * the task tree node that was tapped.
  * 3. Named formatters are now expanded only when needed
  * For more details, see ../doc/x_ipc-7-4.release.notes
@@ -322,8 +322,8 @@ typedef enum {
 
 #ifndef __TURBOC__
 typedef enum {
-  PrimitiveFMT=0, 
-  LengthFMT=1, 
+  PrimitiveFMT=0,
+  LengthFMT=1,
   StructFMT=2,
   PointerFMT=3,
   FixedArrayFMT=4,
@@ -370,7 +370,7 @@ typedef enum {
   LONG_FMT =    18,
   UCMAT_FMT =   19,
   X_IPC_REF_PTR_FMT = 20,
-  
+
   SIUCMAT_FMT = 21,
   SICMAT_FMT =  22,
   SISMAT_FMT =  23,
@@ -470,7 +470,7 @@ typedef union {
   struct _FORMAT_TYPE *f;
 } FORMAT_ARRAY_TYPE, *FORMAT_ARRAY_PTR;
 
-typedef union { 
+typedef union {
   int32 i;
   const struct _FORMAT_TYPE *f;
 } CONST_FORMAT_ARRAY_TYPE, *CONST_FORMAT_ARRAY_PTR;
@@ -541,32 +541,32 @@ typedef const char *CONST_GENERIC_DATA_PTR;
 #define ALIGN_MAC_PPC 0x10
 
 #ifndef __TURBOC__
-typedef enum 
+typedef enum
 {
-  /* 
-   * Align things on word boundaries unless next item uses an odd number 
+  /*
+   * Align things on word boundaries unless next item uses an odd number
    * of bytes.
    */
   PACKED_ALIGNMENT = ALIGN_PACKED,
-  
-  /* 
-   * Align things on word boundaries unless next item uses an odd number 
+
+  /*
+   * Align things on word boundaries unless next item uses an odd number
    * of bytes.
    */
   WORD_ALIGNMENT = ALIGN_WORD,
-  
-  /* 
+
+  /*
    * Align things on the boundary of the longest type in the struct.
    */
   LONGEST_ALIGNMENT = ALIGN_LONGEST,
-  
-  /* 
+
+  /*
    * Align things on the boundary of the longest type in the struct, up to the
    * size of an int.
    */
   INT_ALIGNMENT = ALIGN_INT,
 
-  /* 
+  /*
    * Similar to ALIGN_INT (above) except: If first element is a "double", pad
    * the structure to 8 byte boundary.  Used by CodeWarrior, at least, for the
    * Macintosh PPC.
@@ -611,14 +611,14 @@ typedef enum
 #define ALIGN ALIGN_LONGEST
 #elif defined(__arm__)   /* added by Cyrill Stachniss for Stayton Boards (Intel XScale)  */
 #define ALIGN ALIGN_INT
-/* Note, the next line is only valid for gcc, but will only be evaluated 
+/* Note, the next line is only valid for gcc, but will only be evaluated
  * if the machine type is unknown.
  */
 #elif #machine (sparc)
 #define ALIGN ALIGN_LONGEST
 #elif defined(__x86_64__)
 #define ALIGN ALIGN_INT
-#else 
+#else
 #undef ALIGN
 #endif
 
@@ -710,7 +710,7 @@ typedef enum {
 
 #define WORD_SIZE 4
 #define WORD_SIZEP(x) (((int32)(x) & (WORD_SIZE-1)) == 0)
-
+
 
 #define shortToBytes(s,shortBytes) \
 {\
@@ -796,7 +796,7 @@ typedef enum {
    *dest++ = *src++;\
    *dest = *src;\
 }
-#endif 
+#endif
 
 
 #define bytesToShort(shortBytes, sPtr) \
@@ -976,10 +976,10 @@ typedef enum {
 /*   printf(" revBytesToInt\n");*/\
 }
 
-#define revBytesToLong(longBytes, lPtr) revBytesToInt(longBytes,(int *)(lPtr)) 
+#define revBytesToLong(longBytes, lPtr) revBytesToInt(longBytes,(int *)(lPtr))
 
 #define revBytesToFloat(floatBytes, fPtr) \
-revBytesToInt((floatBytes), (int32 *)(fPtr)) 
+revBytesToInt((floatBytes), (int32 *)(fPtr))
 
 #if defined(__arm__)
 /* patch to come along with stayton boards. */\
@@ -1002,7 +1002,7 @@ revBytesToInt((floatBytes), (int32 *)(fPtr))
    dest[7] = src[4]; /*s0;*/\
 }
 #else
-    
+
 #define revBytesToDouble(doubleBytes,dPtr) \
 {\
    register unsigned char *src= (unsigned char *)(doubleBytes);\
@@ -1228,7 +1228,7 @@ revBytesToInt((floatBytes), (int32 *)(fPtr))
 #define netBytesToChar(charBytes, cPtr) \
 {*((unsigned char *)(cPtr)) = *((unsigned char *)(charBytes));}
 
-#define shortToNetBytes(s,shortBytes) shortToBytes(s,shortBytes) 
+#define shortToNetBytes(s,shortBytes) shortToBytes(s,shortBytes)
 
 #define netBytesToShort(shortBytes, sPtr) \
 {if (byteOrder == BYTE_ORDER) \
@@ -1237,7 +1237,7 @@ else \
    {revBytesToShort(shortBytes,sPtr)}\
 }
 
-#define intToNetBytes(i,intBytes) intToBytes(i,intBytes) 
+#define intToNetBytes(i,intBytes) intToBytes(i,intBytes)
 
 #define netBytesToInt(intBytes, iPtr) \
 {if (byteOrder == BYTE_ORDER) \
@@ -1246,7 +1246,7 @@ else \
    {revBytesToInt(intBytes,iPtr)}\
 }
 
-#define longToNetBytes(l,longBytes) longToBytes(l,longBytes) 
+#define longToNetBytes(l,longBytes) longToBytes(l,longBytes)
 
 #define netBytesToLong(longBytes, lPtr) \
 {if (byteOrder == BYTE_ORDER) \
@@ -1255,7 +1255,7 @@ else \
    {revBytesToLong(longBytes,lPtr)}\
 }
 
-#define floatToNetBytes(f,floatBytes) floatToBytes(f,floatBytes) 
+#define floatToNetBytes(f,floatBytes) floatToBytes(f,floatBytes)
 
 #define netBytesToFloat(floatBytes, fPtr) \
 {if (byteOrder == BYTE_ORDER) \
@@ -1264,7 +1264,7 @@ else \
    {revBytesToFloat(floatBytes,fPtr)}\
 }
 
-#define doubleToNetBytes(d,doubleBytes) doubleToBytes(d,doubleBytes) 
+#define doubleToNetBytes(d,doubleBytes) doubleToBytes(d,doubleBytes)
 
 #define netBytesToDouble(doubleBytes, dPtr) \
 {if (byteOrder == BYTE_ORDER) \
@@ -1285,7 +1285,7 @@ else \
 #define INT_TO_NET_INT(i) { i = htonl(i);}
 #define NET_INT_TO_INT(i) { i = ntohl(i);}
 #endif
-
+
 /****************************************************************
  *                Stuff Needed For "Enum"
  ****************************************************************/
@@ -1308,7 +1308,7 @@ typedef enum { IntEnum0=0, IntEnumLast=MAX_INT} IntEnum;
 
 extern int32 x_ipc_enumToInt (CONST_FORMAT_PTR format,
 			CONST_GENERIC_DATA_PTR dataStruct, int32 *DStart);
-
+
 typedef int32 (* TRANSLATE_FN_ENCODE)(CONST_GENERIC_DATA_PTR, int32,
 				    char *, int32);
 typedef int32 (* TRANSLATE_FN_DECODE)(GENERIC_DATA_PTR, int32, char *, int32,
@@ -1316,7 +1316,7 @@ typedef int32 (* TRANSLATE_FN_DECODE)(GENERIC_DATA_PTR, int32, char *, int32,
 typedef int32 (* TRANSLATE_FN_ELENGTH)(CONST_GENERIC_DATA_PTR, int32);
 typedef int32 (* TRANSLATE_FN_ALENGTH)(void);
 typedef int32 (* TRANSLATE_FN_RLENGTH)(void);
-typedef int32 (* TRANSLATE_FN_DPRINT)(CONST_GENERIC_DATA_PTR, int32, 
+typedef int32 (* TRANSLATE_FN_DPRINT)(CONST_GENERIC_DATA_PTR, int32,
 				      FILE *, Print_Data_Ptr, int32);
 typedef int32 (* TRANSLATE_FN_DFREE)(GENERIC_DATA_PTR, int32);
 
@@ -1324,12 +1324,17 @@ typedef struct {
   TRANSLATE_FN_ENCODE Encode;
   TRANSLATE_FN_DECODE Decode;
   TRANSLATE_FN_ELENGTH ELength;
-  TRANSLATE_FN_ALENGTH ALength; 
+  TRANSLATE_FN_ALENGTH ALength;
   TRANSLATE_FN_RLENGTH RLength;
   BOOLEAN SimpleType;
   TRANSLATE_FN_DPRINT DPrint;
   TRANSLATE_FN_DFREE DFree;
 } TRANSLATE_TYPE, *TRANLATE_PTR;
+
+typedef struct _ENCODING_TYPE {
+  int32 byteOrder;
+  ALIGNMENT_TYPE alignment;
+} ENCODING_TYPE;
 
 FORMAT_PTR newFormatter(void);
 
@@ -1338,18 +1343,18 @@ void x_ipc_addFormatToTable(const char *name, CONST_FORMAT_PTR format);
 void x_ipc_addFormatStringToTable(char *name, char *formatString);
 FORMAT_PTR x_ipc_createIntegerFormat(FORMAT_CLASS_TYPE type, int32 integer);
 
-int32 x_ipc_alignField(CONST_FORMAT_PTR format, int32 currentField, 
+int32 x_ipc_alignField(CONST_FORMAT_PTR format, int32 currentField,
 		 int32 currentDataSize);
 
 int32 x_ipc_dataStructureSize(CONST_FORMAT_PTR format);
 int32 x_ipc_bufferSize(CONST_FORMAT_PTR Format, const void *DataStruct);
 SIZES_TYPE x_ipc_bufferSize1(CONST_FORMAT_PTR format,
 		       CONST_GENERIC_DATA_PTR dataStruct,
-		       int32 dStart, 
+		       int32 dStart,
 		       CONST_FORMAT_PTR parentFormat);
 void x_ipc_encodeData(CONST_FORMAT_PTR Format, const void *DataStruct,
 		char *Buffer, int32 BStart, int32 x_ipc_bufferSize);
-void *x_ipc_decodeData(CONST_FORMAT_PTR Format, char *Buffer, int32 BStart, 
+void *x_ipc_decodeData(CONST_FORMAT_PTR Format, char *Buffer, int32 BStart,
 		 char *DataStruct,
 		 int32 byteOrder, ALIGNMENT_TYPE alignment, int32 x_ipc_bufferSize);
 void x_ipc_freeDataStructure(CONST_FORMAT_PTR format, void *dataStruct);
@@ -1361,7 +1366,7 @@ BOOLEAN formatContainsPointers(CONST_FORMAT_PTR format);
 BOOLEAN x_ipc_sameFixedSizeDataBuffer(CONST_FORMAT_PTR format);
 BOOLEAN formatsEqual(CONST_FORMAT_PTR format1, CONST_FORMAT_PTR format2);
 BOOLEAN canVectorizeData(CONST_FORMAT_PTR format);
-struct iovec *x_ipc_createVectorization(CONST_FORMAT_PTR format, 
+struct iovec *x_ipc_createVectorization(CONST_FORMAT_PTR format,
 				  const char *dataStruct,
 				  char *buffer,
 				  int32 msgTotal);

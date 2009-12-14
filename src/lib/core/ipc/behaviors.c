@@ -1058,6 +1058,9 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
   x_ipcRef->dataLength = dataMsg->msgTotal;
 #endif
 
+  x_ipcRef->encoding.byteOrder = dataMsg->dataByteOrder;
+  x_ipcRef->encoding.alignment = dataMsg->alignment;
+
   /* If the handler is *not* in the message list, it was probably deregistered
      after central sent it the message */
   if (x_ipc_listMemberItem(hnd, msg->hndList)) {
@@ -1106,8 +1109,6 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
 	      data = (char *)data1;
 	    }
 	  }
-    x_ipcRef->byteOrder = dataMsg->dataByteOrder;
-    x_ipcRef->alignment = dataMsg->alignment;
 	  (*((X_IPC_HND_DATA_FN)hnd->hndProc))(x_ipcRef, data, hnd->clientData);
 	  x_ipcSetContext(currentContext);
 	  endExecHandler(x_ipcRef, connection, msg, tmpParentRef);

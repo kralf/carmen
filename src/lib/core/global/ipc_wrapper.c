@@ -295,8 +295,9 @@ carmen_generic_handler(MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 	formatter = IPC_msgInstanceFormatter(msgRef);
 	if(!mark->callback[i].first)
 	  IPC_freeDataElements(formatter, mark->callback[i].data);
-  err = IPC_saveUnmarshallData(msgRef, IPC_msgInstanceFormatter(msgRef),
+  err = IPC_saveUnmarshallData(IPC_msgInstanceFormatter(msgRef),
         callData,
+        IPC_msgInstanceEncoding(msgRef),
         mark->callback[i].data,
         mark->callback[i].message_size);
 

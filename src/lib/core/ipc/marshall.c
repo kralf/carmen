@@ -1,119 +1,119 @@
 /******************************************************************************
- * PROJECT: New Millennium, DS1
- *          IPC (Interprocess Communication) Package
- *
- * (c) Copyright 1996 Reid Simmons.  All rights reserved.
- *
- * FILE: marshall.c
- *
- * ABSTRACT: Implementation of the marshalling/unmarshalling functions of
- *           the IPC, using (modified) X_IPC library
- *
- * REVISION HISTORY
- *
- * $Log: marshall.c,v $
- * Revision 1.1.1.1  2004/10/15 14:33:15  tomkol
- * Initial Import
- *
- * Revision 1.5  2003/10/17 20:18:16  nickr
- * Upgraded to IPC 3.7.7, added Arm patches from Dirk Haehnel.
- *
- * Revision 1.4  2003/04/20 02:28:13  nickr
- * Upgraded to IPC 3.7.6.
- * Reversed meaning of central -s to be default silent,
- * -s turns silent off.
- *
- * Revision 2.6  2002/01/03 20:52:13  reids
- * Version of IPC now supports multiple threads (Caveat: Currently only
- *   tested for Linux).
- * Also some minor changes to support Java version of IPC.
- *
- * Revision 2.5  2001/06/01 18:51:19  reids
- * Don't try to free NULL data
- *
- * Revision 2.4  2001/02/28 03:13:24  trey
- * added explicit cast to avoid warning
- *
- * Revision 2.3  2001/02/09 16:24:21  reids
- * Added IPC_getConnections to return list of ports that IPC is listening to.
- * Added IPC_freeDataElements to free the substructure (pointers) of a struct.
- *
- * Revision 2.2  2000/07/03 17:03:26  hersh
- * Removed all instances of "tca" in symbols and messages, plus changed
- * the names of all other symbols which conflicted with TCA.  This new
- * version of IPC should be able to interoperate TCA fully.  Client
- * programs can now link to both tca and ipc.
- *
- * Revision 2.1.1.1  1999/11/23 19:07:34  reids
- * Putting IPC Version 2.9.0 under local (CMU) CVS control.
- *
- * Revision 1.5.2.12  1997/03/07 17:49:49  reids
- * Added support for OS2, needed by JSC team (thanks to Bob Goode).
- * Also fixed bug when passing between machines of different endianness.
- *
- * Revision 1.5.2.11  1997/01/27 20:40:32  reids
- * Implement a function to check whether a given format string matches the
- *   one registered for a given message.
- *
- * Revision 1.5.2.10  1997/01/27 20:09:42  udo
- * ipc_2_6_006 to r3_Dev merge
- *
- * Revision 1.5.2.8  1997/01/16 22:19:36  reids
- * Took out restriction that Lisp marshalling was non-reentrant.
- *
- * Revision 1.5.2.7  1997/01/11 01:21:08  udo
- * ipc 2.6.002 to r3_dev merge
- *
- * Revision 1.5.2.6.4.1  1996/12/24 14:41:44  reids
- * Merge the C and Lisp IPC libraries (both C and Lisp modules can now
- *   link with the same libipc.a).
- * Moved the Lisp-specific code to ipcLisp.c: Cleaner design and it will
- *   not be linked into C modules this way.
- *
- * Revision 1.5.2.6  1996/12/18 15:12:57  reids
- * Changed logging code to remove VxWorks dependence on varargs
- *
- * Revision 1.5.2.5  1996/10/29 14:51:18  reids
- * Added IPC_unmarshallData.
- * IPC_freeByteArray function available to C, not just LISP.
- * Use x_ipcMalloc instead of malloc.
- *
- * Revision 1.5.2.4  1996/10/24 17:26:37  reids
- * Replace fprintf with x_ipcModWarning.
- *
- * Revision 1.5.2.3  1996/10/24 15:19:21  reids
- * Make everything use x_ipcMalloc/x_ipcFree.
- *
- * Revision 1.5.2.2  1996/10/18 18:10:19  reids
- * Better error checking and handling.
- *
- * Revision 1.5.2.1  1996/10/02 20:56:42  reids
- * Fixed the procedure for dealing with named formatters.
- *
- * Revision 1.6  1996/09/06 22:30:34  pgluck
- * Removed static declarations for VxWorks
- *
- * Revision 1.5  1996/05/24 20:02:09  rouquett
- * swapped include order between ipc.h globalM.h for solaris compilation
- *
- * Revision 1.4  1996/05/09 01:01:38  reids
- * Moved all the X_IPC files over to the IPC directory.
- * Fixed problem with sending NULL data.
- * Added function IPC_setCapacity.
- * VxWorks m68k version released.
- *
- * Revision 1.3  1996/04/24 19:13:51  reids
- * Changes to support vxworks version.
- *
- * Revision 1.2  1996/03/06 20:20:46  reids
- * Version 2.3 adds two new functions: IPC_defineFormat and IPC_isConnected
- *
- * Revision 1.1  1996/03/03 04:36:21  reids
- * First release of IPC files.  Corresponds to IPC Specifiction 2.2, except
- * that IPC_readData is not yet implemented.  Also contains "cover" functions
- * for the xipc interface.
- *
- ****************************************************************/
+* PROJECT: New Millennium, DS1
+*          IPC (Interprocess Communication) Package
+*
+* (c) Copyright 1996 Reid Simmons.  All rights reserved.
+*
+* FILE: marshall.c
+*
+* ABSTRACT: Implementation of the marshalling/unmarshalling functions of
+*           the IPC, using (modified) X_IPC library
+*
+* REVISION HISTORY
+*
+* $Log: marshall.c,v $
+* Revision 1.1.1.1  2004/10/15 14:33:15  tomkol
+* Initial Import
+*
+* Revision 1.5  2003/10/17 20:18:16  nickr
+* Upgraded to IPC 3.7.7, added Arm patches from Dirk Haehnel.
+*
+* Revision 1.4  2003/04/20 02:28:13  nickr
+* Upgraded to IPC 3.7.6.
+* Reversed meaning of central -s to be default silent,
+* -s turns silent off.
+*
+* Revision 2.6  2002/01/03 20:52:13  reids
+* Version of IPC now supports multiple threads (Caveat: Currently only
+*   tested for Linux).
+* Also some minor changes to support Java version of IPC.
+*
+* Revision 2.5  2001/06/01 18:51:19  reids
+* Don't try to free NULL data
+*
+* Revision 2.4  2001/02/28 03:13:24  trey
+* added explicit cast to avoid warning
+*
+* Revision 2.3  2001/02/09 16:24:21  reids
+* Added IPC_getConnections to return list of ports that IPC is listening to.
+* Added IPC_freeDataElements to free the substructure (pointers) of a struct.
+*
+* Revision 2.2  2000/07/03 17:03:26  hersh
+* Removed all instances of "tca" in symbols and messages, plus changed
+* the names of all other symbols which conflicted with TCA.  This new
+* version of IPC should be able to interoperate TCA fully.  Client
+* programs can now link to both tca and ipc.
+*
+* Revision 2.1.1.1  1999/11/23 19:07:34  reids
+* Putting IPC Version 2.9.0 under local (CMU) CVS control.
+*
+* Revision 1.5.2.12  1997/03/07 17:49:49  reids
+* Added support for OS2, needed by JSC team (thanks to Bob Goode).
+* Also fixed bug when passing between machines of different endianness.
+*
+* Revision 1.5.2.11  1997/01/27 20:40:32  reids
+* Implement a function to check whether a given format string matches the
+*   one registered for a given message.
+*
+* Revision 1.5.2.10  1997/01/27 20:09:42  udo
+* ipc_2_6_006 to r3_Dev merge
+*
+* Revision 1.5.2.8  1997/01/16 22:19:36  reids
+* Took out restriction that Lisp marshalling was non-reentrant.
+*
+* Revision 1.5.2.7  1997/01/11 01:21:08  udo
+* ipc 2.6.002 to r3_dev merge
+*
+* Revision 1.5.2.6.4.1  1996/12/24 14:41:44  reids
+* Merge the C and Lisp IPC libraries (both C and Lisp modules can now
+*   link with the same libipc.a).
+* Moved the Lisp-specific code to ipcLisp.c: Cleaner design and it will
+*   not be linked into C modules this way.
+*
+* Revision 1.5.2.6  1996/12/18 15:12:57  reids
+* Changed logging code to remove VxWorks dependence on varargs
+*
+* Revision 1.5.2.5  1996/10/29 14:51:18  reids
+* Added IPC_unmarshallData.
+* IPC_freeByteArray function available to C, not just LISP.
+* Use x_ipcMalloc instead of malloc.
+*
+* Revision 1.5.2.4  1996/10/24 17:26:37  reids
+* Replace fprintf with x_ipcModWarning.
+*
+* Revision 1.5.2.3  1996/10/24 15:19:21  reids
+* Make everything use x_ipcMalloc/x_ipcFree.
+*
+* Revision 1.5.2.2  1996/10/18 18:10:19  reids
+* Better error checking and handling.
+*
+* Revision 1.5.2.1  1996/10/02 20:56:42  reids
+* Fixed the procedure for dealing with named formatters.
+*
+* Revision 1.6  1996/09/06 22:30:34  pgluck
+* Removed static declarations for VxWorks
+*
+* Revision 1.5  1996/05/24 20:02:09  rouquett
+* swapped include order between ipc.h globalM.h for solaris compilation
+*
+* Revision 1.4  1996/05/09 01:01:38  reids
+* Moved all the X_IPC files over to the IPC directory.
+* Fixed problem with sending NULL data.
+* Added function IPC_setCapacity.
+* VxWorks m68k version released.
+*
+* Revision 1.3  1996/04/24 19:13:51  reids
+* Changes to support vxworks version.
+*
+* Revision 1.2  1996/03/06 20:20:46  reids
+* Version 2.3 adds two new functions: IPC_defineFormat and IPC_isConnected
+*
+* Revision 1.1  1996/03/03 04:36:21  reids
+* First release of IPC files.  Corresponds to IPC Specifiction 2.2, except
+* that IPC_readData is not yet implemented.  Also contains "cover" functions
+* for the xipc interface.
+*
+****************************************************************/
 
 #include "globalM.h"
 #ifdef DOS_FILE_NAMES
@@ -150,6 +150,18 @@ FORMATTER_PTR IPC_parseFormat (const char *formatString)
   }
 }
 
+ENCODING_PTR IPC_msgInstanceEncoding (MSG_INSTANCE msgInstance)
+{
+  ENCODING_PTR encoding;
+
+  if (!msgInstance) {
+    ipcSetError(IPC_Null_Argument);
+    return NULL;
+  } else {
+    return &msgInstance->encoding;
+  }
+}
+
 FORMATTER_PTR IPC_msgFormatter (const char *msgName)
 {
   MSG_PTR msg;
@@ -166,8 +178,8 @@ FORMATTER_PTR IPC_msgFormatter (const char *msgName)
     } else {
       format = msg->msgData->resFormat;
       if (format && format->type == BadFormatFMT) {
-	ipcSetError(IPC_Illegal_Formatter);
-	format = NULL;
+  ipcSetError(IPC_Illegal_Formatter);
+  format = NULL;
       }
     }
   }
@@ -175,7 +187,7 @@ FORMATTER_PTR IPC_msgFormatter (const char *msgName)
 }
 
 /* Equivalent to, but more efficient than,
-   IPC_msgFormatter(IPC_msgInstanceName(msgInstance)); */
+  IPC_msgFormatter(IPC_msgInstanceName(msgInstance)); */
 FORMATTER_PTR IPC_msgInstanceFormatter (MSG_INSTANCE msgInstance)
 {
   FORMATTER_PTR format;
@@ -195,7 +207,7 @@ FORMATTER_PTR IPC_msgInstanceFormatter (MSG_INSTANCE msgInstance)
 }
 
 IPC_RETURN_TYPE IPC_defineFormat (const char *formatName,
-				  const char *formatString)
+          const char *formatString)
 {
   if (!formatName || strlen(formatName) == 0) {
     RETURN_ERROR(IPC_Null_Argument);
@@ -211,9 +223,9 @@ IPC_RETURN_TYPE IPC_defineFormat (const char *formatName,
 }
 
 static IPC_RETURN_TYPE _IPC_marshall (FORMATTER_PTR formatter,
-				      void *dataptr,
-				      IPC_VARCONTENT_PTR varcontent,
-				      BOOLEAN mallocData)
+              void *dataptr,
+              IPC_VARCONTENT_PTR varcontent,
+              BOOLEAN mallocData)
 {
   unsigned int length;
 
@@ -225,15 +237,15 @@ static IPC_RETURN_TYPE _IPC_marshall (FORMATTER_PTR formatter,
     RETURN_ERROR(IPC_Null_Argument);
   } else {
     varcontent->length = length = (unsigned)x_ipc_bufferSize(formatter,
-							     dataptr);
+                  dataptr);
     if (length > 0) {
       if (!mallocData && x_ipc_sameFixedSizeDataBuffer(formatter)) {
-	/* The data structure is equivalent to the byte-array */
-	varcontent->content = dataptr;
+  /* The data structure is equivalent to the byte-array */
+  varcontent->content = dataptr;
       } else {
-	varcontent->content = x_ipcMalloc(length);
-	x_ipc_encodeData(formatter, dataptr, (char *)varcontent->content,
-			 0, length);
+  varcontent->content = x_ipcMalloc(length);
+  x_ipc_encodeData(formatter, dataptr, (char *)varcontent->content,
+      0, length);
       }
     } else {
       varcontent->content = NULL;
@@ -243,16 +255,16 @@ static IPC_RETURN_TYPE _IPC_marshall (FORMATTER_PTR formatter,
 }
 
 IPC_RETURN_TYPE IPC_marshall (FORMATTER_PTR formatter,
-			      void *dataptr,
-			      IPC_VARCONTENT_PTR varcontent)
+            void *dataptr,
+            IPC_VARCONTENT_PTR varcontent)
 {
   return _IPC_marshall(formatter, dataptr, varcontent, TRUE);
 }
 
 static IPC_RETURN_TYPE _IPC_unmarshall (FORMATTER_PTR formatter,
-					BYTE_ARRAY byteArray,
-					void **dataHandle,
-					BOOLEAN mallocData)
+          BYTE_ARRAY byteArray,
+          void **dataHandle,
+          BOOLEAN mallocData)
 {
   int32 dataSize, byteOrder;
   ALIGNMENT_TYPE alignment;
@@ -267,27 +279,27 @@ static IPC_RETURN_TYPE _IPC_unmarshall (FORMATTER_PTR formatter,
       *dataHandle = NULL;
     } else {
       if (mallocData) {
-	*dataHandle = x_ipcMalloc((unsigned)dataSize);
+  *dataHandle = x_ipcMalloc((unsigned)dataSize);
       }
       LOCK_M_MUTEX;
       byteOrder = GET_M_GLOBAL(byteOrder);
       alignment = GET_M_GLOBAL(alignment);
       UNLOCK_M_MUTEX;
       if ( (EASY_STRUCTURE_COPY) && (byteOrder == BYTE_ORDER) &&
-	   x_ipc_sameFixedSizeDataBuffer(formatter) ) {
-	BCOPY(byteArray, *dataHandle, dataSize);
+    x_ipc_sameFixedSizeDataBuffer(formatter) ) {
+  BCOPY(byteArray, *dataHandle, dataSize);
       } else {
-	x_ipc_decodeData(formatter, (char *)byteArray, 0, (char *)*dataHandle,
-			 byteOrder, alignment, -1);
+  x_ipc_decodeData(formatter, (char *)byteArray, 0, (char *)*dataHandle,
+      byteOrder, alignment, -1);
       }
     }
     return IPC_OK;
   }
 }
 
-static IPC_RETURN_TYPE _IPC_saveUnmarshall (MSG_INSTANCE msgRef,
-          FORMATTER_PTR formatter,
+static IPC_RETURN_TYPE _IPC_saveUnmarshall (FORMATTER_PTR formatter,
           BYTE_ARRAY byteArray,
+          ENCODING_PTR encoding,
           void **dataHandle,
           BOOLEAN mallocData)
 {
@@ -303,14 +315,14 @@ static IPC_RETURN_TYPE _IPC_saveUnmarshall (MSG_INSTANCE msgRef,
       *dataHandle = NULL;
     } else {
       if (mallocData) {
-  *dataHandle = x_ipcMalloc((unsigned)dataSize);
+        *dataHandle = x_ipcMalloc((unsigned)dataSize);
       }
-      if ( (EASY_STRUCTURE_COPY) && (msgRef->byteOrder == BYTE_ORDER) &&
-     x_ipc_sameFixedSizeDataBuffer(formatter) ) {
-  BCOPY(byteArray, *dataHandle, dataSize);
+      if ( (EASY_STRUCTURE_COPY) && (encoding->byteOrder == BYTE_ORDER) &&
+          x_ipc_sameFixedSizeDataBuffer(formatter) ) {
+        BCOPY(byteArray, *dataHandle, dataSize);
       } else {
-  x_ipc_decodeData(formatter, (char *)byteArray, 0, (char *)*dataHandle,
-       msgRef->byteOrder, msgRef->alignment, -1);
+        x_ipc_decodeData(formatter, (char *)byteArray, 0, (char *)*dataHandle,
+          encoding->byteOrder, encoding->alignment, -1);
       }
     }
     return IPC_OK;
@@ -318,16 +330,16 @@ static IPC_RETURN_TYPE _IPC_saveUnmarshall (MSG_INSTANCE msgRef,
 }
 
 IPC_RETURN_TYPE IPC_unmarshall (FORMATTER_PTR formatter,
-				BYTE_ARRAY byteArray,
-				void **dataHandle)
+        BYTE_ARRAY byteArray,
+        void **dataHandle)
 {
   return _IPC_unmarshall(formatter, byteArray, dataHandle, TRUE);
 }
 
 IPC_RETURN_TYPE IPC_unmarshallData(FORMATTER_PTR formatter,
-				   BYTE_ARRAY byteArray,
-				   void *dataHandle,
-				   int dataSize)
+          BYTE_ARRAY byteArray,
+          void *dataHandle,
+          int dataSize)
 {
   if (!formatter) {
     RETURN_ERROR(IPC_Null_Argument);
@@ -342,11 +354,11 @@ IPC_RETURN_TYPE IPC_unmarshallData(FORMATTER_PTR formatter,
   }
 }
 
-IPC_RETURN_TYPE IPC_saveUnmarshallData(MSG_INSTANCE msgRef,
-           FORMATTER_PTR formatter,
-           BYTE_ARRAY byteArray,
-           void *dataHandle,
-           int dataSize)
+IPC_RETURN_TYPE IPC_saveUnmarshallData(FORMATTER_PTR formatter,
+          BYTE_ARRAY byteArray,
+          ENCODING_PTR encoding,
+          void *dataHandle,
+          int dataSize)
 {
   if (!formatter) {
     RETURN_ERROR(IPC_Null_Argument);
@@ -357,7 +369,8 @@ IPC_RETURN_TYPE IPC_saveUnmarshallData(MSG_INSTANCE msgRef,
   } else if (dataSize != x_ipc_dataStructureSize(formatter)) {
     RETURN_ERROR(IPC_Wrong_Buffer_Length);
   } else {
-    return _IPC_saveUnmarshall(msgRef, formatter, byteArray, &dataHandle, FALSE);
+    return _IPC_saveUnmarshall(formatter, byteArray, encoding,
+      &dataHandle, FALSE);
   }
 }
 
@@ -369,7 +382,7 @@ IPC_RETURN_TYPE IPC_publishData (const char *msgName, void *dataptr)
   if (!msgName || strlen(msgName) == 0) {
     RETURN_ERROR(IPC_Null_Argument);
   } else if (_IPC_marshall(IPC_msgFormatter(msgName),
-			   dataptr, &varcontent, FALSE) != IPC_OK){
+        dataptr, &varcontent, FALSE) != IPC_OK){
     PASS_ON_ERROR();
   } else {
     retVal = IPC_publishVC(msgName, &varcontent);
@@ -379,7 +392,7 @@ IPC_RETURN_TYPE IPC_publishData (const char *msgName, void *dataptr)
 }
 
 IPC_RETURN_TYPE IPC_respondData (MSG_INSTANCE msgInstance,
-				 const char *msgName, void *dataptr)
+        const char *msgName, void *dataptr)
 {
   IPC_VARCONTENT_TYPE varcontent;
   IPC_RETURN_TYPE retVal;
@@ -389,7 +402,7 @@ IPC_RETURN_TYPE IPC_respondData (MSG_INSTANCE msgInstance,
   } else if (!msgInstance) {
     RETURN_ERROR(IPC_Null_Argument);
   } else if (_IPC_marshall(IPC_msgFormatter(msgName),
-			   dataptr, &varcontent, FALSE) != IPC_OK) {
+        dataptr, &varcontent, FALSE) != IPC_OK) {
     PASS_ON_ERROR();
   } else {
     retVal = IPC_respondVC(msgInstance, msgName, &varcontent);
@@ -399,7 +412,7 @@ IPC_RETURN_TYPE IPC_respondData (MSG_INSTANCE msgInstance,
 }
 
 IPC_RETURN_TYPE IPC_queryNotifyData (const char *msgName, void *dataptr,
-				     HANDLER_TYPE handler, void *clientData)
+            HANDLER_TYPE handler, void *clientData)
 {
   IPC_VARCONTENT_TYPE varcontent;
   IPC_RETURN_TYPE retVal;
@@ -407,7 +420,7 @@ IPC_RETURN_TYPE IPC_queryNotifyData (const char *msgName, void *dataptr,
   if (!msgName || strlen(msgName) == 0) {
     RETURN_ERROR(IPC_Null_Argument);
   } else if (_IPC_marshall(IPC_msgFormatter(msgName),
-			   dataptr, &varcontent, FALSE) != IPC_OK) {
+        dataptr, &varcontent, FALSE) != IPC_OK) {
     PASS_ON_ERROR();
   } else {
     retVal = IPC_queryNotifyVC(msgName, &varcontent, handler, clientData);
@@ -417,24 +430,26 @@ IPC_RETURN_TYPE IPC_queryNotifyData (const char *msgName, void *dataptr,
 }
 
 IPC_RETURN_TYPE IPC_queryResponseData (const char *msgName,
-				       void *dataptr, void **replyData,
-				       unsigned int timeoutMsecs)
+              void *dataptr, void **replyData,
+              unsigned int timeoutMsecs)
 {
   IPC_VARCONTENT_TYPE varcontent;
   IPC_RETURN_TYPE retVal;
   BYTE_ARRAY replyByteArray;
+  ENCODING_TYPE replyEncoding;
   CONST_FORMAT_PTR decodeFormat;
 
   if (!msgName || strlen(msgName) == 0) {
     RETURN_ERROR(IPC_Null_Argument);
   } else if (_IPC_marshall(IPC_msgFormatter(msgName),
-			   dataptr, &varcontent, FALSE) != IPC_OK) {
+        dataptr, &varcontent, FALSE) != IPC_OK) {
     PASS_ON_ERROR();
   } else {
     retVal = _IPC_queryResponse(msgName, varcontent.length, varcontent.content,
-				&replyByteArray, &decodeFormat, timeoutMsecs);
+        &replyByteArray, &replyEncoding, &decodeFormat, timeoutMsecs);
     if (retVal == IPC_OK) {
-      retVal = _IPC_unmarshall(decodeFormat, replyByteArray, replyData, TRUE);
+      retVal = _IPC_saveUnmarshall(decodeFormat, replyByteArray,
+        &replyEncoding, replyData, TRUE);
       if (replyByteArray != replyData) x_ipcFree(replyByteArray);
     } else {
       *replyData = NULL;
@@ -473,7 +488,7 @@ IPC_RETURN_TYPE IPC_freeDataElements (FORMATTER_PTR formatter, void *dataptr)
 }
 
 IPC_RETURN_TYPE IPC_printData (FORMATTER_PTR formatter, FILE *stream,
-			       void *dataptr)
+            void *dataptr)
 {
   if (!X_IPC_INITIALIZED()) {
     RETURN_ERROR(IPC_Not_Initialized);
@@ -488,7 +503,7 @@ IPC_RETURN_TYPE IPC_printData (FORMATTER_PTR formatter, FILE *stream,
 }
 
 IPC_RETURN_TYPE IPC_readData (FORMATTER_PTR formatter, FILE *stream,
-			      void **dataHandle)
+            void **dataHandle)
 {
 #ifdef UNUSED_PRAGMA
 #pragma unused(formatter, stream, dataHandle)
@@ -498,7 +513,7 @@ IPC_RETURN_TYPE IPC_readData (FORMATTER_PTR formatter, FILE *stream,
 }
 
 IPC_RETURN_TYPE IPC_checkMsgFormats (const char *msgName,
-				     const char *formatString)
+            const char *formatString)
 {
   MSG_PTR msg;
   CONST_FORMAT_PTR format;
@@ -517,9 +532,9 @@ IPC_RETURN_TYPE IPC_checkMsgFormats (const char *msgName,
       sameP = formatsEqual(format, msg->msgData->resFormat);
       x_ipc_freeFormatter(&format);
       if (sameP) {
-	return IPC_OK;
+  return IPC_OK;
       } else {
-	RETURN_ERROR(IPC_Mismatched_Formatter);
+  RETURN_ERROR(IPC_Mismatched_Formatter);
       }
     }
   }
