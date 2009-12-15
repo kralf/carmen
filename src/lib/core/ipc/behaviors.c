@@ -1007,7 +1007,7 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
   X_IPC_REF_PTR x_ipcRef;
   X_IPC_MSG_CLASS_TYPE msg_class;
   CLASS_FORM_PTR classForm;
-  int tmpParentRef, byteOrder;
+  int tmpParentRef;
   X_IPC_CONTEXT_PTR currentContext;
 #ifdef LISPWORKS_FFI_HACK
   BOOLEAN isLisp;
@@ -1097,14 +1097,12 @@ void x_ipc_execHnd(CONNECTION_PTR connection, DATA_MSG_PTR dataMsg)
 #endif /* LISPWORKS_FFI_HACK */
 	{
 	  if (hnd->autoUnmarshall && msg->msgData->resFormat) {
-	    LOCK_M_MUTEX;
-	    byteOrder = GET_M_GLOBAL(byteOrder);
-	    UNLOCK_M_MUTEX;
 	      /* Skip if the data is simple -- already fully decoded */
-	    if (!(byteOrder == BYTE_ORDER &&
+	    if (!(dataMsg->dataByteOrder == BYTE_ORDER &&
 		  x_ipc_sameFixedSizeDataBuffer(msg->msgData->resFormat))) {
 	      void *data1;
-	      IPC_unmarshall(msg->msgData->resFormat, data, &data1);
+	      IPC_saveUnmarshall(msg->msgData->resFormat, data,
+          &x_ipcRef->encoding, &data1);
 	      IPC_freeByteArray(data);
 	      data = (char *)data1;
 	    }

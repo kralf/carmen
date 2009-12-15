@@ -230,7 +230,7 @@ IPC_RETURN_TYPE _IPC_queryResponse (const char *msgName,
       UNLOCK_M_MUTEX;
 #endif /* LISP */
       *replyHandle = queryReplyData.data;
-      *replyEncoding = queryReplyData.encoding;
+      if (replyEncoding) *replyEncoding = queryReplyData.encoding;
       if (replyFormatter) *replyFormatter = queryReplyData.formatter;
     }
 
@@ -300,7 +300,7 @@ static void queryReplyHandler (MSG_INSTANCE msgRef, BYTE_ARRAY callData,
 
   queryReplyData->handled = TRUE;
   queryReplyData->data = callData;
-  queryReplyData->encoding = msgRef->encoding;
+  queryReplyData->encoding = *IPC_msgInstanceEncoding(msgRef);
   queryReplyData->formatter = IPC_msgInstanceFormatter(msgRef);
 }
 

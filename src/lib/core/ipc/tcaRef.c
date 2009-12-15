@@ -1,14 +1,14 @@
 /******************************************************************************
  *
  * PROJECT: Carnegie Mellon Planetary Rover Project
- *          Task Control Architecture 
- * 
+ *          Task Control Architecture
+ *
  * MODULE: x_ipcRef
  *
  * FILE: x_ipcRef.c
  *
  * ABSTRACT:
- * 
+ *
  * Implements X_IPC_REF_PTR
  *
  * REVISION HISTORY
@@ -254,17 +254,17 @@ X_IPC_REF_PTR x_ipcRefCreate(MSG_PTR msg, const char *name, int32 refId)
 {
   X_IPC_REF_PTR x_ipcRef;
   int32 length;
-  
+
   LOCK_CM_MUTEX;
   if (!x_ipc_listLength(GET_C_GLOBAL(x_ipcRefFreeList)))
     x_ipcRef = NEW(X_IPC_REF_TYPE);
-  else 
+  else
     x_ipcRef = (X_IPC_REF_PTR)x_ipc_listPopItem(GET_C_GLOBAL(x_ipcRefFreeList));
   UNLOCK_CM_MUTEX;
 
-  x_ipcRef->refId = refId;    
+  x_ipcRef->refId = refId;
   x_ipcRef->msg = msg;
-  
+
   if (!name) {
     x_ipcRef->name = NULL;
   } else {
@@ -280,7 +280,10 @@ X_IPC_REF_PTR x_ipcRefCreate(MSG_PTR msg, const char *name, int32 refId)
   x_ipcRef->responded = FALSE;
   x_ipcRef->dataLength = 0;
 #endif
-  
+
+  x_ipcRef->encoding.byteOrder = GET_M_GLOBAL(byteOrder);
+  x_ipcRef->encoding.alignment = GET_M_GLOBAL(alignment);
+
   return x_ipcRef;
 }
 
@@ -289,22 +292,22 @@ void x_ipcRefFree(X_IPC_REF_PTR x_ipcRef)
   if (x_ipcRef) {
     x_ipcRef->refId = 0;
     x_ipcRef->msg = NULL;
-    
+
     x_ipcFree((char *)x_ipcRef->name);
     x_ipcRef->name = NULL;
-    
+
     LOCK_CM_MUTEX;
     x_ipc_listInsertItemFirst((char *)x_ipcRef, GET_C_GLOBAL(x_ipcRefFreeList));
     UNLOCK_CM_MUTEX;
   }
 }
-
+
 /******************************************************************************
  *
  * FUNCTION: void x_ipcReferenceRelease(ref)
  *
- * DESCRIPTION: 
- * Frees the reference and 
+ * DESCRIPTION:
+ * Frees the reference and
  *
  * INPUTS: X_IPC_REF_PTR ref;
  *
@@ -315,16 +318,16 @@ void x_ipcReferenceRelease(X_IPC_REF_PTR ref)
 {
   if (ref) {
     (void)x_ipcInform(X_IPC_REF_RELEASE_INFORM, (void *)&(ref->refId));
-    
+
     x_ipcRefFree(ref);
   }
 }
-
+
 /******************************************************************************
  *
  * FUNCTION: char *x_ipcReferenceName(ref)
  *
- * DESCRIPTION: 
+ * DESCRIPTION:
  * Returns the name of the message associated with the reference.
  *
  * INPUTS: X_IPC_REF_PTR ref;
@@ -343,12 +346,12 @@ const char *x_ipcReferenceName(X_IPC_REF_PTR ref)
   }
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: int32 x_ipcReferenceId(ref)
  *
- * DESCRIPTION: 
+ * DESCRIPTION:
  * Done primarily for lisp.
  * Returns the msg id of the message associated with the reference.
  *
@@ -366,12 +369,12 @@ int x_ipcReferenceId(X_IPC_REF_PTR ref)
     return NO_REF;
 }
 
-
+
 /******************************************************************************
  *
  * FUNCTION: void *x_ipcReferenceData(ref)
  *
- * DESCRIPTION: 
+ * DESCRIPTION:
  * Returns a pointer to the data that was sent when the message
  * that is associated with the reference was sent.
  *
@@ -388,10 +391,10 @@ void *x_ipcReferenceData(X_IPC_REF_PTR ref)
   char *msgData;
   X_IPC_REF_PTR waitRef;
   X_IPC_RETURN_VALUE_TYPE returnValue;
-  
+
   msg = x_ipc_msgFind(X_IPC_REF_DATA_QUERY);
   if (msg == NULL) return NULL;
-  
+
   if (!ref->msg) {
     if (!ref->name) {
       /* 17-Jun-91: fedor: start enforcing correct refs */
@@ -402,31 +405,31 @@ void *x_ipcReferenceData(X_IPC_REF_PTR ref)
     ref->msg = x_ipc_msgFind(ref->name);
     if (ref->msg == NULL) return NULL;
   }
-  
+
   /* 17-Jun-91: fedor: check if any message form */
   if (!ref->msg->msgData->msgFormat)
     return NULL;
-  
+
   refId = x_ipc_nextSendMessageRef();
-  returnValue = x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg, 
+  returnValue = x_ipc_sendMessage((X_IPC_REF_PTR)NULL, msg,
 				  (char *)&ref->refId, (char *)NULL, refId);
-  
+
   if (returnValue != Success) {
     X_IPC_MOD_ERROR("ERROR: x_ipcReferenceData: x_ipc_sendMessage Failed.\n");
     return NULL;
   }
-  
+
   waitRef = x_ipcRefCreate(ref->msg, ref->name, refId);
-  
+
   msgData = (char *)x_ipcMalloc((unsigned)x_ipc_dataStructureSize(ref->msg->msgData->msgFormat));
-  
+
   LOCK_CM_MUTEX;
   sd = GET_C_GLOBAL(serverRead);
   UNLOCK_CM_MUTEX;
   returnValue = x_ipc_waitForReplyFrom(waitRef, msgData, TRUE, WAITFOREVER, sd);
-  
+
   x_ipcRefFree(waitRef);
-  
+
   if (returnValue == NullReply) {
     /* 17-Jun-91: fedor: if NullReply then nothing else was malloced. */
     x_ipcFree(msgData);
@@ -435,12 +438,12 @@ void *x_ipcReferenceData(X_IPC_REF_PTR ref)
   else
     return msgData;
 }
-
+
 /******************************************************************************
  *
  * FUNCTION:  X_IPC_REF_STATUS_TYPE x_ipcReferenceStatus(ref)
  *
- * DESCRIPTION: 
+ * DESCRIPTION:
  * Returns the msg status of the message associated with the reference.
  *
  * INPUTS: X_IPC_REF_PTR ref;
@@ -453,10 +456,10 @@ void *x_ipcReferenceData(X_IPC_REF_PTR ref)
 X_IPC_REF_STATUS_TYPE x_ipcReferenceStatus(X_IPC_REF_PTR ref)
 {
   X_IPC_REF_STATUS_TYPE status;
-  
+
   (void)x_ipcQueryCentral(X_IPC_REF_STATUS_QUERY, (void *)&(ref->refId),
 			(void *)&status);
-  
+
   return status;
 }
 #endif

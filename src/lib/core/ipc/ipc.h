@@ -170,7 +170,9 @@ typedef struct _X_IPC_REF *MSG_INSTANCE;
 typedef struct _X_IPC_CONTEXT *IPC_CONTEXT_PTR;
 
 typedef const struct _FORMAT_TYPE *FORMATTER_PTR;
+
 typedef struct _ENCODING_TYPE *ENCODING_PTR;
+typedef const struct _ENCODING_TYPE *CONST_ENCODING_PTR;
 
 typedef void (*HANDLER_TYPE)(MSG_INSTANCE msgInstance, BYTE_ARRAY callData,
           void *clientData);
@@ -413,7 +415,7 @@ IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_checkMsgFormats,
         (const char *msgName,
           const char *formatString));
 
-IPC_EXTERN_FUNCTION (ENCODING_PTR IPC_msgInstanceEncoding,
+IPC_EXTERN_FUNCTION (CONST_ENCODING_PTR IPC_msgInstanceEncoding,
         (MSG_INSTANCE msgInstance));
 
 IPC_EXTERN_FUNCTION (FORMATTER_PTR IPC_msgFormatter,
@@ -432,6 +434,12 @@ IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_unmarshall,
           BYTE_ARRAY byteArray,
           void **dataHandle));
 
+IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_saveUnmarshall,
+        (FORMATTER_PTR formatter,
+          BYTE_ARRAY byteArray,
+          CONST_ENCODING_PTR encoding,
+          void **dataHandle));
+
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_unmarshallData,
         (FORMATTER_PTR formatter,
           BYTE_ARRAY byteArray,
@@ -441,7 +449,7 @@ IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_unmarshallData,
 IPC_EXTERN_FUNCTION (IPC_RETURN_TYPE IPC_saveUnmarshallData,
         (FORMATTER_PTR formatter,
           BYTE_ARRAY byteArray,
-          ENCODING_PTR encoding,
+          CONST_ENCODING_PTR encoding,
           void *dataHandle,
           int dataSize));
 

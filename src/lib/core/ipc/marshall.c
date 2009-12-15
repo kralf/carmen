@@ -150,7 +150,7 @@ FORMATTER_PTR IPC_parseFormat (const char *formatString)
   }
 }
 
-ENCODING_PTR IPC_msgInstanceEncoding (MSG_INSTANCE msgInstance)
+CONST_ENCODING_PTR IPC_msgInstanceEncoding (MSG_INSTANCE msgInstance)
 {
   ENCODING_PTR encoding;
 
@@ -299,7 +299,7 @@ static IPC_RETURN_TYPE _IPC_unmarshall (FORMATTER_PTR formatter,
 
 static IPC_RETURN_TYPE _IPC_saveUnmarshall (FORMATTER_PTR formatter,
           BYTE_ARRAY byteArray,
-          ENCODING_PTR encoding,
+          CONST_ENCODING_PTR encoding,
           void **dataHandle,
           BOOLEAN mallocData)
 {
@@ -336,6 +336,14 @@ IPC_RETURN_TYPE IPC_unmarshall (FORMATTER_PTR formatter,
   return _IPC_unmarshall(formatter, byteArray, dataHandle, TRUE);
 }
 
+IPC_RETURN_TYPE IPC_saveUnmarshall (FORMATTER_PTR formatter,
+        BYTE_ARRAY byteArray,
+        CONST_ENCODING_PTR encoding,
+        void **dataHandle)
+{
+  return _IPC_saveUnmarshall(formatter, byteArray, encoding, dataHandle, TRUE);
+}
+
 IPC_RETURN_TYPE IPC_unmarshallData(FORMATTER_PTR formatter,
           BYTE_ARRAY byteArray,
           void *dataHandle,
@@ -356,7 +364,7 @@ IPC_RETURN_TYPE IPC_unmarshallData(FORMATTER_PTR formatter,
 
 IPC_RETURN_TYPE IPC_saveUnmarshallData(FORMATTER_PTR formatter,
           BYTE_ARRAY byteArray,
-          ENCODING_PTR encoding,
+          CONST_ENCODING_PTR encoding,
           void *dataHandle,
           int dataSize)
 {
