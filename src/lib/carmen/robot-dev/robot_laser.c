@@ -7,21 +7,21 @@
  * Roy, Sebastian Thrun, Dirk Haehnel, Cyrill Stachniss,
  * and Jared Glover
  *
- * CARMEN is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public 
- * License as published by the Free Software Foundation; 
+ * CARMEN is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
  * either version 2 of the License, or (at your option)
  * any later version.
  *
  * CARMEN is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied 
+ * but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more 
+ * PURPOSE.  See the GNU General Public License for more
  * details.
  *
- * You should have received a copy of the GNU General 
+ * You should have received a copy of the GNU General
  * Public License along with CARMEN; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, 
+ * Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA  02111-1307 USA
  *
  ********************************************************/
@@ -64,7 +64,7 @@ static double min_rear_velocity = -0;
 
 double carmen_robot_interpolate_heading(double head1, double head2, double fraction);
 
-static void 
+static void
 publish_frontlaser_message(carmen_robot_laser_message laser_msg)
 {
   IPC_RETURN_TYPE err;
@@ -75,7 +75,7 @@ publish_frontlaser_message(carmen_robot_laser_message laser_msg)
   }
 }
 
-static void 
+static void
 publish_rearlaser_message(carmen_robot_laser_message laser_msg)
 {
   IPC_RETURN_TYPE err;
@@ -126,15 +126,15 @@ construct_laser_message(carmen_robot_laser_message *msg, int rear, double timest
   msg->robot_pose.y= carmen_robot_odometry[low].y + fraction *
     (carmen_robot_odometry[high].y - carmen_robot_odometry[low].y);
   msg->robot_pose.theta=carmen_robot_interpolate_heading
-    (carmen_robot_odometry[low].theta, 
+    (carmen_robot_odometry[low].theta,
      carmen_robot_odometry[high].theta, fraction);
   msg->robot_pose.theta=carmen_normalize_theta(msg->robot_pose.theta);
 
-  msg->tv = carmen_robot_odometry[low].tv + 
-    fraction*(carmen_robot_odometry[high].tv - 
+  msg->tv = carmen_robot_odometry[low].tv +
+    fraction*(carmen_robot_odometry[high].tv -
 	      carmen_robot_odometry[low].tv);
-  msg->rv = carmen_robot_odometry[low].rv + 
-    fraction*(carmen_robot_odometry[high].rv - 
+  msg->rv = carmen_robot_odometry[low].rv +
+    fraction*(carmen_robot_odometry[high].rv -
 	      carmen_robot_odometry[low].rv);
 
   if (! rear){
@@ -148,15 +148,15 @@ construct_laser_message(carmen_robot_laser_message *msg, int rear, double timest
     msg->laser_pose.y=msg->robot_pose.y+s*rearlaser_offset+c*rearlaser_side_offset;
     msg->laser_pose.theta=msg->robot_pose.theta + rearlaser_angular_offset;
   }
-  msg->laser_pose.theta = 
+  msg->laser_pose.theta =
     carmen_normalize_theta(msg->laser_pose.theta);
   return 1;
 }
 
-void 
-carmen_robot_correct_laser_and_publish(void) 
+void
+carmen_robot_correct_laser_and_publish(void)
 {
-  if(!front_laser_ready && !rear_laser_ready) 
+  if(!front_laser_ready && !rear_laser_ready)
     return;
 
   if (front_laser_ready) {
@@ -164,7 +164,7 @@ carmen_robot_correct_laser_and_publish(void)
       fprintf(stderr, "f");
       publish_frontlaser_message(robot_front_laser);
     }
-    front_laser_ready = 0;   
+    front_laser_ready = 0;
   }
 
   if (rear_laser_ready) {
@@ -174,10 +174,10 @@ carmen_robot_correct_laser_and_publish(void)
     }
     rear_laser_ready = 0;
   }
-  
+
 }
 
-static void 
+static void
 check_message_data_chunk_sizes(carmen_laser_laser_message *laser_ptr)
 {
   static int first_front = 1, first_rear = 1;
@@ -197,23 +197,23 @@ check_message_data_chunk_sizes(carmen_laser_laser_message *laser_ptr)
 
   if(first) {
     robot_laser.num_readings = laser.num_readings;
-    robot_laser.range = 
+    robot_laser.range =
       (float *)calloc(robot_laser.num_readings, sizeof(float));
     carmen_test_alloc(robot_laser.range);
-    robot_laser.tooclose = 
+    robot_laser.tooclose =
       (char *)calloc(robot_laser.num_readings, sizeof(char));
-    carmen_test_alloc(robot_laser.tooclose);   
+    carmen_test_alloc(robot_laser.tooclose);
 
     robot_laser.num_remissions = laser.num_remissions;
-    
+
     if (robot_laser.num_remissions>0) {
-      robot_laser.remission = 
+      robot_laser.remission =
 	(float *)calloc(robot_laser.num_remissions, sizeof(float));
       carmen_test_alloc(robot_laser.remission);
     }
-    else 
+    else
       robot_laser.remission = NULL;
-    
+
     first = 0;
   } else if(robot_laser.num_readings != laser.num_readings) {
     robot_laser.num_readings = laser.num_readings;
@@ -223,11 +223,11 @@ check_message_data_chunk_sizes(carmen_laser_laser_message *laser_ptr)
       free(robot_laser.tooclose);
       robot_laser.tooclose = NULL;
       robot_laser.num_readings = 0;
-    } 
+    }
     else {
-      
-      robot_laser.range = 
-	(float *)realloc(robot_laser.range, 
+
+      robot_laser.range =
+	(float *)realloc(robot_laser.range,
 			 sizeof(float) * robot_laser.num_readings);
       carmen_test_alloc(robot_laser.range);
       robot_laser.tooclose = (char *)realloc
@@ -237,8 +237,8 @@ check_message_data_chunk_sizes(carmen_laser_laser_message *laser_ptr)
 
     robot_laser.num_remissions = laser.num_remissions;
     if (robot_laser.num_remissions>0) {
-      robot_laser.remission = 
-	(float *)realloc(robot_laser.remission, 
+      robot_laser.remission =
+	(float *)realloc(robot_laser.remission,
 			 sizeof(float) * robot_laser.num_remissions);
       carmen_test_alloc(robot_laser.remission);
     }
@@ -258,7 +258,7 @@ check_message_data_chunk_sizes(carmen_laser_laser_message *laser_ptr)
   }
 }
 
-static void 
+static void
 laser_frontlaser_handler(void)
 {
   int i;
@@ -273,7 +273,7 @@ laser_frontlaser_handler(void)
   int min_index;
   //  double min_theta = 0;
   double min_dist;
-  
+
 
   static double time_since_last_process = 0;
   double skip_sum = 0;
@@ -288,21 +288,21 @@ laser_frontlaser_handler(void)
 
   check_message_data_chunk_sizes(&front_laser);
 
-  carmen_robot_update_skew(&frontlaser_average, &front_laser_count, 
+  carmen_robot_update_skew(&frontlaser_average, &front_laser_count,
 			   front_laser.timestamp, front_laser.host);
 
-  memcpy(robot_front_laser.range, front_laser.range, 
+  memcpy(robot_front_laser.range, front_laser.range,
 	 robot_front_laser.num_readings * sizeof(float));
   memset(robot_front_laser.tooclose, 0, robot_front_laser.num_readings);
   if (robot_front_laser.num_remissions>0)
-    memcpy(robot_front_laser.remission, front_laser.remission, 
+    memcpy(robot_front_laser.remission, front_laser.remission,
 	   robot_front_laser.num_remissions * sizeof(float));
 
   robot_front_laser.config = front_laser.config;
 
   carmen_robot_sensor_time_of_last_update = carmen_get_time();
 
-  if (carmen_robot_sensor_time_of_last_update - time_since_last_process < 
+  if (carmen_robot_sensor_time_of_last_update - time_since_last_process <
       1.0/carmen_robot_collision_avoidance_frequency)
     return;
 
@@ -318,7 +318,7 @@ laser_frontlaser_handler(void)
   safety_distance = carmen_geometry_compute_safety_distance(&carmen_robot_config, &robot_posn);
 
   robot_front_laser.forward_safety_dist = safety_distance;
-  robot_front_laser.side_safety_dist = 
+  robot_front_laser.side_safety_dist =
     0.5 * carmen_robot_config.width + carmen_robot_config.side_dist;
   robot_front_laser.turn_axis = 1e6;
   robot_front_laser.timestamp = front_laser.timestamp;
@@ -329,7 +329,7 @@ laser_frontlaser_handler(void)
   max_velocity = carmen_robot_config.max_t_vel;
 
   carmen_carp_set_verbose(0);
-  
+
   theta = front_laser.config.start_angle + frontlaser_angular_offset;
   delta_theta = front_laser.config.angular_resolution;
 
@@ -341,12 +341,12 @@ laser_frontlaser_handler(void)
       robot_front_laser.tooclose[i] = -1;
       continue;
     }
-    
+
     obstacle_pt.x = frontlaser_offset     +  robot_front_laser.range[i] * cos(theta);
     obstacle_pt.y = frontlaser_side_offset + robot_front_laser.range[i] * sin(theta);
     carmen_geometry_move_pt_to_rotating_ref_frame
       (&obstacle_pt, carmen_robot_latest_odometry.tv,
-       carmen_robot_latest_odometry.rv);    
+       carmen_robot_latest_odometry.rv);
     velocity = carmen_geometry_compute_velocity
       (robot_posn, obstacle_pt, &carmen_robot_config);
 
@@ -362,7 +362,7 @@ laser_frontlaser_handler(void)
 
   min_index = 0;
   min_dist = robot_front_laser.range[0];
-  for(i = 1; i < robot_front_laser.num_readings; i++) { 
+  for(i = 1; i < robot_front_laser.num_readings; i++) {
     if (robot_front_laser.range[i] < min_dist) {
       min_dist = robot_front_laser.range[i];
       min_index = i;
@@ -370,32 +370,32 @@ laser_frontlaser_handler(void)
   }
 
   front_laser_ready = 1;
-  
+
   if (max_velocity >= 0 && max_velocity < CARMEN_ROBOT_MIN_ALLOWED_VELOCITY)
     max_velocity = 0.0;
-  
+
   if(max_velocity <= 0.0 && carmen_robot_latest_odometry.tv > 0.0)    {
     fprintf(stderr, "S");
     carmen_robot_stop_robot(CARMEN_ROBOT_ALLOW_ROTATE);
   }
-  
+
   max_front_velocity = max_velocity;
 }
 
-double 
-carmen_robot_laser_max_front_velocity(void) 
+double
+carmen_robot_laser_max_front_velocity(void)
 {
   return max_front_velocity;
 }
 
-double 
-carmen_robot_laser_min_rear_velocity(void) 
+double
+carmen_robot_laser_min_rear_velocity(void)
 {
   return min_rear_velocity;
 }
 
-static void 
-laser_rearlaser_handler(void) 
+static void
+laser_rearlaser_handler(void)
 {
   int i;
   double safety_distance;
@@ -417,42 +417,42 @@ laser_rearlaser_handler(void)
 
   check_message_data_chunk_sizes(&rear_laser);
 
-  carmen_robot_update_skew(&rearlaser_average, &rear_laser_count, 
+  carmen_robot_update_skew(&rearlaser_average, &rear_laser_count,
 			   rear_laser.timestamp, rear_laser.host);
 
-  memcpy(robot_rear_laser.range, rear_laser.range, 
+  memcpy(robot_rear_laser.range, rear_laser.range,
 	 robot_rear_laser.num_readings * sizeof(float));
   memset(robot_rear_laser.tooclose, 0, robot_rear_laser.num_readings);
   if (robot_rear_laser.num_remissions>0)
-    memcpy(robot_rear_laser.remission, rear_laser.remission, 
+    memcpy(robot_rear_laser.remission, rear_laser.remission,
 	   robot_rear_laser.num_remissions * sizeof(float));
 
   robot_rear_laser.config = rear_laser.config;
 
   carmen_robot_sensor_time_of_last_update = carmen_get_time();
 
-  if (carmen_robot_sensor_time_of_last_update - time_since_last_process < 
+  if (carmen_robot_sensor_time_of_last_update - time_since_last_process <
       1.0/carmen_robot_collision_avoidance_frequency)
     return;
-
-  time_since_last_process = carmen_robot_sensor_time_of_last_update;
-
-  safety_distance = carmen_geometry_compute_safety_distance(&carmen_robot_config, &robot_posn);
-
-  robot_rear_laser.forward_safety_dist = safety_distance;
-  robot_rear_laser.side_safety_dist = 
-    carmen_robot_config.width / 2.0 + carmen_robot_config.side_dist;
-  robot_rear_laser.turn_axis = 1e6;
-  robot_rear_laser.timestamp = rear_laser.timestamp;
-  robot_rear_laser.host = carmen_new_string(rear_laser.host);
-
-  min_velocity = -carmen_robot_config.max_t_vel;
 
   robot_posn.x = 0;
   robot_posn.y = 0;
   robot_posn.theta = 0;
   robot_posn.t_vel = carmen_robot_latest_odometry.tv;
   robot_posn.r_vel = carmen_robot_latest_odometry.rv;
+
+  time_since_last_process = carmen_robot_sensor_time_of_last_update;
+
+  safety_distance = carmen_geometry_compute_safety_distance(&carmen_robot_config, &robot_posn);
+
+  robot_rear_laser.forward_safety_dist = safety_distance;
+  robot_rear_laser.side_safety_dist =
+    carmen_robot_config.width / 2.0 + carmen_robot_config.side_dist;
+  robot_rear_laser.turn_axis = 1e6;
+  robot_rear_laser.timestamp = rear_laser.timestamp;
+  robot_rear_laser.host = carmen_new_string(rear_laser.host);
+
+  min_velocity = -carmen_robot_config.max_t_vel;
 
 /*   theta = -M_PI/2;  */
 /*   delta_theta = M_PI/(robot_rear_laser.num_readings-1); */
@@ -468,14 +468,14 @@ laser_rearlaser_handler(void)
       robot_rear_laser.tooclose[i] = -1;
       continue;
     }
-    
+
     obstacle_pt.x = rearlaser_offset + robot_rear_laser.range[i] * cos(theta);
     obstacle_pt.y = rearlaser_side_offset + robot_rear_laser.range[i] * sin(theta);
     carmen_geometry_move_pt_to_rotating_ref_frame
       (&obstacle_pt, carmen_robot_latest_odometry.tv,
-       carmen_robot_latest_odometry.rv);    
+       carmen_robot_latest_odometry.rv);
     velocity = carmen_geometry_compute_velocity
-      (robot_posn, obstacle_pt, &carmen_robot_config);    
+      (robot_posn, obstacle_pt, &carmen_robot_config);
     velocity = -velocity;
 
     if (velocity > -carmen_robot_config.max_t_vel) {
@@ -498,12 +498,12 @@ laser_rearlaser_handler(void)
       fprintf(stderr, "S");
       carmen_robot_stop_robot(CARMEN_ROBOT_ALLOW_ROTATE);
     }
-  
+
   min_rear_velocity = min_velocity;
 }
 
-void 
-carmen_robot_add_laser_handlers(void) 
+void
+carmen_robot_add_laser_handlers(void)
 {
   IPC_RETURN_TYPE err;
 
@@ -536,8 +536,8 @@ carmen_robot_add_laser_handlers(void)
   carmen_running_average_clear(&rearlaser_average);
 }
 
-void 
-carmen_robot_add_laser_parameters(int argc, char** argv) 
+void
+carmen_robot_add_laser_parameters(int argc, char** argv)
 {
   int num_items;
 
