@@ -45,8 +45,7 @@ int carmen_geometry_y_offset[CARMEN_NUM_OFFSETS] = {-1, -1, 0, 1, 1, 1, 0, -1};
 double carmen_geometry_compute_safety_distance(carmen_robot_config_t *robot_config,
 					       carmen_traj_point_t *robot)
 {
-  return safety_distance = robot_config->length / 2.0 +
-    robot_config->approach_dist +
+  return robot_config->length / 2.0 + robot_config->approach_dist +
     robot->t_vel * robot_config->reaction_time +
     robot->t_vel*robot->t_vel/(2.0*robot_config->acceleration) ;
 }
