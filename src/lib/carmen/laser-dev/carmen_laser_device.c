@@ -9,7 +9,7 @@
 #define MAXDOUBLE DBL_MAX
 #else
 #include <values.h>
-#endif 
+#endif
 
 
 int carmen_laser_compare_configuration(carmen_laser_laser_config_t* c1, carmen_laser_laser_config_t* c2){
@@ -17,13 +17,13 @@ int carmen_laser_compare_configuration(carmen_laser_laser_config_t* c1, carmen_l
     return 1;
   }
 
-  if ((c1->angular_resolution!=MAXDOUBLE && c2->angular_resolution!=MAXDOUBLE) && 
+  if ((c1->angular_resolution!=MAXDOUBLE && c2->angular_resolution!=MAXDOUBLE) &&
       fabs(c1->angular_resolution - c2->angular_resolution) > carmen_degrees_to_radians(0.01))
     return 2;
 
   if ((c1->start_angle!=MAXDOUBLE && c2->start_angle!=MAXDOUBLE) && c1->start_angle!=c2->start_angle)
     return 4;
-  
+
   if ((c1->fov!=MAXDOUBLE && c2->fov!=MAXDOUBLE) && c1->fov!=c2->fov)
     return 5;
 
@@ -63,15 +63,15 @@ int carmen_laser_laser_message_check_configuration(carmen_laser_laser_config_t* 
   else if (config->laser_type == SIMULATED_LASER)
     strcpy(type_string,"SIMULATED_LASER");
   else
-    strcpy(type_string,"UMKNOWN_PROXIMITY_SENSOR");
-  
+    strcpy(type_string,"UNKNOWN_PROXIMITY_SENSOR");
+
   int i;
   carmen_warn("Requested laser configuration:\n");
   carmen_warn("  type ............................. %s\n",  type_string);
   carmen_warn("  remission_mode ................... %s\n",  remission_string);
 
   if (config->angular_resolution>0 && config->angular_resolution != MAXDOUBLE)
-    carmen_warn("  resolution ....................... %.2lf deg\n", 
+    carmen_warn("  resolution ....................... %.2lf deg\n",
 		carmen_radians_to_degrees(config->angular_resolution));
 
 
@@ -84,7 +84,7 @@ int carmen_laser_laser_message_check_configuration(carmen_laser_laser_config_t* 
 /*     carmen_warn("  accuracy ......................... %.4lf\n", config->accuracy); */
 /*   else */
 /*     carmen_warn("  accuracy ......................... not required\n"); */
-  
+
   if (config->fov>0) {
     carmen_warn("  fov .............................. %.0lf deg\n", carmen_radians_to_degrees(config->fov));
     carmen_warn("  start angle ...................... %.2lf deg\n", carmen_radians_to_degrees(config->start_angle));
@@ -93,16 +93,16 @@ int carmen_laser_laser_message_check_configuration(carmen_laser_laser_config_t* 
 /*     carmen_warn("  fov .............................. not required\n"); */
 /*     carmen_warn("  start angle ...................... not required\n"); */
 /*   } */
-  
+
 
   if (config->laser_type == SICK_S300) {
-    carmen_warn("  INFO: The current S300 driver requires the laser to be configured\n"); 
-    carmen_warn("        in the 500kbps continuous mode (using the SICK Windows tools).\n\n"); 
+    carmen_warn("  INFO: The current S300 driver requires the laser to be configured\n");
+    carmen_warn("        in the 500kbps continuous mode (using the SICK Windows tools).\n\n");
   }
 
-  
+
   for (i=0; i<carmen_laser_configurations_num; i++){
-	int result=!carmen_laser_compare_configuration(config, carmen_laser_configurations+i);	  
+	int result=!carmen_laser_compare_configuration(config, carmen_laser_configurations+i);
 	if (result) {
 	  return 1;
 	}
@@ -114,7 +114,7 @@ int carmen_laser_calibrate_timestamp_recover_handler(struct carmen_laser_device_
   fprintf(stderr,".");
   if (!device->curr_frames){
     device->expected_period/= device->max_frames;
-    fprintf(stderr, "Estimated frequency of laser %d is %.4f Hz\n",  
+    fprintf(stderr, "Estimated frequency of laser %d is %.4f Hz\n",
 	    device->laser_id, 1./device->expected_period);
     device->max_frames=0;
     return 1;

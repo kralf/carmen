@@ -8,6 +8,10 @@ remake_add_directories(
 )
 remake_add_directories(carmen)
 remake_add_directories(
+  carmenpp
+  COMPONENT cpp
+)
+remake_add_directories(
   gui
   COMPONENT gui
   IF WITH_GUI
