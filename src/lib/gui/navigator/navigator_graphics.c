@@ -72,7 +72,7 @@ typedef enum {NO_PLACEMENT, PLACING_ROBOT, ORIENTING_ROBOT,
 static int is_graphics_up = 0;
 
 static carmen_navigator_map_t display;
-static carmen_map_placelist_p placelist = NULL;
+static carmen_map_placelist_p gui_placelist = NULL;
 static carmen_list_t *place_action_uids = NULL;
 static carmen_list_t *goal_actions = NULL;
 static carmen_list_t *start_actions = NULL;
@@ -135,8 +135,8 @@ static double simulator_hidden;
 static carmen_list_t *simulator_objects = NULL;
 static carmen_list_t *people = NULL;
 
-static carmen_robot_config_t *robot_config;
-static carmen_navigator_config_t *nav_config;
+static carmen_robot_config_t *gui_robot_config;
+static carmen_navigator_config_t *gui_nav_config;
 static carmen_navigator_panel_config_t *nav_panel_config;
 
 static void switch_display(GtkAction *action, gpointer user_data
@@ -831,8 +831,8 @@ static void draw_robot_shape(GtkMapViewer *the_map_view,
   carmen_world_point_t wp[5];
   double width2, length2;
 
-  if (!robot_config->rectangular) {
-    robot_radius = robot_config->width/2.0;
+  if (!gui_robot_config->rectangular) {
+    robot_radius = gui_robot_config->width/2.0;
     if (robot_radius/pixel_size < 5)
       robot_radius = pixel_size*5;
 
@@ -841,8 +841,8 @@ static void draw_robot_shape(GtkMapViewer *the_map_view,
     return;
   }
 
-  width2 = robot_config->width/2;
-  length2 = robot_config->length/2;
+  width2 = gui_robot_config->width/2;
+  length2 = gui_robot_config->length/2;
 
   if (width2/pixel_size < 5)
     width2 = pixel_size*5;
@@ -873,7 +873,7 @@ static void draw_simulated_robot(GtkMapViewer *the_map_view, double pixel_size)
   if (!nav_panel_config->show_true_pos || simulator_trueposition.map == NULL)
     return;
 
-  robot_size = robot_config->width/2.0;
+  robot_size = gui_robot_config->width/2.0;
   if (robot_size/pixel_size < 5)
     robot_size = pixel_size*5;
 
@@ -987,7 +987,7 @@ void draw_robot_objects(GtkMapViewer *the_map_view)
    */
 
   if (goal.pose.x > 0 && goal.pose.y > 0 && goal.map != NULL) {
-    goal_size = nav_config->goal_size/2;
+    goal_size = gui_nav_config->goal_size/2;
     if (goal_size/pixel_size < 5)
       goal_size = pixel_size*5;
 
@@ -1004,7 +1004,7 @@ void draw_robot_objects(GtkMapViewer *the_map_view)
   draw_simulated_robot(the_map_view, pixel_size);
 
   if (nav_panel_config->show_simulator_objects) {
-    circle_size = robot_config->width/2.0;
+    circle_size = gui_robot_config->width/2.0;
     if (circle_size < pixel_size*5)
       circle_size = pixel_size*5;
 
@@ -1053,7 +1053,7 @@ void draw_robot_objects(GtkMapViewer *the_map_view)
     colour = &carmen_blue;
   }
 
-  robot_size = robot_config->width/2.0;
+  robot_size = gui_robot_config->width/2.0;
   if (robot_size < pixel_size*5)
     robot_size = pixel_size*5;
 
@@ -1267,9 +1267,9 @@ static void set_goal(GtkAction *action, gpointer user_data)
 
   name = (char *)gtk_action_get_name(action);
 
-  for (place_index = 0; place_index < placelist->num_places; place_index++) {
-    if (strcmp(user_data, placelist->places[place_index].name) == 0) {
-      navigator_set_goal_by_place(placelist->places+place_index);
+  for (place_index = 0; place_index < gui_placelist->num_places; place_index++) {
+    if (strcmp(user_data, gui_placelist->places[place_index].name) == 0) {
+      navigator_set_goal_by_place(gui_placelist->places+place_index);
       return;
     }
   }
@@ -1289,16 +1289,16 @@ static void set_location(GtkAction *action, gpointer user_data)
     return;
   }
 
-  for (place_index = 0; place_index < placelist->num_places; place_index++) {
-    if (strcmp(user_data, placelist->places[place_index].name) == 0) {
-      if (placelist->places[place_index].type == CARMEN_NAMED_POSITION_TYPE)  {
-	point.pose.x = placelist->places[place_index].x;
-	point.pose.y = placelist->places[place_index].y;
+  for (place_index = 0; place_index < gui_placelist->num_places; place_index++) {
+    if (strcmp(user_data, gui_placelist->places[place_index].name) == 0) {
+      if (gui_placelist->places[place_index].type == CARMEN_NAMED_POSITION_TYPE)  {
+	point.pose.x = gui_placelist->places[place_index].x;
+	point.pose.y = gui_placelist->places[place_index].y;
 	point.pose.theta = robot.pose.theta;
       } else {
-	point.pose.x = placelist->places[place_index].x;
-	point.pose.y = placelist->places[place_index].y;
-	point.pose.theta = placelist->places[place_index].theta;
+	point.pose.x = gui_placelist->places[place_index].x;
+	point.pose.y = gui_placelist->places[place_index].y;
+	point.pose.theta = gui_placelist->places[place_index].theta;
       }
       navigator_update_robot(&point);
     }
@@ -1522,8 +1522,8 @@ navigator_graphics_init(int argc, char *argv[],
 
   globalpos = msg;
 
-  robot_config = robot_conf_param;
-  nav_config = nav_conf_param;
+  gui_robot_config = robot_conf_param;
+  gui_nav_config = nav_conf_param;
 
   cursor_pos.map = NULL;
 
@@ -1627,7 +1627,7 @@ navigator_graphics_add_placelist(carmen_map_placelist_p new_placelist)
       gtk_action_group_remove_action(start_action_group, action);
       g_object_unref(action);
     }
-    free(placelist->places);
+    free(gui_placelist->places);
   } else {
     place_action_uids = carmen_list_create
       (sizeof(int), new_placelist->num_places);
@@ -1635,28 +1635,28 @@ navigator_graphics_add_placelist(carmen_map_placelist_p new_placelist)
       (sizeof(GtkAction *), new_placelist->num_places);
     start_actions = carmen_list_create
       (sizeof(GtkAction *), new_placelist->num_places);
-    placelist = (carmen_map_placelist_p)
+    gui_placelist = (carmen_map_placelist_p)
       calloc(1, sizeof(carmen_map_placelist_t));
-    carmen_test_alloc(placelist);
+    carmen_test_alloc(gui_placelist);
     goal_action_group = gtk_action_group_new("Goals");
     start_action_group = gtk_action_group_new("StartLocations");
     gtk_ui_manager_insert_action_group (ui_manager, goal_action_group, 1);
     gtk_ui_manager_insert_action_group (ui_manager, start_action_group, 2);
   }
 
-  placelist->num_places = new_placelist->num_places;
+  gui_placelist->num_places = new_placelist->num_places;
   place_action_uids->length = 0;
-  if (placelist->num_places == 0)
+  if (gui_placelist->num_places == 0)
     return;
 
-  placelist->places = (carmen_place_p)calloc(placelist->num_places,
+  gui_placelist->places = (carmen_place_p)calloc(gui_placelist->num_places,
 					     sizeof(carmen_place_t));
-  carmen_test_alloc(placelist->places);
-  memcpy(placelist->places, new_placelist->places,
-	 sizeof(carmen_place_t)*placelist->num_places);
+  carmen_test_alloc(gui_placelist->places);
+  memcpy(gui_placelist->places, new_placelist->places,
+	 sizeof(carmen_place_t)*gui_placelist->num_places);
 
-  for (index = 0; index < placelist->num_places; index++) {
-    strcpy(label, placelist->places[index].name);
+  for (index = 0; index < gui_placelist->num_places; index++) {
+    strcpy(label, gui_placelist->places[index].name);
     label[0] = toupper(label[0]);
     do {
       underscore = strchr(label, '_');
@@ -1664,12 +1664,12 @@ navigator_graphics_add_placelist(carmen_map_placelist_p new_placelist)
 	*underscore = ' ';
     } while (underscore);
 
-    sprintf(name, "Goal%s", placelist->places[index].name);
+    sprintf(name, "Goal%s", gui_placelist->places[index].name);
     action = gtk_action_new(name, label, NULL, NULL);
     gtk_action_group_add_action(goal_action_group, action);
     carmen_list_add(goal_actions, &action);
     g_signal_connect(action, "activate", G_CALLBACK(set_goal),
-		     placelist->places[index].name);
+		     gui_placelist->places[index].name);
 
     sprintf(menu_path, "/ui/MainMenu/GoalMenu/");
     new_merge_uid = gtk_ui_manager_new_merge_id(ui_manager);
@@ -1677,12 +1677,12 @@ navigator_graphics_add_placelist(carmen_map_placelist_p new_placelist)
 			  name, name, GTK_UI_MANAGER_MENUITEM, FALSE);
     carmen_list_add(place_action_uids, &new_merge_uid);
 
-    sprintf(name, "Start%s", placelist->places[index].name);
+    sprintf(name, "Start%s", gui_placelist->places[index].name);
     action = gtk_action_new(name, label, NULL, NULL);
     gtk_action_group_add_action(start_action_group, action);
     carmen_list_add(start_actions, &action);
     g_signal_connect(action, "activate", G_CALLBACK(set_location),
-		     placelist->places[index].name);
+		     gui_placelist->places[index].name);
 
     sprintf(menu_path, "/ui/MainMenu/StartLocationMenu/");
     new_merge_uid = gtk_ui_manager_new_merge_id(ui_manager);

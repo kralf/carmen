@@ -34,7 +34,7 @@
 #include "navigator_graphics.h"
 #include "navigator_panel.h"
 
-static carmen_map_placelist_t placelist;
+static carmen_map_placelist_t gui_placelist;
 static double last_navigator_status = 0.0;
 
 void navigator_status_handler(carmen_navigator_status_message *msg)
@@ -256,9 +256,9 @@ int main(int argc, char **argv)
 
   navigator_create_map();
 
-  carmen_map_get_placelist(&placelist);
+  carmen_map_get_placelist(&gui_placelist);
 
-  navigator_graphics_add_placelist(&placelist);
+  navigator_graphics_add_placelist(&gui_placelist);
 
   carmen_navigator_query_plan(&plan);
 
