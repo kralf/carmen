@@ -29,13 +29,14 @@
 #ifndef NAVIGATOR_GRAPHICS_H
 #define NAVIGATOR_GRAPHICS_H
 
-#include "localize_messages.h"
-#include "navigator.h"
-#include "navigator_panel.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include "localize_messages.h"
+
+#include "navigator.h"
+#include "navigator_panel.h"
 
   int navigator_graphics_init(int argc, char *argv[],
 			      carmen_localize_globalpos_message *msg,

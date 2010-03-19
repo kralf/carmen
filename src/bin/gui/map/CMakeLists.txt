@@ -1,1 +1,1 @@
-remake_add_executables(LINK param_interface map_graphics)
+remake_add_executables(LINK param_interface map_graphics map_edit)
