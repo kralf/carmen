@@ -29,41 +29,55 @@
 #ifndef NAVIGATOR_H
 #define NAVIGATOR_H
 
-#include "localize_messages.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-  typedef struct {
-    int num_lasers_to_use;
-    int use_fast_laser;
-    double map_update_radius;
-    int map_update_obstacles;
-    int map_update_freespace;
-    double replan_frequency;
-    int smooth_path;
-    double waypoint_tolerance;
-    double goal_size;
-    double goal_theta_tolerance;
-    int dont_integrate_odometry;
-    int plan_to_nearest_free_point;
-  } carmen_navigator_config_t;
+#include "global.h"
 
-  void carmen_navigator_goal_triplet(carmen_point_p point);
-  void carmen_navigator_goal(double x, double y);
-  int carmen_navigator_goal_place(char *name);
-  void carmen_navigator_set_max_velocity(double vel);
-  carmen_map_placelist_p carmen_navigator_get_places(void);
-  int carmen_navigator_autonomous_status(void);
+#include "localize_messages.h"
 
-  void carmen_navigator_start_autonomous(void);
-  void carmen_navigator_stop_autonomous(void);
+typedef struct {
+  int num_lasers_to_use;
+  int use_fast_laser;
+  double map_update_radius;
+  int map_update_obstacles;
+  int map_update_freespace;
+  double replan_frequency;
+  int smooth_path;
+  double waypoint_tolerance;
+  double goal_size;
+  double goal_theta_tolerance;
+  int dont_integrate_odometry;
+  int plan_to_nearest_free_point;
+} carmen_navigator_config_t;
 
-  typedef struct {
-    double tv;
-    double rv;
-  } command_t;
+extern carmen_map_p nav_map;
+extern carmen_map_placelist_t placelist;
+extern carmen_robot_config_t robot_config;
+extern carmen_navigator_config_t nav_config;
+
+extern int cheat;
+extern int autonomous_status;
+
+extern carmen_traj_point_t robot_position;
+
+void carmen_navigator_goal_triplet(carmen_point_p point);
+void carmen_navigator_goal(double x, double y);
+int carmen_navigator_goal_place(char *name);
+void carmen_navigator_set_max_velocity(double vel);
+carmen_map_placelist_p carmen_navigator_get_places(void);
+int carmen_navigator_autonomous_status(void);
+
+void carmen_navigator_start_autonomous(void);
+void carmen_navigator_stop_autonomous(void);
+
+void generate_next_motion_command(void);
+
+typedef struct {
+  double tv;
+  double rv;
+} command_t;
 
 #ifdef __cplusplus
 }

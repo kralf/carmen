@@ -37,27 +37,14 @@
 
 #include "navigator.h"
 #include "navigator_ipc.h"
-#include "planner.h"
 
 typedef void(*handler)(int);
-
-static carmen_map_p nav_map;
-static carmen_map_placelist_t placelist;
-static carmen_robot_config_t robot_config;
-static carmen_navigator_config_t nav_config;
-
-static int cheat = 0;
-static int autonomous_status = 0;
-
-static carmen_traj_point_t robot_position;
 
 static carmen_base_odometry_message odometry;
 static carmen_base_odometry_message corrected_odometry;
 static carmen_base_odometry_message last_odometry;
 static carmen_robot_laser_message frontlaser, rearlaser;
 static carmen_localize_globalpos_message globalpos;
-
-static void generate_next_motion_command(void);
 
 static void base_odometry_handler(void)
 {
@@ -215,147 +202,6 @@ robot_rearlaser_handler(void)
 
   carmen_planner_update_map(&rearlaser, &nav_config, &robot_config);
 
-}
-
-static void
-generate_next_motion_command(void)
-{
-  carmen_traj_point_t waypoint;
-  int waypoint_index;
-  int waypoint_status;
-  int is_goal;
-  command_t command;
-  carmen_planner_status_t status;
-
-  command.tv = 0;
-  command.rv = 0;
-
-  waypoint = robot_position;
-
-  waypoint_status =
-    carmen_planner_next_waypoint(&waypoint, &waypoint_index,
-				 &is_goal, &nav_config);
-
-  /* goal is reached */
-
-  if (waypoint_status > 0)
-    {
-      autonomous_status = 0;
-      carmen_navigator_publish_autonomous_stopped
-	(CARMEN_NAVIGATOR_GOAL_REACHED_v);
-
-      carmen_verbose("Autonomous off Motion command %.2f %.2f\n", command.tv,
-		     carmen_radians_to_degrees(command.rv));
-
-      command.tv = 0;
-      command.rv = 0;
-      carmen_robot_velocity_command(command.tv, command.rv);
-      return;
-    }
-
-  if (waypoint_status < 0)
-    {
-      command.tv = 0;
-      command.rv = 0;
-      carmen_robot_velocity_command(command.tv, command.rv);
-      return;
-    }
-
-  carmen_planner_get_status(&status);
-  /*   carmen_robot_follow_trajectory(status.path.points+1, status.path.length-1, &robot_position); */
-
-
-  carmen_robot_follow_trajectory(status.path.points+waypoint_index,
-				 status.path.length-waypoint_index,
-				 &robot_position);
-
-  if (status.path.length > 0)
-    free(status.path.points);
-
-  carmen_verbose("Current pos: %.1f %.1f %.1f next %.1f %.1f\n",
-		 robot_position.x, robot_position.y,
-		 carmen_radians_to_degrees(robot_position.theta),
-		 waypoint.x, waypoint.y);
-}
-
-carmen_map_placelist_p
-carmen_navigator_get_places(void)
-{
-  return &placelist;
-}
-
-void
-carmen_navigator_set_max_velocity(double vel)
-{
-  robot_config.max_t_vel = vel;
-}
-
-void
-carmen_navigator_goal(double x, double y)
-{
-  carmen_point_t point;
-
-  point.x = x;
-  point.y = y;
-
-  carmen_planner_update_goal(&point, 1, &nav_config);
-}
-
-void
-carmen_navigator_goal_triplet(carmen_point_p point)
-{
-  carmen_planner_update_goal(point, 0, &nav_config);
-}
-
-int
-carmen_navigator_goal_place(char *name)
-{
-  int index;
-  carmen_point_t goal;
-
-  for (index = 0; index < placelist.num_places; index++)
-    {
-      if (strcmp(name, placelist.places[index].name) == 0)
-	break;
-    }
-
-  if (index == placelist.num_places)
-    return -1;
-
-  goal.x = placelist.places[index].x;
-  goal.y = placelist.places[index].y;
-
-  if (placelist.places[index].type == CARMEN_NAMED_POSITION_TYPE)
-    carmen_planner_update_goal(&goal, 1, &nav_config);
-  else
-    {
-      goal.theta = placelist.places[index].theta;
-      carmen_planner_update_goal(&goal, 0, &nav_config);
-    }
-
-  return 0;
-}
-
-void
-carmen_navigator_start_autonomous(void)
-{
-  autonomous_status = 1;
-  carmen_planner_reset_map(&robot_config);
-  generate_next_motion_command();
-}
-
-void
-carmen_navigator_stop_autonomous(void)
-{
-  autonomous_status = 0;
-  carmen_navigator_publish_autonomous_stopped(CARMEN_NAVIGATOR_USER_STOPPED_v);
-  carmen_robot_velocity_command(0, 0);
-}
-
-int
-carmen_navigator_autonomous_status(void)
-{
-  return autonomous_status;
 }
 
 static void
