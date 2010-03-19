@@ -4,6 +4,7 @@ remake_include(
   ../carmen/*
   *
   ${GTK+2_INCLUDE_DIRS}
+  ${ImageMagick_INCLUDE_DIRS}
 )
 remake_add_headers()
 remake_add_directories()

@@ -6,6 +6,7 @@ if(WITH_GUI)
   remake_find_package(gthread2 CONFIG gthread-2.0)
   remake_find_package(libart2 CONFIG libart-2.0)
   remake_find_package(JPEG)
+  remake_find_package(ImageMagick COMPONENTS MagickWand)
 endif(WITH_GUI)
 
 remake_define(REDHAT_52 ON)
