@@ -1,0 +1,1 @@
+remake_add_executables(LINK camera_interface param_interface global_graphics)
