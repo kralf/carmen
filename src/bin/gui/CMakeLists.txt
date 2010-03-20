@@ -5,4 +5,6 @@ remake_include(
   ../../lib/gui/*
   ${GTK+2_INCLUDE_DIRS}
 )
+remake_qt3_include(MT)
+
 remake_add_directories()
