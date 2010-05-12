@@ -1108,7 +1108,11 @@ log2pic_write_image_magick_map( logtools_grid_map2_t * map, logtools_log_data_t 
     fprintf( stderr, "done\n" );
     DestroyImage(image);
   }
+#if MagickLibVersion > 0x0537
+  ConstituteComponentTerminus();
+#else
   DestroyConstitute();
+#endif
   free(img.pixel);
 }
 
