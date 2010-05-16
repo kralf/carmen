@@ -34,6 +34,9 @@
 #include "navigator_graphics.h"
 #include "navigator_panel.h"
 
+#include "localize_interface.h"
+#include "navigator_interface.h"
+
 static carmen_map_p map;
 
 void navigator_create_map(void)

@@ -27,6 +27,9 @@
  ********************************************************/
 
 #include "global.h"
+
+#include "param_interface.h"
+#include "base_interface.h"
 #include "robot_interface.h"
 
 #ifndef COMPILE_WITHOUT_LASER_SUPPORT

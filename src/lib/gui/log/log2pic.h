@@ -108,12 +108,13 @@ double round(double x);
 extern log2pic_settings_t settings;
 
 void
-log2pic_map_integrate_scan( logtools_grid_map2_t *map, logtools_lasersens2_data_t data,
-			    double max_range, double max_usable  );
+log2pic_map_integrate_scan( logtools_grid_map2_t *map,
+logtools_lasersens2_data_t data,
+  double max_range, double max_usable  );
 
 int
 log2pic_map_pos_from_vec2( logtools_vector2_t pos, logtools_grid_map2_t *map,
-			   logtools_vector2_t *v );
+  logtools_vector2_t *v );
 
 void
 log2pic_map_compute_probs( logtools_grid_map2_t * map, double unknown_val );
@@ -125,12 +126,37 @@ char *
 log2pic_dump_filename( void );
 
 void
-log2pic_write_image_magick_map( logtools_grid_map2_t *map, logtools_log_data_t *rec );
+log2pic_write_image_magick_map( logtools_grid_map2_t *map, logtools_log_data_t
+  *rec );
 
 void
-log2pic_simple_convolve_map( logtools_grid_map2_t *map, logtools_gauss_kernel_t kernel );
+log2pic_simple_convolve_map( logtools_grid_map2_t *map, logtools_gauss_kernel_t
+  kernel );
 
 void
 log2pic_read_image_file( char * filename, log2pic_background_image_t * img );
+
+void
+log2pic_read_carmen_map( char * filename, logtools_grid_map2_t * map, double
+  zoom );
+
+void
+log2pic_write_plot2d_data( logtools_log_data_t *rec );
+
+void
+log2pic_write_plot3d_data( logtools_grid_map2_t *map );
+
+void
+log2pic_write_bee_map( logtools_grid_map2_t *map, int clip );
+
+void
+log2pic_write_carmen_map( logtools_grid_map2_t * map );
+
+void
+log2pic_compute_map( logtools_log_data_t rec, logtools_grid_map2_t * map );
+
+void
+log2pic_map_initialize( logtools_grid_map2_t *map, int sx, int sy, int center_x,
+  int center_y, double zoom, double resolution, logtools_rpos2_t start );
 
 #endif

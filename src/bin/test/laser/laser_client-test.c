@@ -1,6 +1,9 @@
-#include "global.h"
-#include "laser_interface.h"
 #include <stdio.h>
+
+#include "global.h"
+
+#include "param_interface.h"
+#include "laser_interface.h"
 
 static void 
 laser_handler(carmen_laser_laser_message *laser)

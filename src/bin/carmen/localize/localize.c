@@ -34,6 +34,9 @@
 #include "localize_core.h"
 
 #include "param_interface.h"
+#include "robot_interface.h"
+#include "localize_interface.h"
+#include "map_interface.h"
 
 /* global variables */
 carmen_localize_map_t map;

@@ -30,6 +30,8 @@
 
 #include "robot_main.h"
 
+#include "param_interface.h"
+
 void 
 shutdown_robot(int signo) 
 {

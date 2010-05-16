@@ -28,7 +28,8 @@
 
 #include "navigator.h"
 
-#include "navigator_messages.h"
+#include "robot_interface.h"
+#include "navigator_ipc.h"
 #include "planner.h"
 
 carmen_map_p nav_map;

@@ -31,9 +31,13 @@
 #include "robot_messages.h"
 
 #include "laserscans.h"
+
 #include "gui.h"
 #include "tools.h"
 #include "history.h"
+
+#include "readlog.h"
+#include "writelog.h"
 
 /********** Laser Scans **********/
 

@@ -28,7 +28,7 @@
 
 #include "global_graphics.h"
 
-#include "playback_messages.h"
+#include "param_interface.h"
 #include "playback_interface.h"
 
 GdkGC *rrwd_gc, *rewind_gc, *stop_gc, *play_gc, *fwd_gc, *ffwd_gc;

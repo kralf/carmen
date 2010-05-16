@@ -1,11 +1,14 @@
-#include "global.h"
-#include "carmen_laser_device.h"
-#include "carmen_laser_message_queue.h"
-#include "laser_messages.h"
 #include <stdio.h>
 #include <pthread.h>
 #include <math.h>
 
+#include "global.h"
+
+#include "param_interface.h"
+#include "laser_interface.h"
+
+#include "carmen_laser_device.h"
+#include "carmen_laser_message_queue.h"
 
 volatile int has_to_stop=0;
 carmen_laser_message_queue_t queue;

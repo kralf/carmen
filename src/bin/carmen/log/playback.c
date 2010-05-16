@@ -28,7 +28,9 @@
 
 #include "global.h"
 
+#include "param_interface.h"
 #include "playback_interface.h"
+
 #include "readlog.h"
 
 #define        MAX_LINE_LENGTH           100000

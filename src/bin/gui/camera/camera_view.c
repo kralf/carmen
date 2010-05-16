@@ -28,6 +28,7 @@
 
 #include "global_graphics.h"
 
+#include "param_interface.h"
 #include "camera_interface.h"
 
 static GtkWidget *main_window;

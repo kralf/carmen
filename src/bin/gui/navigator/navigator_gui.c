@@ -30,6 +30,9 @@
 
 #include "param_interface.h"
 #include "simulator_interface.h"
+#include "localize_interface.h"
+#include "navigator_interface.h"
+#include "map_interface.h"
 
 #include "navigator_graphics.h"
 #include "navigator_panel.h"

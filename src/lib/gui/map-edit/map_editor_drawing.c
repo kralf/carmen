@@ -33,6 +33,7 @@
 
 #include "map_editor.h"
 
+#include "map_editor_menus.h"
 #include "map_editor_drawing.h"
 #include "map_editor_graphics.h"
 
@@ -1190,7 +1191,7 @@ move(int state, double pix_x, double pix_y)
   switch(state)
     {
     case 0:
-      /*     see below (*²) for comment
+      /*     see below (*) for comment
 	      xm = pix_x;
 	      ym = pix_y;      */
       xs = x;
@@ -1242,7 +1243,7 @@ move(int state, double pix_x, double pix_y)
 	    else
 	      adjustment->value = ylow;
 	    }
-	  /*² It would be nice to show a line to indicate the movement but this is too slow imho
+	  /* It would be nice to show a line to indicate the movement but this is too slow imho
 	  map_to_tmp();
 	  gdk_gc_set_foreground (drawing_gc, &yellow);
 	  gdk_draw_line (tmp_pixmap, drawing_gc, xm, ym, pix_x, pix_y);*/

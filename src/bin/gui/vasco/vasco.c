@@ -28,6 +28,8 @@
 
 #include "global_graphics.h"
 
+#include "param_interface.h"
+
 #include "vasco.h"
 #include "gui.h"
 #include "laserscans.h"

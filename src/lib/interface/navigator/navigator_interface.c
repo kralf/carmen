@@ -231,7 +231,7 @@ carmen_navigator_set_goal_place(char *placename)
 
   if (err == IPC_OK) {
     if (return_msg->code) {
-      carmen_warn(return_msg->error);
+      carmen_warn("%s", return_msg->error);
       free(return_msg->error);
     }
 

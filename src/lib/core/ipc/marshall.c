@@ -152,8 +152,6 @@ FORMATTER_PTR IPC_parseFormat (const char *formatString)
 
 CONST_ENCODING_PTR IPC_msgInstanceEncoding (MSG_INSTANCE msgInstance)
 {
-  ENCODING_PTR encoding;
-
   if (!msgInstance) {
     ipcSetError(IPC_Null_Argument);
     return NULL;

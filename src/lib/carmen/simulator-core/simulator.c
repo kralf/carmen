@@ -30,7 +30,10 @@
  * library with the functions for the guts *
  * of the simulator                        *
  *******************************************/
+
 #include "global.h"
+#include "geometry.h"
+
 #include "simulator.h"
 #include "objects.h"
 

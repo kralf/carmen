@@ -30,11 +30,13 @@
 
 #include "param_interface.h"
 #include "base_interface.h"
+#include "localize_interface.h"
 #include "robot_interface.h"
 #include "simulator_interface.h"
 
 #include "map_io.h"
 
+#include "planner.h"
 #include "navigator.h"
 #include "navigator_ipc.h"
 

@@ -37,6 +37,7 @@
 #include "robot_central.h"
 
 #include "param_interface.h"
+#include "base_interface.h"
 
 carmen_robot_config_t carmen_robot_config;
 carmen_base_odometry_message carmen_robot_latest_odometry;

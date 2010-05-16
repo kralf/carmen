@@ -1097,69 +1097,7 @@ int32 x_ipc_enumToInt (CONST_FORMAT_PTR format,
   *DStart += eSize;
   return eVal;
 }
-
-/*****************************************************************************
- *
- * FUNCTION: int32 x_ipc_elementSize(format) 
- *
- * DESCRIPTION:
- * Returns the size (ALength) of the format's element.
- * If the format is a structured type, returns 0 unless all the elements
- * have the same length.
- *
- * INPUTS: FORMAT_PTR format;
- *
- * OUTPUTS: int
- *
- *****************************************************************************/
 
-static int32 x_ipc_elementSize(CONST_FORMAT_PTR format)
-{
-  int32 firstSize, i;
-  
-  switch (format->type) {
-  case LengthFMT: 
-    return format->formatter.i;
-  case PrimitiveFMT: {
-    TRANSLATE_FN_ALENGTH trans;
-    LOCK_M_MUTEX;
-    trans = GET_M_GLOBAL(TransTable)[format->formatter.i].ALength;
-    UNLOCK_M_MUTEX;
-    return (*trans)();
-  }
-  case PointerFMT:
-  case VarArrayFMT: 
-    return sizeof(GENERIC_DATA_PTR);
-  case FixedArrayFMT: 
-    return x_ipc_elementSize(format->formatter.a[1].f);
-  case StructFMT:
-    firstSize = x_ipc_elementSize(format->formatter.a[1].f);
-    if (firstSize != 0) {
-      for (i=2; i<format->formatter.a[0].i; i++) {
-	if (firstSize != x_ipc_elementSize(format->formatter.a[i].f))
-	  return 0;
-      }
-    }
-    return firstSize;
-  case NamedFMT:
-    return x_ipc_elementSize(x_ipc_fmtFind(format->formatter.name));
-    break;
-  case BadFormatFMT: 
-    return 0;
-  case EnumFMT:
-    return x_ipc_enumSize(format);
-
-#ifndef TEST_CASE_COVERAGE
-  default:
-    /* NOT REACHED */
-    X_IPC_MOD_ERROR1("Internal Error: Unknown x_ipc_elementSize %d",format->type);
-    break;
-#endif
-  }
-  return 0;
-}
-
-
 /*****************************************************************************
  *
  * FUNCTION: int32 fixedLengthFormat(format) 
@@ -1433,68 +1371,7 @@ BOOLEAN formatsEqual(CONST_FORMAT_PTR format1, CONST_FORMAT_PTR format2)
     }
   }
 }
-
-/*****************************************************************************
- *
- * FUNCTION: BOOLEAN x_ipc_canVectorize(format) 
- *
- * DESCRIPTION:
- * Returns TRUE (1) if the Format can be read using iovec's
- *
- * INPUTS: FORMAT_PTR format;
- *
- * OUTPUTS: int
- *
- *****************************************************************************/
 
-static BOOLEAN x_ipc_canVectorize(CONST_FORMAT_PTR format)
-{ 
-  int32 i, offset=0;
-  
-  switch(format->type) {
-  case LengthFMT:
-    return TRUE;
-  case PrimitiveFMT: {
-    BOOLEAN result;
-    LOCK_M_MUTEX;
-    result = GET_M_GLOBAL(TransTable)[format->formatter.i].SimpleType;
-    UNLOCK_M_MUTEX;
-    return result;
-  }
-  case PointerFMT:
-  case VarArrayFMT: 
-    break;
-  case FixedArrayFMT: 
-    return x_ipc_canVectorize(format->formatter.a[1].f);
-  case StructFMT:
-    for (i=1; i<format->formatter.a[0].i; i++) {
-      if (!x_ipc_canVectorize(format->formatter.a[i].f)) {
-	return FALSE;
-      }
-      /* Need to find out if there is any padding needed.*/
-      offset = offset + x_ipc_dataStructureSize(format->formatter.a[i].f);
-      if (x_ipc_alignField(format, i, offset) != offset)
-	return FALSE;
-    }
-    return TRUE;
-  case NamedFMT:
-    return x_ipc_canVectorize(x_ipc_fmtFind(format->formatter.name));
-  case BadFormatFMT: 
-    return FALSE;
-  case EnumFMT: 
-    /* Some compilers allocate less space for short enums -- thus, cannot
-       send directly unless they are long enough to *always* be ints */
-    return ENUM_MAX_VAL(format) > MAX_SHORT;
-#ifndef TEST_CASE_COVERAGE
-  default:
-    X_IPC_MOD_ERROR1("Internal Error: Unknown x_ipc_canVectorize Type %d",format->type);
-    break;
-#endif
-  }
-  return FALSE;
-}
-
-
 /*****************************************************************************
  *
  * FUNCTION: iovec *x_ipc_createVectorization(format,data,count) 

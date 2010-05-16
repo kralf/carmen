@@ -31,8 +31,10 @@
  * menu items in the map_editor    *
  ***********************************/
 
-#include "map_editor.h"
 #include "map_editor_menus.h"
+
+#include "map_editor.h"
+#include "map_editor_graphics.h"
 
 #include "map_io.h"
 

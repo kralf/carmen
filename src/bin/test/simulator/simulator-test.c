@@ -27,7 +27,12 @@
  ********************************************************/
 
 #include "global.h"
+
 #include "simulator.h"
+
+#include "param_interface.h"
+#include "base_interface.h"
+#include "laser_interface.h"
 
 carmen_laser_laser_message frontLaserMessage, rearLaserMessage;
 carmen_base_sonar_message sonarMessage;

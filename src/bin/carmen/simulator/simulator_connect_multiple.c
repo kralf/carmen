@@ -28,6 +28,8 @@
 
 #include "global.h"
 
+#include "simulator_interface.h"
+
 int main(int argc, char *argv[]) { 
   
   int i,j;

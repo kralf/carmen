@@ -26,6 +26,10 @@
  *
  ********************************************************/
 
+#ifndef NO_ZLIB
+#include <zlib.h>
+#endif
+
 #include "global.h"
 #include "localize_interface.h"
 

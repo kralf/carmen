@@ -27,10 +27,13 @@
  ********************************************************/
 
 #include "global.h"
+#include "geometry.h"
 
 #include "robot_central.h"
 #include "robot_main.h"
 #include "robot_sonar.h"
+
+#include "base_interface.h"
 
 static carmen_base_sonar_message base_sonar;
 static carmen_robot_sonar_message robot_sonar;

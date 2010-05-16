@@ -29,7 +29,10 @@
 #include "global.h"
 
 #include "joyctrl.h"
+#include "keyctrl.h"
+
 #include "param_interface.h"
+#include "robot_interface.h"
 
 static int no_joystick = 1;
 static carmen_joystick_type joystick;

@@ -29,7 +29,9 @@
 #include "global.h"
 
 #include "camera_hw_interface.h"
-#include "camera_messages.h"
+
+#include "param_interface.h"
+#include "camera_interface.h"
 
 void shutdown_module(int signo __attribute__ ((unused)))
 {

@@ -6,6 +6,8 @@
 #include <math.h>
 #include <string.h>
 
+#include "global.h"
+
 #include "log2pic.h"
 
 void
@@ -516,8 +518,8 @@ main( int argc, char** argv)
   fprintf( stderr, "#\n" );
 
   res = (settings.resolution_x+settings.resolution_y)/2.0;
-  map_initialize( &map, isize.x, isize.y, -istart.x, -istart.y, settings.zoom,
-		  res, settings.posstart );
+  log2pic_map_initialize( &map, isize.x, isize.y, -istart.x, -istart.y,
+    settings.zoom, res, settings.posstart );
 
   fprintf( stderr, "#\n" );
   fprintf( stderr, "#####################################################################\n" );

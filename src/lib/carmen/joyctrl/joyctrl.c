@@ -32,7 +32,7 @@
 
 int carmen_initialize_joystick(carmen_joystick_type *joystick)
 {
-  carmen_initialize_joystick_device(joystick, CARMEN_JOYSTICK_DEVICE);
+  return carmen_initialize_joystick_device(joystick, CARMEN_JOYSTICK_DEVICE);
 }
 
 int carmen_initialize_joystick_device(carmen_joystick_type *joystick,

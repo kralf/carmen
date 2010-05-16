@@ -179,7 +179,11 @@ ImageMagickDrawPath( Image * image, ImageInfo * image_info,
   GetDrawInfo( image_info, &draw_info );
   wand = DrawAllocateContext ( &draw_info, image );
 #endif
+#if MagickLibVersion >= 0x657
+  PushDrawingWand( wand );
+#else
   DrawPushGraphicContext( wand );
+#endif
   {
 #if MagickLibVersion >= 0x600
     PixelSetColor( color, settings.pathcolor );
@@ -258,7 +262,11 @@ ImageMagickDrawPath( Image * image, ImageInfo * image_info,
       }
       if (plot) {
 	if (1) {
-	  DrawPushGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+    PushDrawingWand( wand );
+#else
+    DrawPushGraphicContext( wand );
+#endif
 	  {
 	    double   opacity       = 1.;
 	    double   strokeopacity = 1.;
@@ -279,7 +287,11 @@ ImageMagickDrawPath( Image * image, ImageInfo * image_info,
 			vec1.x+settings.pathwidth,
 			vec1.y+settings.pathwidth );
 	  }
-	  DrawPopGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+    PopDrawingWand( wand );
+#else
+    DrawPopGraphicContext( wand );
+#endif
 	} else {
 	  magick_pos_without_rotation( pos, map, &vec1 );
 	  //magick_pos_from_rpos( pos, map, &vec1 );
@@ -293,9 +305,17 @@ ImageMagickDrawPath( Image * image, ImageInfo * image_info,
       DrawPathFinish( wand );
     }
   }
-  DrawPopGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+    PopDrawingWand( wand );
+#else
+    DrawPopGraphicContext( wand );
+#endif
   if (settings.animation && !settings.gpspath) {
+#if MagickLibVersion >= 0x657
+    PushDrawingWand( wand );
+#else
     DrawPushGraphicContext( wand );
+#endif
     {
       magick_pos_without_rotation( pos, map, &vec1 );
 #if MagickLibVersion >= 0x600
@@ -314,7 +334,11 @@ ImageMagickDrawPath( Image * image, ImageInfo * image_info,
       magick_pos_from_vector( v, map, &vec2 );
       DrawLine( wand, vec1.x, vec1.y, vec2.x, vec2.y );
     }
+#if MagickLibVersion >= 0x657
+    PopDrawingWand( wand );
+#else
     DrawPopGraphicContext( wand );
+#endif
   }
   DrawRender( wand );
 #if MagickLibVersion >= 0x600
@@ -505,7 +529,11 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
       sscanf( ptr, "%[^=]=%[^:]", dummy, str1 );
       if (logtools_str_get_numbers( str1, 2, &(pos.x), &(pos.y) ) == 2 ) {
 	marker_map_pos_from_robot_pos( pos, map, &vec, system );
-	DrawPushGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PushDrawingWand( wand );
+#else
+  DrawPushGraphicContext( wand );
+#endif
 	{
 	  DrawPoint( wand, vec.x, vec.y );
 #if MagickLibVersion >= 0x600
@@ -522,7 +550,11 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	    DrawSetStrokePatternURL( wand, strokepattern );
 	  }
 	}
-	DrawPopGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PopDrawingWand( wand );
+#else
+  DrawPopGraphicContext( wand );
+#endif
 	pri++;
       }
     } else if (!strncasecmp( "rectangle", command, MAX_LINE_LENGTH)) {
@@ -534,7 +566,11 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	marker_map_pos_from_robot_pos( pos, map, &vec, system );
 	boxsize.x  = metric_to_pixel( (pos2.x-pos1.x), map, system );
 	boxsize.y  = metric_to_pixel( (pos2.y-pos1.y), map, system  );
-	DrawPushGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PushDrawingWand( wand );
+#else
+  DrawPushGraphicContext( wand );
+#endif
 	{
 	  DrawSetFillOpacity( wand, opacity );
 #if MagickLibVersion >= 0x600
@@ -555,13 +591,21 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	  }
 	  if ( (fabs(orientation)>MIN_ROTATION) ||
 	       (fabs(settings.rotation_angle)>MIN_ROTATION) ) {
-	    DrawPushGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+      PushDrawingWand( wand );
+#else
+      DrawPushGraphicContext( wand );
+#endif
 	    {
 	      DrawRotate(wand,rad2deg(-(orientation+settings.rotation_angle)));
 	      DrawRectangle( wand, -boxsize.x/2.0, -boxsize.y/2.0,
 			     boxsize.x/2.0, boxsize.y/2.0 );
 	    }
-	    DrawPopGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+      PopDrawingWand( wand );
+#else
+      DrawPopGraphicContext( wand );
+#endif
 	    pri++;
 	  } else {
 	    DrawRectangle( wand, -boxsize.x/2.0, -boxsize.y/2.0,
@@ -569,7 +613,11 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	  }
 	  DrawTranslate( wand, vec.x, vec.y );
 	}
-	DrawPopGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PopDrawingWand( wand );
+#else
+  DrawPopGraphicContext( wand );
+#endif
 	pri++;
       }
     } else if (!strncasecmp( "line", command, MAX_LINE_LENGTH)) {
@@ -578,7 +626,11 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 			   &(pos2.x), &(pos2.y) ) == 4 ) {
 	marker_map_pos_from_robot_pos( pos1, map, &vec1, system );
 	marker_map_pos_from_robot_pos( pos2, map, &vec2, system );
-	DrawPushGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PushDrawingWand( wand );
+#else
+  DrawPushGraphicContext( wand );
+#endif
 	{
 	  DrawSetFillOpacity( wand, opacity );
 #if MagickLibVersion >= 0x600
@@ -599,7 +651,11 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	  }
 	}
 	DrawLine( wand, vec1.x, vec1.y, vec2.x, vec2.y );
-	DrawPopGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PopDrawingWand( wand );
+#else
+  DrawPopGraphicContext( wand );
+#endif
 	pri++;
       }
     } else if (!strncasecmp( "text", command, MAX_LINE_LENGTH)) {
@@ -624,7 +680,11 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	  strncpy( str5, str4, MAX_LINE_LENGTH );
 	}
       }
+#if MagickLibVersion >= 0x657
+      PushDrawingWand( wand );
+#else
       DrawPushGraphicContext( wand );
+#endif
       {
 	if (strncmp( "none", strokecolor, MAX_LINE_LENGTH)) {
 #if MagickLibVersion >= 0x600
@@ -657,18 +717,30 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	DrawSetFontSize ( wand, fontsize );
 	DrawTranslate( wand, vec.x, vec.y );
 	if ( fabs(orientation)>MIN_ROTATION ) {
-	  DrawPushGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+    PushDrawingWand( wand );
+#else
+    DrawPushGraphicContext( wand );
+#endif
 	  {
 	    DrawRotate( wand,rad2deg(-orientation) );
 	    DrawAnnotation ( wand, 0, (fontsize/2.5), (unsigned char*) str5 );
 	  }
-	  DrawPopGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+    PopDrawingWand( wand );
+#else
+    DrawPopGraphicContext( wand );
+#endif
 	  pri++;
 	} else {
 	  DrawAnnotation ( wand, 0, (fontsize/2.5),  (unsigned char*) str5 );
 	}
       }
+#if MagickLibVersion >= 0x657
+      PopDrawingWand( wand );
+#else
       DrawPopGraphicContext( wand );
+#endif
       pri++;
   } else if (!strncasecmp( "circle", command, MAX_LINE_LENGTH)) {
       sscanf( ptr, "%[^=]=%[^:]", dummy, str1 );
@@ -682,7 +754,11 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	  size  = metric_to_pixel( circlesize/(2.0*sqrt(2)), map, system );
 	}
 	marker_map_pos_from_robot_pos( pos, map, &vec, system );
-	DrawPushGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PushDrawingWand( wand );
+#else
+  DrawPushGraphicContext( wand );
+#endif
 	{
 #if MagickLibVersion >= 0x600
 	  PixelSetColor( color, strokecolor );
@@ -703,14 +779,22 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	  }
 	  DrawCircle( wand, vec.x, vec.y, vec.x+size, vec.y+size );
 	}
-	DrawPopGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PopDrawingWand( wand );
+#else
+  DrawPopGraphicContext( wand );
+#endif
 	pri++;
       }
     } else if (!strncasecmp( "path", command, MAX_LINE_LENGTH)) {
       sscanf( ptr, "%[^=]=%[^:]", dummy, str1 );
       sscanf( str1, " { %[^}] ", str2 );
       if (strlen(str2)>0) {
-	DrawPushGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PushDrawingWand( wand );
+#else
+  DrawPushGraphicContext( wand );
+#endif
 	{
 	  DrawSetFillOpacity( wand, opacity );
 #if MagickLibVersion >= 0x600
@@ -743,7 +827,11 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	  }
 	  DrawPathFinish( wand );
 	}
-	DrawPopGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PopDrawingWand( wand );
+#else
+  DrawPopGraphicContext( wand );
+#endif
 	pri++;
       }
     } else if (!strncasecmp( "arrow", command, MAX_LINE_LENGTH)) {
@@ -756,7 +844,11 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	  size  = metric_to_pixel( circlesize/2.3, map, system );
 	}
 	marker_map_pos_from_robot_pos( pos, map, &vec, system );
-	DrawPushGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PushDrawingWand( wand );
+#else
+  DrawPushGraphicContext( wand );
+#endif
 	{
 #if MagickLibVersion >= 0x600
 	  PixelSetColor( color, strokecolor );
@@ -780,18 +872,30 @@ ImageMagickDrawMapMarker( Image * image, ImageInfo * image_info,
 	  DrawTranslate( wand, vec.x, vec.y );
 	  if ( (fabs(orientation)>MIN_ROTATION) ||
 	       (fabs(settings.rotation_angle)>MIN_ROTATION) ) {
-	    DrawPushGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+      PushDrawingWand( wand );
+#else
+      DrawPushGraphicContext( wand );
+#endif
 	    {
 	      DrawRotate(wand,rad2deg(-(orientation+settings.rotation_angle)));
 	      DrawPolygon( wand, 7, rarrow );
 	    }
-	    DrawPopGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+      PopDrawingWand( wand );
+#else
+      DrawPopGraphicContext( wand );
+#endif
 	    pri++;
 	  } else {
 	    DrawPolygon( wand, 7, rarrow );
 	  }
 	}
-	DrawPopGraphicContext( wand );
+#if MagickLibVersion >= 0x657
+  PopDrawingWand( wand );
+#else
+  DrawPopGraphicContext( wand );
+#endif
 	pri++;
       }
     } else {
@@ -1108,7 +1212,7 @@ log2pic_write_image_magick_map( logtools_grid_map2_t * map, logtools_log_data_t 
     fprintf( stderr, "done\n" );
     DestroyImage(image);
   }
-#if MagickLibVersion > 0x0537
+#if MagickLibVersion >= 0x657
   ConstituteComponentTerminus();
 #else
   DestroyConstitute();
@@ -1146,7 +1250,12 @@ log2pic_read_image_file( char * filename, log2pic_background_image_t * img )
   img->pixel = (RGB **) mdalloc( 2, sizeof(RGB),
 				 img->width, img->height );
   fprintf( stderr, "done\n" );
+#if MagickLibVersion >= 0x657
+  pixels = GetAuthenticPixels( image, 0, 0, img->width, img->height,
+    &image->exception );
+#else
   pixels = GetImagePixels( image, 0, 0, img->width, img->height );
+#endif
   for (x=0; x<img->width; x++) {
     for (y=0; y<img->height; y++) {
       idx = y*img->width+x;

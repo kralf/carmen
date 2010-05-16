@@ -28,6 +28,9 @@
 
 #include "global.h"
 
+#include "base_interface.h"
+#include "localize_interface.h"
+#include "navigator_interface.h"
 #include "robot_interface.h"
 
 #include "map_io.h"

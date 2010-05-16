@@ -32,6 +32,7 @@
 
 #include "global_graphics.h"
 
+#include "param_interface.h"
 #include "laser_interface.h"
 
 #define WINDOWSIZE 500

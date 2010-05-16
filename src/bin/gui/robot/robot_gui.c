@@ -28,7 +28,10 @@
 
 #include "global_graphics.h"
 
+#include "keyctrl.h"
+
 #include "param_interface.h"
+#include "base_interface.h"
 #include "robot_interface.h"
 
 #ifndef NO_JOYSTICK

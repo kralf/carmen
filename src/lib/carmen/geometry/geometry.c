@@ -26,15 +26,12 @@
  *
  ********************************************************/
 
-#include "global.h"
-
-#ifndef COMPILE_WITHOUT_MAP_SUPPORT
-#include "map.h"
-#endif
-
-#include "geometry.h"
 #include <assert.h>
 #include <float.h>
+
+#include "global.h"
+
+#include "geometry.h"
 
 #ifndef COMPILE_WITHOUT_MAP_SUPPORT
 

@@ -27,15 +27,16 @@
  ********************************************************/
 
 #include "global.h"
+#include "geometry.h"
 
 #include "robot_central.h"
 #include "robot_main.h"
 #include "robot_laser.h"
 
-#include "laser_messages.h"
 #include "robot_messages.h"
 
 #include "param_interface.h"
+#include "laser_interface.h"
 
 static double frontlaser_offset;
 static double rearlaser_offset;

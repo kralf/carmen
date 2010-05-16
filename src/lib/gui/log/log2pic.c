@@ -458,8 +458,8 @@ clear_map( logtools_grid_map2_t * map, logtools_rpos2_t pos )
 }
 
 void
-map_initialize( logtools_grid_map2_t *map, int sx, int sy, int center_x, int center_y,
-		double zoom, double resolution, logtools_rpos2_t start )
+log2pic_map_initialize( logtools_grid_map2_t *map, int sx, int sy, int center_x,
+  int center_y, double zoom, double resolution, logtools_rpos2_t start )
 {
   int x, y;
 
@@ -651,7 +651,7 @@ log2pic_read_carmen_map( char * filename, logtools_grid_map2_t * map, double zoo
   fprintf( stderr, "done\n" );
   fprintf( stderr, "#####################################################################\n" );
 
-  map_initialize( map, carmen_map.config.x_size,
+  log2pic_map_initialize( map, carmen_map.config.x_size,
 		  carmen_map.config.y_size, 0, 0, zoom,
 		  carmen_map.config.resolution*100.0, nullpos );
 

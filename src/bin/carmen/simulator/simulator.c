@@ -29,11 +29,15 @@
 #include "global.h"
 
 #include "simulator.h"
-#include "simulator_messages.h"
-#include "localize_messages.h"
+#include "objects.h"
 
 #include "param_interface.h"
+#include "simulator_interface.h"
+#include "localize_interface.h"
+#include "robot_interface.h"
 #include "map_interface.h"
+
+#include "robot_main.h"
 
 static carmen_simulator_config_t *simulator_config;
 static int use_robot = 1;

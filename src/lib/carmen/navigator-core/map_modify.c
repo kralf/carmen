@@ -30,6 +30,8 @@
 
 #include "map_modify.h"
 
+#include "map_interface.h"
+
 #define LASER_HISTORY_LENGTH 5
 
 #define EMPTY 0.01

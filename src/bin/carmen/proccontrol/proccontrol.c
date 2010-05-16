@@ -29,6 +29,7 @@
 #include <sys/wait.h>
 
 #include "global.h"
+#include "carmenserial.h"
 
 #include "proccontrol_messages.h"
 #include "proccontrol_ipc.h"

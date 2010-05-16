@@ -29,7 +29,9 @@
 #include "global.h"
 
 #include "pantilt.h"
-#include "pantilt_messages.h"
+
+#include "param_interface.h"
+#include "pantilt_interface.h"
 
 PantiltDeviceType    pDevice;
 PantiltSettingsType  pSettings;

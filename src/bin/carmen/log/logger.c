@@ -29,6 +29,17 @@
 #include "global.h"
 
 #include "param_interface.h"
+#include "base_interface.h"
+#include "arm_interface.h"
+#include "pantilt_interface.h"
+#include "robot_interface.h"
+#include "laser_interface.h"
+#include "localize_interface.h"
+#include "simulator_interface.h"
+#include "imu_interface.h"
+#include "gps_nmea_interface.h"
+#include "logger_interface.h"
+
 #include "writelog.h"
 
 carmen_FILE *outfile = NULL;
@@ -315,7 +326,7 @@ int main(int argc, char **argv)
   /* open logfile, check if file overwrites something */
   if(argc < 2) 
     carmen_die("usage: %s <logfile>\n", argv[0]);
-  sprintf(filename, argv[1]);
+  sprintf(filename, "%s", argv[1]);
 
   outfile = carmen_fopen(filename, "r");
   if (outfile != NULL) {

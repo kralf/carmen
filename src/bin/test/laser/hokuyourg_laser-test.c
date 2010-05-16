@@ -56,5 +56,8 @@ int main (int argc, const char** argv){
 //     cout << "e" << endl << endl;
     k++;
   }
+  
   hokuyo_close(&urg);
+
+  return 0;
 }

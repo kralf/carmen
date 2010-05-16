@@ -30,6 +30,8 @@
 
 #include "map_io.h"
 
+#include "param_interface.h"
+
 /* signal handler for C^c */
 void
 shutdown_mapServer(int x)

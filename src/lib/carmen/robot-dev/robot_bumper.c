@@ -32,8 +32,9 @@
 #include "robot_main.h"
 #include "robot_bumper.h"
 
-#include "base_messages.h"
 #include "robot_messages.h"
+
+#include "base_interface.h"
 
 static carmen_base_bumper_message base_bumper;
 static carmen_robot_bumper_message robot_bumper;

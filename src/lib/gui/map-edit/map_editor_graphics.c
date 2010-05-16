@@ -39,6 +39,8 @@
 
 #include "map_editor_cursors.h"       /* cursor bitmaps */
 
+#include "map_interface.h"
+
 #define DEFAULT_MAX_SCREEN_WIDTH 600
 #define DEFAULT_MAX_SCREEN_HEIGHT 400
 
