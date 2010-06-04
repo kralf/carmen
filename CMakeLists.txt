@@ -14,6 +14,7 @@ remake_project(
   INSTALL /usr
 )
 
+remake_doc(man INSTALL share)
 remake_add_directories(data)
 
 remake_pack_deb(
@@ -42,7 +43,7 @@ remake_pack_deb(
 remake_pack_deb(
   COMPONENT test
   DESCRIPTION "testing binaries"
-  carmen carmen-cpp
+  carmen carmen-cpp carmen-gui
 )
 
 remake_pack_deb(
@@ -82,4 +83,14 @@ remake_pack_deb(
   ARCH all
   COMPONENT doc
   DESCRIPTION "documentation"
+)
+remake_pack_deb(
+  ARCH all
+  COMPONENT gui-doc
+  DESCRIPTION "GUI documentation"
+)
+remake_pack_deb(
+  ARCH all
+  COMPONENT test-doc
+  DESCRIPTION "testing documentation"
 )
