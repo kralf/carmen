@@ -1,3 +1,4 @@
+remake_component(gui)
 if(CARMEN_BUILD_GUI)
   remake_find_package(GTK+2 CONFIG gtk+-2.0)
   remake_find_package(gthread2 CONFIG gthread-2.0)
