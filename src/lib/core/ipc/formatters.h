@@ -591,7 +591,7 @@ typedef enum
 #define ALIGN ALIGN_INT
 #elif defined (i386) && defined(__CYGWIN__)
 #define ALIGN ALIGN_LONGEST
-#elif defined(ppc) || defined(PPC603)
+#elif defined(ppc) || defined(PPC) || defined(PPC603)
 #define ALIGN ALIGN_LONGEST
 #elif defined(THINK_C) || defined(sun3) || defined(SUN3)
 #define ALIGN ALIGN_WORD
