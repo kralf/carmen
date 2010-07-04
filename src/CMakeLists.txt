@@ -1,11 +1,11 @@
 remake_component(gui)
-if(CARMEN_BUILD_GUI)
+if(CARMEN_GUI_COMPONENT_BUILD)
   remake_find_package(GTK+2 CONFIG gtk+-2.0)
   remake_find_package(gthread2 CONFIG gthread-2.0)
   remake_find_package(libart2 CONFIG libart-2.0)
   remake_find_package(JPEG)
   remake_find_package(ImageMagick COMPONENTS MagickWand)
-endif(CARMEN_BUILD_GUI)
+endif(CARMEN_GUI_COMPONENT_BUILD)
 
 remake_define(REDHAT_52 ON)
 remake_define(REDHAT_6 ON)
