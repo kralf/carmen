@@ -1,1 +1,1 @@
-remake_add_files(*.map COMPONENT data)
+remake_add_directories()
