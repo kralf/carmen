@@ -1,1 +1,1 @@
-remake_add_files(*.map COMPONENT data INSTALL maps)
+remake_add_files(*.map INSTALL maps)

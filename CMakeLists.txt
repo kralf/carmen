@@ -15,7 +15,10 @@ remake_project(
 )
 
 remake_doc(man INSTALL share)
-remake_add_directories(data)
+remake_add_directories(
+  data
+  COMPONENT data
+)
 
 remake_pack_deb(
   COMPONENT core
