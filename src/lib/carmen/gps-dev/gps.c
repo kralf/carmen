@@ -29,7 +29,7 @@
 #include "gps_nmea_interface.h"
 
 #include "gps.h"
-#include "gps-io.h"
+#include "gps_io.h"
 
 int
 gps_parse_gga( char * line, int num_chars )

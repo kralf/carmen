@@ -1,0 +1,1 @@
+remake_add_executables(LINK param_interface orc4_base)

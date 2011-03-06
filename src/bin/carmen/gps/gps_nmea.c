@@ -32,8 +32,8 @@
 #include "param_interface.h"
 
 #include "gps.h"
-#include "gps-ipc.h"
-#include "gps-io.h"
+#include "gps_ipc.h"
+#include "gps_io.h"
 
 
 void

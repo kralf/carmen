@@ -26,31 +26,29 @@
  *
  ********************************************************/
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <signal.h>
+#include <math.h>
+#include <unistd.h>
+#include <termios.h>
+#include <fcntl.h>
+#include <sys/signal.h>
+#include <sys/types.h>
+#include <sys/time.h>
 #include <sys/ioctl.h>
+#ifdef CYGWIN
+#include <sys/socket.h>
+#endif
 
-#include "global.h"
-#include "gps_nmea_messages.h"
-
-#include "gps.h"
-#include "gps-io.h"
-
-void
-DEVICE_init_params( SerialDevice *p )
-{
-  strncpy( p->ttyport, DEFAULT_GPS_PORT, MAX_NAME_LENGTH );
-  p->baud                    = DEFAULT_GPS_BAUD;
-  p->parity                  = DEFAULT_GPS_PARITY;
-  p->databits                = DEFAULT_GPS_DATABITS;
-  p->stopbits                = DEFAULT_GPS_STOPBITS;
-  p->hwf                     = DEFAULT_GPS_HWF;
-  p->swf                     = DEFAULT_GPS_SWF;
-  p->fd                      = -1;
-}
+#include "rflex.h"
+#include "rflex_io.h"
 
 int
 iParity( enum PARITY_TYPE par )
 {
-  if (par==NO)
+  if (par==N)
     return(IGNPAR);
   else
     return(INPCK);
@@ -110,8 +108,8 @@ cFlowControl( int flowcontrol )
 int
 cParity( enum PARITY_TYPE par )
 {
-  if (par!=NO) {
-    if (par==ODD) {
+  if (par!=N) {
+    if (par==O) {
       return(PARENB | PARODD);
     } else {
       return(PARENB);
@@ -173,10 +171,10 @@ cBaudrate( int baudrate )
 
 }
 
-int 
-DEVICE_bytes_waiting( int sd )
+long 
+bytesWaiting( int sd )
 {
-  int available=0;
+  long available=0;
   if ( ioctl( sd, FIONREAD, &available ) == 0 )
     return available;
   else
@@ -184,7 +182,7 @@ DEVICE_bytes_waiting( int sd )
 }    
 
 void 
-DEVICE_set_params( SerialDevice dev )
+DEVICE_set_params( Device dev )
 {
   struct termios  ctio;
 
@@ -214,7 +212,7 @@ DEVICE_set_params( SerialDevice dev )
 }
 
 void 
-DEVICE_set_baudrate( SerialDevice dev, int brate )
+DEVICE_set_baudrate( Device dev, int brate )
 {
   struct termios  ctio;
 
@@ -228,30 +226,15 @@ DEVICE_set_baudrate( SerialDevice dev, int brate )
 }
 
 int
-DEVICE_connect_port( SerialDevice *dev )
+DEVICE_connect_port( Device *dev )
 {
   if ( ( dev->fd =
-    	 open( (dev->ttyport), (O_RDWR | O_NOCTTY),0) ) < 0 ) {
+	 open( (dev->ttyport), (O_RDWR | O_NOCTTY),0) ) < 0 ) {
     return( -1 );
   }
-  fprintf( stderr, "." );
-  dev->fp = fdopen( dev->fd, "rw" );
-  fprintf( stderr, "." );
-  if ( dev->fp == NULL ) {
-    return( -1 );
-  }
-  fprintf( stderr, ".\n" );
-  fprintf( stderr, "INFO: set device:\n" );
-  fprintf( stderr, "INFO:    port   = %s\n", dev->ttyport );
-  fprintf( stderr, "INFO:    baud   = %d\n", dev->baud );
-  fprintf( stderr, "INFO:    params = %d%s%d\n",
-	   dev->databits, dev->parity==NO?"N":dev->parity==ODD?"O":"E",
-	   dev->stopbits );
-
   DEVICE_set_params( *dev );
   return( dev->fd );
 }
-
 
 int
 writeData( int fd, unsigned char *buf, int nChars )
@@ -271,96 +254,79 @@ writeData( int fd, unsigned char *buf, int nChars )
 }
 
 int
-DEVICE_send( SerialDevice dev, unsigned char *cmd, int len )
+waitForETX( int fd, unsigned char *buf, int  *len )
 {
+  static int pos, loop, val, dlen;
 #ifdef IO_DEBUG
   int i;
-  fprintf( stderr, "\n---> " );
-  for (i=0;i<len;i++) {
-    fprintf( stderr, "%c", cmd[i] );
+#endif
+  pos = 2; loop = 0; dlen = -1;
+  while( loop<MAX_NUM_LOOPS ) {
+    val = bytesWaiting( fd );
+    if (val>0) {
+      read( fd, &(buf[pos]), 1 );
+      pos++;
+      if (pos>5) {
+	dlen = buf[5] + 9; /* std length (9 char) + data length - end chars (2)*/
+      }
+      if (dlen>0 && pos>=dlen) {
+	  if (buf[dlen-2]==B_ESC && buf[dlen-1]==B_ETX) {
+	      *len = dlen;
+#ifdef IO_DEBUG
+	      fprintf( stderr, "- answer ->" );
+	      for (i=0;i<pos;i++)
+		  fprintf( stderr, "[0x%s%x]", buf[i]<16?"0":"", buf[i] );
+	      fprintf( stderr, "\n" );
+#else
+#ifdef DEBUG
+	      fprintf( stderr, "(%d)", *len );
+#endif
+#endif
+	      return(TRUE);
+	  } else {
+#ifdef IO_DEBUG
+	      fprintf( stderr, "- wrong answer ->" );
+	      for (i=0;i<pos;i++)
+		  fprintf( stderr, "[0x%s%x]", buf[i]<16?"0":"", buf[i] );
+	      fprintf( stderr, "\n" );
+#else
+#ifdef DEBUG
+	      fprintf( stderr, "-" );
+#endif
+#endif
+	      return(FALSE);
+	  }
+      }
+
+    } else {
+      usleep(100);
+      loop++;
+    }
   }
+#ifdef IO_DEBUG
   fprintf( stderr, "\n" );
 #endif
-
-  if (writeData( dev.fd, cmd, len )) {
-    return(TRUE);
-  } else {
-    return(FALSE);
-  }
-}
-
-static int get_line(char **buffer, size_t *buffer_len, char delim, FILE *fp)
-{
-  int read_result;
-  char read_char;
-  size_t num_read;
-
-  if (*buffer == NULL || *buffer_len == 0) {
-    *buffer = (char *)calloc(1, sizeof(char));
-    carmen_test_alloc(*buffer);
-    *buffer_len = 1;
-  }
-
-  num_read = 0;
-  do {
-    read_result = fgetc(fp);
-    read_char = (char) read_result;
-    //fprintf( stderr, "%c",read_char );
-    if (read_result == EOF)
-      return -1;
-    (*buffer)[num_read] = read_char;
-    num_read++;
-    if (num_read == *buffer_len) {
-      *buffer_len = *buffer_len+1;
-      *buffer = (char *)realloc(*buffer, *buffer_len*sizeof(char));
-      carmen_test_alloc(*buffer);
-    }
-  } while (read_char != delim);
-
-  return num_read;
+  return(FALSE);
 }
 
 int
-DEVICE_read_data( SerialDevice dev )
+waitForAnswer( int fd, unsigned char *buf, int *len )
 {
-  int                  val, recieved, len;
-  static char        * buffer = NULL;
-  static size_t        buffer_len = 0;
-  static char          line[BUFFER_LENGTH];
-  int                  j, start;
-  
-  val = DEVICE_bytes_waiting(dev.fd);
-  if (val>0) {
-
-    recieved = get_line(&buffer, &buffer_len, '*', dev.fp);
-    if (recieved>0) {
-      len = 0;
-      for (j=0;j<recieved;j++) {
-	if (buffer[j]!=0) {
-	  line[len] = buffer[j];
-	  len++;
-	}
+  int loop = 0;
+  *len = 0;
+  while( loop<MAX_NUM_LOOPS ) {
+    if (bytesWaiting( fd )) {
+      read( fd, &(buf[*len]), 1 );
+      *len = *len+1;
+      if (*len>=2 && buf[*len-2]==B_ESC && buf[*len-1]==B_STX ) {
+	buf[0] = B_ESC;
+	buf[1] = B_STX;
+	*len = 2;
+	return(waitForETX(fd,buf,len));
       }
-      if (len>0) {
-	for (j=0;j<len;j++)
-	  if (line[j]=='$') break;
-	start = j;
-	if ( (len-start>0) && (line[len-1]=='*') ) {
-#ifdef XXIO_DEBUG
-	  fprintf( stderr, "(" );
-	  for (j=start;j<len;j++)
-	    fprintf( stderr, "%c", line[j] );
-	  fprintf( stderr, ")\n" );
-#else
-	  fprintf( stderr, "." );
-#endif	  
-
-	  //fprintf( stderr,"%c", line[start]);
-	  return(carmen_gps_parse_data( &(line[start]), len-start ));
-	  
-
-	}	
-      }
+    } else {
+      usleep(100);
+      loop++;
     }
   }
   return(FALSE);

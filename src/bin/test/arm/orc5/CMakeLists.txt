@@ -1,0 +1,1 @@
+remake_add_executables(LINK orc5_base)

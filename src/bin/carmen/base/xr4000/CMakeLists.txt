@@ -1,0 +1,1 @@
+remake_add_executables(LINK param_interface xr4000_base)
