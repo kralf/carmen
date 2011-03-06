@@ -15,8 +15,8 @@ remake_project(
 )
 
 remake_doc(
-  html
   man INSTALL share
+  html
 )
 remake_add_directories(
   data
@@ -94,9 +94,11 @@ remake_pack_deb(
   ARCH all
   COMPONENT gui-doc
   DESCRIPTION "GUI documentation"
+  carmen-doc
 )
 remake_pack_deb(
   ARCH all
   COMPONENT test-doc
   DESCRIPTION "testing documentation"
+  carmen-doc
 )
