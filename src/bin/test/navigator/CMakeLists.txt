@@ -1,1 +1,1 @@
-remake_add_executables(LINK navigator_interface)
+remake_add_executables(LINK param_interface navigator_interface)

@@ -1,1 +1,2 @@
-remake_add_executables(LINK param_interface map_interface map_io)
+remake_add_executables(LINK param_interface map_interface localize_interface
+  simulator_interface map_io)

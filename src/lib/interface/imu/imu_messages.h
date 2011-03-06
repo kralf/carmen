@@ -1,7 +1,7 @@
 #ifndef CARMEN_IMU_MESSAGES_H
 #define CARMEN_IMU_MESSAGES_H
 
-/** @addtogroup imu_interface libimu_interface **/
+/** @addtogroup imu libimu_interface **/
 // @{
 
 #ifdef __cplusplus

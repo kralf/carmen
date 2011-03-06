@@ -14,7 +14,10 @@ remake_project(
   INSTALL /usr
 )
 
-remake_doc(man INSTALL share)
+remake_doc(
+  html
+  man INSTALL share
+)
 remake_add_directories(
   data
   COMPONENT data

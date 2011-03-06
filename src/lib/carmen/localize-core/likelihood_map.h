@@ -29,8 +29,6 @@
 #ifndef CARMEN_LIKELIHOOD_MAP_H
 #define CARMEN_LIKELIHOOD_MAP_H
 
-#include "localize_core.h"
-
 #include "map.h"
 
 #ifdef __cplusplus
@@ -45,6 +43,8 @@ typedef struct {
   short int **x_offset, **y_offset;
   float **distance, **prob, **gprob;
 } carmen_localize_map_t, *carmen_localize_map_p;
+
+#include "localize_core.h"
 
 void carmen_to_localize_map(carmen_map_p cmap, carmen_localize_map_p lmap,
 			    carmen_localize_param_p param);

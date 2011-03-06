@@ -1,0 +1,27 @@
+/** @page Binaries
+
+<h2>The CARMEN Binaries</h2>
+
+Here is a list of all binary groups provided by CARMEN:
+
+- \subpage binary_base
+- \subpage binary_camera
+- \subpage binary_global
+- \subpage binary_gps
+- \subpage binary_hmap
+- \subpage binary_ipc
+- \subpage binary_joystick
+- \subpage binary_laser
+- \subpage binary_localize
+- \subpage binary_log_tools
+- \subpage binary_logger
+- \subpage binary_map_tools
+- \subpage binary_navigator
+- \subpage binary_pantilt
+- \subpage binary_param_daemon
+- \subpage binary_proccontrol
+- \subpage binary_robot
+- \subpage binary_simulator
+- \subpage binary_vasco
+
+**/

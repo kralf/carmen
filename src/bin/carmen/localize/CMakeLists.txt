@@ -1,1 +1,1 @@
-remake_add_executables(LINK localize_core)
+remake_add_executables(LINK localize_core localize_slam)
