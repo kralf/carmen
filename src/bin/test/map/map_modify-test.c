@@ -31,6 +31,7 @@
 #include "map_graphics.h"
 
 #include "navigator.h"
+#include "map_interface.h"
 #include "map_modify.h"
 
 static carmen_map_p map, true_map;
