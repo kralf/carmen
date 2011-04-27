@@ -26,11 +26,15 @@
  *
  ********************************************************/
 
-#include <carmen/carmen.h>
+#include "global.h"
+
+#include "param_interface.h"
+#include "base_interface.h"
+#include "robot_interface.h"
 #include "drive_low_level.h"
 
 #ifdef BASE_HAS_ARM
-#include <carmen/arm_messages.h> 
+#include "arm_messages.h"
 #include "arm_low_level.h"
 #endif
 
