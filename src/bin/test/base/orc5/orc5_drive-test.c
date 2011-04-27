@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-#include <carmen/carmen.h>
+
+#include "global.h"
 
 #include "drive_low_level.h"
 
