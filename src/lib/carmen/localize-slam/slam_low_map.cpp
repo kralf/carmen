@@ -17,7 +17,7 @@
 // Code for generating and maintaining maps (for the low level of the hierarchy)
 //
 
-#include <carmen/carmen.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "global.h"
 #include "slam_low_map.h"
 
 // Unobserved grid squares are treated of having a prior of one stopped scan per 
