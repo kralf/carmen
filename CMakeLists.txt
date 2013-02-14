@@ -45,6 +45,7 @@ remake_pack_deb(
   COMPONENT gui
   DESCRIPTION "GUI frontend"
   carmen libgtk2.0-0 libglib2.0-0 libart-2.0-2 libjpeg62 libmagickwand2
+    libqt3-mt
 )
 remake_pack_deb(
   COMPONENT test
@@ -76,7 +77,7 @@ remake_pack_deb(
   COMPONENT gui-dev
   DESCRIPTION "GUI development headers"
   carmen-gui libgtk2.0-dev libglib2.0-dev libart-2.0-dev libjpeg62-dev
-    libmagickwand-dev
+    libmagickwand-dev libqt3-mt-dev
 )
 
 remake_pack_deb(
@@ -108,6 +109,6 @@ remake_distribute_deb(
   SECTION libs
   UPLOAD ppa:kralf/asl
   DEPENDS remake libgtk2.0-dev libglib2.0-dev libart-2.0-dev
-    libjpeg62-dev libmagickwand-dev
+    libjpeg62-dev libmagickwand-dev libqt3-mt-dev
   PASS CMAKE_BUILD_TYPE CARMEN_SUBVERSION_REVISION
 )
