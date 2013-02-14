@@ -102,3 +102,12 @@ remake_pack_deb(
   DESCRIPTION "testing documentation"
   carmen-doc
 )
+
+remake_distribute_deb(
+  DISTRIBUTION lucid
+  SECTION libs
+  UPLOAD ppa:kralf/asl
+  DEPENDS remake libgtk2.0-dev libglib2.0-dev libart-2.0-dev
+    libjpeg62-dev libmagickwand-dev
+  PASS CMAKE_BUILD_TYPE CARMEN_SUBVERSION_REVISION
+)
