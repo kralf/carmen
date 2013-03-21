@@ -113,3 +113,12 @@ remake_distribute_deb(
     libqt3-compat-headers doxygen
   PASS CMAKE_BUILD_TYPE CARMEN_SUBVERSION_REVISION
 )
+remake_distribute_deb(
+  DISTRIBUTION precise
+  SECTION libs
+  UPLOAD ppa:kralf/asl
+  DEPENDS remake libgtk2.0-dev libglib2.0-dev libart-2.0-dev
+    libjpeg62-dev libmagickwand-dev libqt3-mt-dev
+    libqt3-compat-headers doxygen
+  PASS CMAKE_BUILD_TYPE CARMEN_SUBVERSION_REVISION
+)
