@@ -61,12 +61,12 @@ remake_pack_deb(
 remake_pack_deb(
   COMPONENT interface-dev
   DESCRIPTION "interface development headers"
-  DEPENDS carmen-interface core-dev
+  DEPENDS carmen-interface carmen-core-dev
 )
 remake_pack_deb(
   COMPONENT dev
   DESCRIPTION "development headers"
-  DEPENDS carmen interface-dev
+  DEPENDS carmen carmen-interface-dev
 )
 remake_pack_deb(
   COMPONENT cpp-dev
