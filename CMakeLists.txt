@@ -26,12 +26,12 @@ remake_add_directories(
 remake_pack_deb(
   COMPONENT core
   DESCRIPTION "core libraries"
-  zlib1g
+  DEPENDS zlib1g
 )
 remake_pack_deb(
   COMPONENT interface
   DESCRIPTION "interface libraries"
-  carmen-core
+  DEPENDS carmen-core
 )
 remake_pack_deb(
   carmen-interface
@@ -39,45 +39,46 @@ remake_pack_deb(
 remake_pack_deb(
   COMPONENT cpp
   DESCRIPTION "C++ interface"
-  carmen
+  DEPENDS carmen
 )
 remake_pack_deb(
   COMPONENT gui
   DESCRIPTION "GUI frontend"
-  carmen libgtk2.0-0 libglib2.0-0 libart-2.0-2 libjpeg62 libmagickwand2
-    libqt3-mt
+  DEPENDS carmen libgtk2.0-0 libglib2.0-0 libart-2.0-2 libjpeg[0-9]*
+    libmagickwand2 libqt3-mt
 )
 remake_pack_deb(
   COMPONENT test
   DESCRIPTION "testing binaries"
-  carmen carmen-cpp carmen-gui
+  DEPENDS carmen carmen-cpp carmen-gui
 )
 
 remake_pack_deb(
   COMPONENT core-dev
   DESCRIPTION "core development headers"
-  carmen-core zlib1g-dev
+  DEPENDS carmen-core zlib1g-dev
 )
 remake_pack_deb(
   COMPONENT interface-dev
   DESCRIPTION "interface development headers"
-  carmen-interface
+  DEPENDS carmen-interface core-dev
 )
 remake_pack_deb(
   COMPONENT dev
   DESCRIPTION "development headers"
-  carmen
+  DEPENDS carmen interface-dev
 )
 remake_pack_deb(
   COMPONENT cpp-dev
   DESCRIPTION "C++ development headers"
-  carmen-cpp
+  DEPENDS carmen-cpp carmen-dev
 )
 remake_pack_deb(
   COMPONENT gui-dev
   DESCRIPTION "GUI development headers"
-  carmen-gui libgtk2.0-dev libglib2.0-dev libart-2.0-dev libjpeg62-dev
-    libmagickwand-dev libqt3-mt-dev libqt3-compat-headers
+  DEPENDS carmen-gui carmen-dev libgtk2.0-dev libglib2.0-dev
+    libart-2.0-dev libjpeg[0-9]*-dev libmagickwand-dev
+    libqt3-compat-headers libqt3-mt-dev
 )
 
 remake_pack_deb(
@@ -95,13 +96,13 @@ remake_pack_deb(
   ARCH all
   COMPONENT gui-doc
   DESCRIPTION "GUI documentation"
-  carmen-doc
+  DEPENDS carmen-doc
 )
 remake_pack_deb(
   ARCH all
   COMPONENT test-doc
   DESCRIPTION "testing documentation"
-  carmen-doc
+  DEPENDS carmen-doc
 )
 
 remake_distribute_deb(
@@ -117,8 +118,7 @@ remake_distribute_deb(
   DISTRIBUTION precise
   SECTION libs
   UPLOAD ppa:kralf/asl
-  DEPENDS remake libgtk2.0-dev libglib2.0-dev libart-2.0-dev
-    libjpeg62-dev libmagickwand-dev libqt3-mt-dev
-    libqt3-compat-headers doxygen
+  DEPENDS remake libgtk2.0-dev libglib2.0-dev libart-2.0-dev libjpeg8-dev
+    libmagickwand-dev libqt3-mt-dev libqt3-compat-headers doxygen
   PASS CMAKE_BUILD_TYPE CARMEN_SUBVERSION_REVISION
 )
