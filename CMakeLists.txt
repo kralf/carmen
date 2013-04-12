@@ -12,6 +12,7 @@ remake_project(
   HOME "http://carmen.sourceforge.net"
   LICENSE "GNU General Public License (GPL)"
   INSTALL /usr
+  EXTRA_SHARED_LINKER_FLAGS -Wl,--allow-shlib-undefined
 )
 
 remake_doc(
@@ -34,7 +35,7 @@ remake_pack_deb(
   DEPENDS carmen-core
 )
 remake_pack_deb(
-  carmen-interface
+  DEPENDS carmen-interface
 )
 remake_pack_deb(
   COMPONENT cpp
@@ -77,7 +78,7 @@ remake_pack_deb(
   COMPONENT gui-dev
   DESCRIPTION "GUI development headers"
   DEPENDS carmen-gui carmen-dev libgtk2.0-dev libglib2.0-dev
-    libart-2.0-dev libjpeg[0-9]*-dev libmagickwand-dev
+    libart-2.0-dev libjpeg[0-9][0-9]*-dev libmagickwand-dev
     libqt3-compat-headers libqt3-mt-dev
 )
 

@@ -1,5 +1,12 @@
 carmen (0.7.4-77) lucid; urgency=low
 
+  * Fixed packages dependencies
+  * Added linkages to fix build failures in precise
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 12 Apr 2013 11:33:00 +0100
+
+carmen (0.7.4-77) lucid; urgency=low
+
   * Fixed more packages dependencies
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 25 Mar 2013 11:00:00 +0100
