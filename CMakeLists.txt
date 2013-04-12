@@ -12,7 +12,6 @@ remake_project(
   HOME "http://carmen.sourceforge.net"
   LICENSE "GNU General Public License (GPL)"
   INSTALL /usr
-  EXTRA_SHARED_LINKER_FLAGS -Wl,--allow-shlib-undefined
 )
 
 remake_doc(

@@ -1,4 +1,10 @@
-carmen (0.7.4-77) lucid; urgency=low
+carmen (0.7.4-79) lucid; urgency=low
+
+  * Removed superfluous linker flag
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 12 Apr 2013 11:40:00 +0100
+
+carmen (0.7.4-78) lucid; urgency=low
 
   * Fixed packages dependencies
   * Added linkages to fix build failures in precise
