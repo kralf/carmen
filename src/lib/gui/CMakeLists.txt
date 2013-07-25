@@ -10,3 +10,4 @@ remake_qt3_include(MT)
 
 remake_add_headers()
 remake_add_directories()
+remake_pkg_config_generate(REQUIRES carmen gtk+-2.0 libart-2.0 qt-mt)

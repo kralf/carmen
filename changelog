@@ -1,115 +1,121 @@
-carmen (0.7.4-80) lucid; urgency=low
+carmen (0.7.4-79) lucid; urgency=low
+
+  * Added pkg-config files
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 25 Jul 2013 15:48:00 +0100
+
+carmen (0.7.4-78) lucid; urgency=low
 
   * Rebased project to github
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sat, 20 Apr 2013 11:51:00 +0100
 
-carmen (0.7.4-79) lucid; urgency=low
+carmen (0.7.4-77) lucid; urgency=low
 
   * Removed superfluous linker flag
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 12 Apr 2013 11:40:00 +0100
 
-carmen (0.7.4-78) lucid; urgency=low
+carmen (0.7.4-76) lucid; urgency=low
 
   * Fixed packages dependencies
   * Added linkages to fix build failures in precise
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 12 Apr 2013 11:33:00 +0100
 
-carmen (0.7.4-77) lucid; urgency=low
+carmen (0.7.4-74) lucid; urgency=low
 
   * Fixed more packages dependencies
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 25 Mar 2013 11:00:00 +0100
 
-carmen (0.7.4-76) lucid; urgency=low
+carmen (0.7.4-73) lucid; urgency=low
 
   * Fixed development packages dependencies
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 24 Mar 2013 18:18:00 +0100
 
-carmen (0.7.4-75) lucid; urgency=low
+carmen (0.7.4-72) lucid; urgency=low
 
   * Top-level CMakeLists file adapted to latest ReMake release
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 24 Mar 2013 18:13:00 +0100
 
-carmen (0.7.4-74) lucid; urgency=low
+carmen (0.7.4-71) lucid; urgency=low
 
   * Added precise distribution
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 21 Mar 2013 16:39:00 +0100
 
-carmen (0.7.4-73) lucid; urgency=low
+carmen (0.7.4-70) lucid; urgency=low
 
   * Added libqt3-compat-headers build dependency
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 14 Feb 2013 14:02:00 +0100
 
-carmen (0.7.4-72) lucid; urgency=low
+carmen (0.7.4-69) lucid; urgency=low
 
   * Added doyxgen build dependency
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 14 Feb 2013 13:31:00 +0100
 
-carmen (0.7.4-71) lucid; urgency=low
+carmen (0.7.4-68) lucid; urgency=low
 
   * Added libqt3-mt-dev build dependency
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 14 Feb 2013 12:53:00 +0100
 
-carmen (0.7.4-70) lucid; urgency=low
+carmen (0.7.4-67) lucid; urgency=low
 
   * Release distribution
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 14 Feb 2013 12:47:00 +0100
 
-carmen (0.7.4-69) unstable; urgency=low
+carmen (0.7.4-66) unstable; urgency=low
 
   * Fixed include bug in orc5_drive-test.c
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 27 Apr 2011 12:14:48 +0200
 
-carmen (0.7.4-68) unstable; urgency=low
+carmen (0.7.4-65) unstable; urgency=low
 
   * Fixed include bug in orc4.c
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 27 Apr 2011 12:13:07 +0200
 
-carmen (0.7.4-67) unstable; urgency=low
+carmen (0.7.4-64) unstable; urgency=low
 
   * Fixed include bug in slam_low_map.cpp
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 27 Apr 2011 12:09:44 +0200
 
-carmen (0.7.4-66) unstable; urgency=low
+carmen (0.7.4-63) unstable; urgency=low
 
   * Fixed warning in map_modify-test
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 08 Mar 2011 07:36:52 +0100
 
-carmen (0.7.4-65) unstable; urgency=low
+carmen (0.7.4-62) unstable; urgency=low
 
   * Renamed doc binaries page
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 07 Mar 2011 00:00:25 +0100
 
-carmen (0.7.4-64) unstable; urgency=low
+carmen (0.7.4-61) unstable; urgency=low
 
   * Ported all robot base libraries
   * Port completed
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 06 Mar 2011 23:54:06 +0100
 
-carmen (0.7.4-63) unstable; urgency=low
+carmen (0.7.4-60) unstable; urgency=low
 
   * Fixed CMakeLists bug that would cause HTML documentation to install
     into the wrong directory
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 06 Mar 2011 19:19:42 +0100
 
-carmen (0.7.4-62) unstable; urgency=low
+carmen (0.7.4-59) unstable; urgency=low
 
   * Ported full CARMEN doxygen documentation
   * Ported SLAM modules
@@ -117,142 +123,142 @@ carmen (0.7.4-62) unstable; urgency=low
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 06 Mar 2011 19:05:56 +0100
 
-carmen (0.7.4-61) unstable; urgency=low
+carmen (0.7.4-58) unstable; urgency=low
 
   * Changed component directory layout
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 08 Jul 2010 08:45:22 +0200
 
-carmen (0.7.4-60) unstable; urgency=low
+carmen (0.7.4-57) unstable; urgency=low
 
   * Maps now install into map directory below ${CARMEN_FILE_DESTINATION}
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 08 Jul 2010 07:55:52 +0200
 
-carmen (0.7.4-59) unstable; urgency=low
+carmen (0.7.4-56) unstable; urgency=low
 
   * Fixed component build variable for GUI
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 04 Jul 2010 19:47:36 +0200
 
-carmen (0.7.4-58) unstable; urgency=low
+carmen (0.7.4-55) unstable; urgency=low
 
   * Added support for PPC architecture
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 15 Jun 2010 10:25:32 +0200
 
-carmen (0.7.4-57) unstable; urgency=low
+carmen (0.7.4-54) unstable; urgency=low
 
   * Fixed component definition that would fail to evaluate CARMEN_BUILD_GUI
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 06 Jun 2010 12:31:42 +0200
 
-carmen (0.7.4-56) unstable; urgency=low
+carmen (0.7.4-53) unstable; urgency=low
 
   * Added documentation packages
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 04 Jun 2010 12:43:14 +0200
 
-carmen (0.7.4-55) unstable; urgency=low
+carmen (0.7.4-52) unstable; urgency=low
 
   * Enhanced packaging information
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 03 Jun 2010 17:18:23 +0200
 
-carmen (0.7.4-54) unstable; urgency=low
+carmen (0.7.4-51) unstable; urgency=low
 
   * Changed doc package architecture to all
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 02 Jun 2010 11:12:08 +0200
 
-carmen (0.7.4-53) unstable; urgency=low
+carmen (0.7.4-50) unstable; urgency=low
 
   * Fixed NAN bug
   * Fixed most of the compiler warnings
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 16 May 2010 14:27:21 +0200
 
-carmen (0.7.4-52) unstable; urgency=low
+carmen (0.7.4-49) unstable; urgency=low
 
   * Fixed ImageMagick renamed DestroyConstitute() to ConstituteComponentTerminus()
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 12 May 2010 09:02:09 +0200
 
-carmen (0.7.4-51) unstable; urgency=low
+carmen (0.7.4-48) unstable; urgency=low
 
   * Fixed camera_view to display monochrome images
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 31 Mar 2010 07:42:11 +0200
 
-carmen (0.7.4-50) unstable; urgency=low
+carmen (0.7.4-47) unstable; urgency=low
 
   * Ported camera modules
   * Quickcam module disfunctional due to platform compatibility issues
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sat, 20 Mar 2010 17:41:23 +0100
 
-carmen (0.7.4-49) unstable; urgency=low
+carmen (0.7.4-46) unstable; urgency=low
 
   * Ported process control modules
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sat, 20 Mar 2010 14:10:28 +0100
 
-carmen (0.7.4-48) unstable; urgency=low
+carmen (0.7.4-45) unstable; urgency=low
 
   * Fixed variable naming bug in navigator
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 19 Mar 2010 17:50:02 +0100
 
-carmen (0.7.4-47) unstable; urgency=low
+carmen (0.7.4-44) unstable; urgency=low
 
   * Added random navigator
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 19 Mar 2010 17:43:09 +0100
 
-carmen (0.7.4-46) unstable; urgency=low
+carmen (0.7.4-43) unstable; urgency=low
 
   * Ported CPP modules into new component
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 19 Mar 2010 17:14:54 +0100
 
-carmen (0.7.4-45) unstable; urgency=low
+carmen (0.7.4-42) unstable; urgency=low
 
   * Added log graphics modules
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 19 Mar 2010 16:25:11 +0100
 
-carmen (0.7.4-44) unstable; urgency=low
+carmen (0.7.4-41) unstable; urgency=low
 
   * Added logtools
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 19 Mar 2010 15:44:21 +0100
 
-carmen (0.7.4-43) unstable; urgency=low
+carmen (0.7.4-40) unstable; urgency=low
 
   * Ported map editor
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 19 Mar 2010 15:08:03 +0100
 
-carmen (0.7.4-42) unstable; urgency=low
+carmen (0.7.4-39) unstable; urgency=low
 
   * Ooops, something was wrong in the last revision
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 16 Dec 2009 13:54:18 +0100
 
-carmen (0.7.4-41) unstable; urgency=low
+carmen (0.7.4-38) unstable; urgency=low
 
   * Reverted changes to geometry.c, nan problem might be due to CPU
     overheating
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 16 Dec 2009 13:51:19 +0100
 
-carmen (0.7.4-40) unstable; urgency=low
+carmen (0.7.4-37) unstable; urgency=low
 
   * Minor change in geometry.c
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 15 Dec 2009 17:00:19 +0100
 
-carmen (0.7.4-39) unstable; urgency=low
+carmen (0.7.4-36) unstable; urgency=low
 
   * Fixed unitialized variable bug in robot_laser.c
   * Added redundant safety distance computation to geometry.c, this seems
@@ -260,142 +266,142 @@ carmen (0.7.4-39) unstable; urgency=low
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 15 Dec 2009 16:56:38 +0100
 
-carmen (0.7.4-38) unstable; urgency=low
+carmen (0.7.4-35) unstable; urgency=low
 
   * ICP's architecture dependent encoding problem seems to be fixed for
     query/response transactions
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 15 Dec 2009 15:36:33 +0100
 
-carmen (0.7.4-37) unstable; urgency=low
+carmen (0.7.4-34) unstable; urgency=low
 
   * Added joyrobot and simulator documentation
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 15 Dec 2009 09:26:35 +0100
 
-carmen (0.7.4-36) unstable; urgency=low
+carmen (0.7.4-33) unstable; urgency=low
 
   * Attempt to fix ICP's architecture dependent encoding problem for query/response
     transactions
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 14 Dec 2009 18:56:49 +0100
 
-carmen (0.7.4-35) unstable; urgency=low
+carmen (0.7.4-32) unstable; urgency=low
 
   * Reverted geometry library for assertion testing
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 14 Dec 2009 11:18:07 +0100
 
-carmen (0.7.4-34) unstable; urgency=low
+carmen (0.7.4-31) unstable; urgency=low
 
   * Removed velocity assertion due to strange aborts on the RoboX
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 11 Dec 2009 18:49:55 +0100
 
-carmen (0.7.4-33) unstable; urgency=low
+carmen (0.7.4-30) unstable; urgency=low
 
   * Added low-level drive header
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 11 Dec 2009 16:54:02 +0100
 
-carmen (0.7.4-32) unstable; urgency=low
+carmen (0.7.4-29) unstable; urgency=low
 
   * Removed cmake_policy()
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 11 Dec 2009 16:46:46 +0100
 
-carmen (0.7.4-31) unstable; urgency=low
+carmen (0.7.4-28) unstable; urgency=low
 
   * Added joystick_initialize_joystick_device() to joyctrl library
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 11 Dec 2009 16:40:55 +0100
 
-carmen (0.7.4-30) unstable; urgency=low
+carmen (0.7.4-27) unstable; urgency=low
 
   * IPC architecture-save unmarshalling hack
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 10 Dec 2009 19:10:55 +0100
 
-carmen (0.7.4-29) unstable; urgency=low
+carmen (0.7.4-26) unstable; urgency=low
 
   * Fixed stack smashing bug in laser_view
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 09 Dec 2009 15:14:31 +0100
 
-carmen (0.7.4-28) unstable; urgency=low
+carmen (0.7.4-25) unstable; urgency=low
 
   * Fixed map_io/map_interface compression bug that would cause maps not
     to uncompress on amd64 architectures
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 25 Nov 2009 19:56:28 +0100
 
-carmen (0.7.4-27) unstable; urgency=low
+carmen (0.7.4-24) unstable; urgency=low
 
   * Fixed unresolved symbol bug in vasco_gui
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 18 Nov 2009 11:23:48 +0100
 
-carmen (0.7.4-26) unstable; urgency=low
+carmen (0.7.4-23) unstable; urgency=low
 
   * Move map-test to map_view
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sat, 14 Nov 2009 09:53:39 +0100
 
-carmen (0.7.4-25) unstable; urgency=low
+carmen (0.7.4-22) unstable; urgency=low
 
   * Port of navigator and navigator GUI
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 13 Nov 2009 12:04:41 +0100
 
-carmen (0.7.4-24) unstable; urgency=low
+carmen (0.7.4-21) unstable; urgency=low
 
   * Ported the vasco GUI and configuration file
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 13 Nov 2009 08:24:29 +0100
 
-carmen (0.7.4-23) unstable; urgency=low
+carmen (0.7.4-20) unstable; urgency=low
 
   * Started vasco port for CARMEN
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 12 Nov 2009 15:55:31 +0100
 
-carmen (0.7.4-22) unstable; urgency=low
+carmen (0.7.4-19) unstable; urgency=low
 
   * Fixed ipc.h include to be local in global.h
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 12 Nov 2009 12:12:41 +0100
 
-carmen (0.7.4-21) unstable; urgency=low
+carmen (0.7.4-18) unstable; urgency=low
 
   * Fixed wrong ipc.h include in global.h
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 11 Nov 2009 14:52:34 +0100
 
-carmen (0.7.4-20) unstable; urgency=low
+carmen (0.7.4-17) unstable; urgency=low
 
   * Fixed ipc.h include in carmen.h
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 10 Nov 2009 13:43:58 +0100
 
-carmen (0.7.4-19) unstable; urgency=low
+carmen (0.7.4-16) unstable; urgency=low
 
   * Added bundled IPC library due to CPU load issues with stand-alone libipc
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 10 Nov 2009 13:36:32 +0100
 
-carmen (0.7.4-18) unstable; urgency=low
+carmen (0.7.4-15) unstable; urgency=low
 
   * Fixed wrong includes in carmen.h and global.h
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 05 Nov 2009 11:47:46 +0100
 
-carmen (0.7.4-17) unstable; urgency=low
+carmen (0.7.4-14) unstable; urgency=low
 
   * Added GUI package build target
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 26 Oct 2009 17:56:43 +0100
 
-carmen (0.7.4-16) unstable; urgency=low
+carmen (0.7.4-13) unstable; urgency=low
 
   * Added signal.h include to global.h
   * Ported laserview
@@ -403,7 +409,7 @@ carmen (0.7.4-16) unstable; urgency=low
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sat, 19 Sep 2009 08:56:13 +0200
 
-carmen (0.7.4-15) unstable; urgency=low
+carmen (0.7.4-12) unstable; urgency=low
 
   * Ported testing binaries for global, movement, and multicentral
   * Ported libartwrap and libglobal_graphics JPEG functions
@@ -411,19 +417,19 @@ carmen (0.7.4-15) unstable; urgency=low
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 18 Sep 2009 23:00:07 +0200
 
-carmen (0.7.4-14) unstable; urgency=low
+carmen (0.7.4-11) unstable; urgency=low
 
   * Started port of CARMEN graphics
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 18 Sep 2009 09:21:37 +0200
 
-carmen (0.7.4-13) unstable; urgency=low
+carmen (0.7.4-10) unstable; urgency=low
 
   * Ported CARMEN joystick control
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 17 Sep 2009 08:41:04 +0200
 
-carmen (0.7.4-12) unstable; urgency=low
+carmen (0.7.4-9) unstable; urgency=low
 
   * Ported pantilt libraries and binaries
   * Ported param-test
@@ -431,56 +437,56 @@ carmen (0.7.4-12) unstable; urgency=low
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 17 Sep 2009 08:21:52 +0200
 
-carmen (0.7.4-11) unstable; urgency=low
+carmen (0.7.4-8) unstable; urgency=low
 
   * Added CARMEN gps binary
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 11 Sep 2009 08:13:55 +0200
 
-carmen (0.7.4-10) unstable; urgency=low
+carmen (0.7.4-7) unstable; urgency=low
 
   * Added CARMEN robot, localize, and simulator
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 11 Sep 2009 08:11:12 +0200
 
-carmen (0.7.4-9) unstable; urgency=low
+carmen (0.7.4-6) unstable; urgency=low
 
   * Added CARMEN port GPS libraries, added test component with testing
     binaries
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 11 Sep 2009 06:58:47 +0200
 
-carmen (0.7.4-8) unstable; urgency=low
+carmen (0.7.4-5) unstable; urgency=low
 
   * CARMEN port includes revised
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 08 Sep 2009 12:03:09 +0200
 
-carmen (0.7.4-7) unstable; urgency=low
+carmen (0.7.4-4) unstable; urgency=low
 
   * CARMEN port requires further refinements
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 08 Sep 2009 09:56:34 +0200
 
-carmen (0.7.4-6) unstable; urgency=low
+carmen (0.7.4-3) unstable; urgency=low
 
   * CARMEN port executables restructured
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 08 Sep 2009 08:41:12 +0200
 
-carmen (0.7.4-5) unstable; urgency=low
+carmen (0.7.4-2) unstable; urgency=low
 
   * Further CARMEN port component restructuring
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 08 Sep 2009 08:37:44 +0200
 
-carmen (0.7.4-4) unstable; urgency=low
+carmen (0.7.4-1) unstable; urgency=low
 
   * CARMEN port components restructured
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 08 Sep 2009 08:17:33 +0200
 
-carmen (0.7.4-3) unstable; urgency=low
+carmen (0.7.4) unstable; urgency=low
 
   * CARMEN ports initial revision
 
