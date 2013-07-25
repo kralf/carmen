@@ -1,3 +1,9 @@
+carmen (0.7.4-83) lucid; urgency=low
+
+  * Linking libcarmen-global against libm
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 25 Jul 2013 21:45:00 +0100
+
 carmen (0.7.4-82) lucid; urgency=low
 
   * Added missing zlib build dependency
