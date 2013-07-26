@@ -34,6 +34,11 @@
 
 carmen_pantilt_status_message   status;
 
+PantiltDeviceType    pDevice;
+PantiltSettingsType  pSettings;
+PantiltLimitsType    pLimits;
+PantiltPosType       pPos;
+
 void
 ipc_publish_status( void )
 {

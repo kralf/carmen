@@ -92,6 +92,9 @@ struct N_RobotStateExt {
 
 struct N_RobotStateExt *N_GetRobotStateExt(long RobotID);
 
+extern char *robd_program_name;
+extern int robd_robot_id;
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,3 +1,9 @@
+carmen (0.7.4-85) lucid; urgency=low
+
+  * Fixed linkage of libcarmen-pantilt_dev and libcarmen-xr4000_base
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 26 Jul 2013 15:52:00 +0100
+
 carmen (0.7.4-84) lucid; urgency=low
 
   * Removed zlib pkg-config file dependency as it cannot be satisfied under

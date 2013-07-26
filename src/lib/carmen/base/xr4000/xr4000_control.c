@@ -41,7 +41,7 @@ typedef struct {
 } xr4000_t, *xr4000_p;
 
 xr4000_t robot;
-extern int robd_robot_id;
+int robd_robot_id;
 
 static void carmen_xr4000_publish_odometry(void)
 {

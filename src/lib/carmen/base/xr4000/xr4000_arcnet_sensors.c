@@ -39,7 +39,7 @@
 #include "xr4000_ndirect.h"
 #include "xr4000_setup.h"
 
-extern char *robd_program_name; 
+char *robd_program_name; 
 
 void ARGCV_Create(char *string, int *argc_ret, char ***argv_ret)
 {
