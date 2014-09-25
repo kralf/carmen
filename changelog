@@ -1,3 +1,9 @@
+carmen (0.7.4-86) lucid; urgency=low
+
+  * Release distribution for Ubuntu Trusty Tahr
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 25 Sep 2014 16:30:00 +0100
+
 carmen (0.7.4-85) lucid; urgency=low
 
   * Fixed linkage of libcarmen-pantilt_dev and libcarmen-xr4000_base

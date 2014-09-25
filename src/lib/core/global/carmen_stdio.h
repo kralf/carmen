@@ -51,7 +51,7 @@ typedef struct {
   int compressed;
   FILE *fp;
 #ifndef NO_ZLIB
-  gzFile *comp_fp;
+  gzFile comp_fp;
 #endif
 } carmen_FILE;
 
